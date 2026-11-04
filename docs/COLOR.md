@@ -39,7 +39,8 @@ independent chroma samples. Each output row averages 3.75 native rows. Full-fram
 
 YUYV is already processed camera video. Y is luma (the existing UI calls it
 luminance), Cb/Cr are color differences; none is Bayer RAW, a photon count or a
-full wavelength spectrum. No RGB diagnostic conversion is implemented.
+full wavelength spectrum. Issue #8 adds a [display-only RGB preview](RGB_PREVIEW.md);
+RGB never becomes the model input or prediction target.
 
 Model/target layout is `HW` for Y and `CHW` in **Y,Cb,Cr** order for color,
 batched internally as `B×K×128×128`. With grid `G`, patch width `P=128/G`, and
@@ -99,8 +100,11 @@ checkpoint. Learned tensors can still contain scene information. Camera images
 are not recorded by default, and no data is transmitted by the running app.
 
 The primary visualization remains actual recurrent state. In color mode,
-**Diagnostic component** chooses Y, Cb or Cr for input, prediction and matched
-error panels. Y remains grayscale; chroma uses a fixed signed blue/amber map at
+**Diagnostic view** defaults to Combined Color (RGB preview) for input and
+prediction, with mean Y/Cb/Cr squared error in the matched error panel. The
+[preview contract](RGB_PREVIEW.md) assumes BT.601 limited range and clips RGB
+only for display. Individual Y, Cb or Cr selections remain available.
+Y remains grayscale; chroma uses a fixed signed blue/amber map at
 ±128/255, explicitly labeled as display colors rather than sensor RGB. Error
 maps are squared errors with the existing display ceiling 0.25. Component/page/
 display-range choices affect presentation only. Headless runs import no Qt,

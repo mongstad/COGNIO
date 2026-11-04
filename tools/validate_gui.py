@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import tempfile
 import time
+from unittest.mock import patch
 
 import numpy as np
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
@@ -17,7 +18,7 @@ from PySide6.QtWidgets import QApplication
 from cognio.engine import Engine
 from cognio.model import Config
 from cognio.inputs import INPUT_MODES
-from cognio.gui import Window
+from cognio.gui import Window, measurement_rgb, gray_rgb
 from cognio.runtime import Runtime, select_device
 
 
@@ -51,7 +52,8 @@ def main():
     directory = tempfile.TemporaryDirectory(prefix="cognio-gui-")
     checkpoint = Path(directory.name) / "validation.pt"
     report = dict(source=args.source, input_mode=args.input_mode, channels=args.channels, grid=args.grid, compute=notice, torch=str(torch.__version__),
-                  qt_platform=app.platformName(), requested_seconds=args.seconds)
+                  qt_platform=app.platformName(), requested_seconds=args.seconds,
+                  initial_diagnostic=window.component.currentText())
 
     def sample():
         now = time.monotonic()
@@ -62,6 +64,22 @@ def main():
             if snap:
                 if snap["fault"] or snap["capture_error"]:
                     raise AssertionError(snap["fault"] or snap["capture_error"])
+                if args.input_mode == "ycbcr":
+                    for at, name in ((6, "Y"), (7, "Cb"), (8, "Cr"), (9, "Combined Color (RGB preview)"),
+                                     (12, "Y"), (12.5, "Cb"), (13, "Cr"), (13.5, "Combined Color (RGB preview)")):
+                        action = f"view_{at:g}_{name}"
+                        if elapsed >= at and action not in actions:
+                            # Use one observed snapshot to check all three rendered panels.
+                            with patch.object(runtime, "latest", return_value=snap):
+                                window.component.setCurrentText(name)
+                                window.refresh()
+                            component = window.component.currentData()
+                            np.testing.assert_array_equal(window.input_view.rgb, measurement_rgb(snap["visual"]["input"], component))
+                            np.testing.assert_array_equal(window.prediction_view.rgb, measurement_rgb(snap["visual"]["prediction"], component))
+                            error = snap["display_result"]["error"]
+                            expected = error.mean(axis=0) if component is None else error[component]
+                            np.testing.assert_array_equal(window.error_view.rgb, gray_rgb(expected, .25))
+                            actions.append(action)
                 if elapsed >= 10 and "freeze" not in actions:
                     window.training.setChecked(False)
                     actions.append("freeze")
@@ -75,14 +93,15 @@ def main():
                     actions.append("freeze_snapshot")
                 if elapsed >= 14 and "verify_freeze_save" not in actions:
                     assert all(torch.equal(value, runtime.engine.model.state_dict()[key]) for key, value in frozen["model"].items())
+                    for key, state in frozen["optimizer"]["state"].items():
+                        assert all(torch.equal(value, runtime.engine.optimizer.state_dict()["state"][key][name])
+                                   for name, value in state.items())
                     assert snap["counts"]["updates"] == frozen["updates"]
                     assert snap["counts"]["predictions"] > frozen["predictions"]
                     assert not torch.equal(frozen["hidden"], runtime.engine.hidden)
                     window.display_range.setValue(.35)
                     if args.channels > 32:
                         window.channel_page.setValue(2)
-                    if args.input_mode == "ycbcr":
-                        window.component.setCurrentIndex(1)
                     runtime.submit("save", str(checkpoint))
                     actions.append("verify_freeze_save")
                 if elapsed >= 16 and "load" not in actions:
@@ -94,9 +113,6 @@ def main():
                     assert all(torch.equal(value, runtime.engine.model.state_dict()[key]) for key, value in frozen["model"].items())
                     window.training.setChecked(True)
                     actions.append("resume")
-                if elapsed >= 21 and args.input_mode == "ycbcr" and "view_cr" not in actions:
-                    window.component.setCurrentIndex(2)
-                    actions.append("view_cr")
                 if elapsed >= 20 and args.screenshot and "screenshot" not in actions:
                     window.grab().save(str(args.screenshot))
                     actions.append("screenshot")
@@ -104,6 +120,7 @@ def main():
                           "prediction_ms", "update_ms", "rss_mib", "cpu_percent", "vram_mib", "training",
                           "peak_vram_mib", "observer_ms", "transfer_ms", "preprocess_ms", "step_ms")}
                 record["display_ms"] = window.display_ms
+                record["diagnostic"] = window.component.currentText()
                 record["input_statistics"] = snap["input_statistics"]
                 if snap["result"]:
                     record.update({key: snap["result"][key] for key in ("mse", "baseline_mse", "horizon_ms", "lead_ms")})
