@@ -56,7 +56,7 @@ scalar telemetry and explicit checkpoint save/restore without a Qt window.
 See [capacity measurements and limits](CAPACITY.md) before choosing a size.
 
 For issue #5, explicitly create a new color model with `--input-mode ycbcr`.
-Use the Diagnostic component selector to inspect Y, Cb and Cr input, future
+Use the Diagnostic view selector to inspect Y, Cb and Cr input, future
 prediction and matched error; the signed chroma display colors are not RGB.
 Check all three component MSE/persistence values, not just the aggregate. While
 training is frozen, change colored items/lighting and compare Cb/Cr responses
@@ -65,3 +65,13 @@ restore within this mode, then verify loading a grayscale checkpoint is rejected
 without changing the active model. Use the constant-Y `color-moving` synthetic
 source for an exact control. [COLOR.md](COLOR.md) records performed checks and
 the remaining physical-scene validation.
+
+For issue #8, color mode starts in **Combined Color (RGB preview)**. Input and
+future prediction should both show reconstructed color; the third panel must
+say **Mean Y/Cb/Cr squared error (not RGB)**. Cycle Y → Cb → Cr → Combined Color
+while training and again while frozen. Confirm labels and frame IDs, continued
+prediction/scoring, and a fixed update count while frozen. Switch channel pages
+and Display ±; they still affect only the primary actual-state canvas. Launch
+with `--input-mode y` separately and confirm the original grayscale panels.
+The preview assumes BT.601 limited range, clips display RGB and is not calibrated
+sensor color. Exact commands and performed checks are in [RGB_PREVIEW.md](RGB_PREVIEW.md).

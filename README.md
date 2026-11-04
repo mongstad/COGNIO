@@ -104,9 +104,13 @@ not Bayer RAW, calibrated photon measurements or wavelength spectra.
 
 Color predictions and targets contain all three components. Aggregate MSE is
 the equal mean of Y, Cb and Cr MSE; each also has its own persistence comparison.
-The GUI **Diagnostic component** selector changes input/prediction/error views
-only. Cb/Cr are shown with labeled signed blue/amber colors, not sensor-native
-RGB. The primary canvas still shows actual neural state. Headless telemetry
+The GUI **Diagnostic view** selector defaults to **Combined Color (RGB preview)**
+in color mode: input and prediction reconstruct all three planes for display,
+assuming BT.601 limited range. Combined error is mean Y/Cb/Cr squared error,
+not RGB error. Individual Y, Cb and Cr views remain available; Cb/Cr use signed
+blue/amber display colors. [Preview conversion and trial](docs/RGB_PREVIEW.md)
+explain the range assumption, clipping and lack of color calibration.
+The primary canvas still shows actual neural state. Headless telemetry
 includes per-component errors and input statistics with no image arrays.
 
 Schema-3 checkpoints record mode, tensor layout and normalization. Restoring

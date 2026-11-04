@@ -40,8 +40,34 @@ def component_plane(values, component):
 
 
 def measurement_rgb(values, component):
+    if component is None:
+        return ycbcr_rgb(values)
     plane = component_plane(values, component)
     return gray_rgb(plane) if component == 0 else signed_rgb(plane, CHROMA_OFFSET)
+
+
+def ycbcr_rgb(values):
+    """Display-only BT.601 limited-range reconstruction from CHW model units.
+
+    Undo Y/255 and (Cb/Cr-128)/255, then expand nominal Y codes 16..235
+    and chroma excursions ±112. This is a fixed C922 preview assumption,
+    not calibration or a change to sensory normalization. Clip RGB only;
+    invalid/non-finite pixels are magenta. Return owned, contiguous HWC bytes.
+    """
+    if values.ndim != 3 or values.shape[0] != 3:
+        raise ValueError("RGB preview requires CHW Y, Cb, Cr measurements")
+    # Float64 avoids overflow even for extreme finite float32 predictions.
+    with np.errstate(over="ignore", invalid="ignore"):
+        y, cb, cr = np.asarray(values, dtype=np.float64)
+        y = (255*y - 16) / 219
+        cb, cr = 255*cb / 224, 255*cr / 224
+        rgb = np.stack((y + 1.402*cr,
+                        y - (0.114*1.772/0.587)*cb - (0.299*1.402/0.587)*cr,
+                        y + 1.772*cb), axis=-1)
+    valid = np.isfinite(values).all(axis=0) & np.isfinite(rgb).all(axis=-1)
+    rgb = np.rint(255*np.clip(np.nan_to_num(rgb), 0, 1)).astype(np.uint8)
+    rgb[~valid] = (255, 0, 255)
+    return np.ascontiguousarray(rgb)
 
 
 class ImageView(QLabel):
@@ -166,10 +192,18 @@ class Window(QMainWindow):
         privacy.setWordWrap(True)
         main.addWidget(privacy)
         self.component = QComboBox()
-        self.component.addItems(components(runtime.engine.config.input_mode))
         if runtime.engine.config.input_mode == "ycbcr":
-            side.addWidget(QLabel("Diagnostic component · signed Cb/Cr colors are not RGB"))
+            self.component.addItem("Combined Color (RGB preview)", None)
+            diagnostic_label = QLabel("Diagnostic view · display only")
+            diagnostic_label.setWordWrap(True)
+            side.addWidget(diagnostic_label)
             side.addWidget(self.component)
+        for index, name in enumerate(components(runtime.engine.config.input_mode)):
+            self.component.addItem(name, index)
+        self.component.setToolTip(
+            "Combined Color assumes BT.601 limited range on the aligned 128×128 Y/Cb/Cr planes. "
+            "RGB is clipped for display; invalid pixels are magenta. No sensor color calibration. "
+            "Cb/Cr alone use signed display colors. Selection never changes learning.")
         self.input_label, self.input_view = self.panel(side, "1 / Current measured luminance")
         self.prediction_label, self.prediction_view = self.panel(side, "2 / Predicted future luminance")
         self.error_label, self.error_view = self.panel(side, "3 / Matched squared prediction error")
@@ -178,6 +212,7 @@ class Window(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh)
         self.timer.start(33)
+        self.component.currentIndexChanged.connect(self.refresh)
 
     @staticmethod
     def panel(layout, title):
@@ -219,10 +254,12 @@ class Window(QMainWindow):
         self.training.blockSignals(False)
         self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']} · input: {snap['config'].input_mode}")
         visual, result = snap["visual"], snap.get("display_result", snap["result"])
-        component = self.component.currentIndex()
+        component = self.component.currentData()
         name = self.component.currentText()
-        measurement = "luminance" if name == "Y" else f"{name} color difference"
-        units = "Y/255" if name == "Y" else f"({name}−128)/255 · blue negative / amber positive · display only"
+        combined = component is None
+        measurement = "color · RGB preview" if combined else ("luminance" if name == "Y" else f"{name} color difference")
+        units = ("BT.601 limited-range assumption · display only" if combined else
+                 "Y/255" if name == "Y" else f"({name}−128)/255 · blue negative / amber positive · display only")
         now = time.monotonic()
         if visual is not None:
             limit = self.display_range.value()
@@ -245,8 +282,10 @@ class Window(QMainWindow):
             for view in (self.hidden_view, self.input_view, self.prediction_view):
                 view.clear_image()
         if result is not None and result["error"] is not None:
-            self.error_view.display(gray_rgb(component_plane(result["error"], component), .25))
-            self.error_label.setText(f"3 / {name} squared error · {result['source']} → observed {result['target']}\n"
+            error = result["error"].mean(axis=0) if combined else component_plane(result["error"], component)
+            error_name = "Mean Y/Cb/Cr squared error (not RGB)" if combined else f"{name} squared error"
+            self.error_view.display(gray_rgb(error, .25))
+            self.error_label.setText(f"3 / {error_name} · {result['source']} → observed {result['target']}\n"
                                      f"Horizon {result['horizon_ms']:.1f} ms · target age {1000*(now-result['target_time']):.0f} ms"
                                      " · black 0 / white ≥0.25")
         else:

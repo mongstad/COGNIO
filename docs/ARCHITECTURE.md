@@ -161,7 +161,12 @@ Input/prediction use fixed grayscale [0,1]. Squared error uses black=0,
 white≥0.25; clipping is display-only. Source/target IDs, actual horizon and
 target age stay visible even if processing stalls. Faults and capture errors
 remain visible alongside the last successful state.
-Color diagnostics select Y, Cb or Cr in those same three panels. Cb/Cr use a
+Color diagnostics default to Combined Color: a display-only BT.601 limited-range
+RGB reconstruction of aligned input/prediction planes. Combined error is the
+per-pixel mean of the three already scored squared component errors in model
+units, with the same black=0 / white≥0.25 scale. The conversion never enters
+learning; [RGB_PREVIEW.md](RGB_PREVIEW.md) defines its assumptions and clipping.
+Individual diagnostics select Y, Cb or Cr in those same three panels. Cb/Cr use a
 fixed signed blue/amber map at ±128/255, explicitly labeled as display colors,
 not RGB measurements; their error maps remain squared numeric error. Selection
 does not enter capture, preprocessing, recurrence or training. The primary

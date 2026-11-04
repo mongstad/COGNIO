@@ -1,0 +1,240 @@
+{
+  "date_local": "2026-11-05",
+  "timezone": "Europe/Oslo",
+  "accepted_base": "dcbbeb37841e11621525a5aab4cb6955e1ab413f",
+  "branch": "8-add-combined-color-rgb-diagnostic-preview-for-ycbcr-input-and-prediction",
+  "python": "3.14.10",
+  "cpu_torch": "2.15.0+cpu",
+  "baseline_cpu": {
+    "passed": 88,
+    "skipped": 8,
+    "seconds": 20.34
+  },
+  "final_cpu": {
+    "passed": 95,
+    "skipped": 9,
+    "seconds": 21.83
+  },
+  "final_cuda": {
+    "passed": 104,
+    "skipped": 0,
+    "seconds": 26.8
+  },
+  "tests_note": "Final CPU and CUDA suites ran concurrently; durations are not hardware performance comparisons.",
+  "learning_modules_unchanged": true,
+  "compileall_passed": true,
+  "whitespace_check_passed": true,
+  "c922": {
+    "source": "camera",
+    "input_mode": "ycbcr",
+    "channels": 512,
+    "grid": 16,
+    "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+    "torch": "2.14.1+cu130",
+    "qt_platform": "wayland",
+    "requested_seconds": 30.0,
+    "initial_diagnostic": "Combined Color (RGB preview)",
+    "counts": {
+      "predictions": 831,
+      "scores": 809,
+      "updates": 640,
+      "missed_targets": 2,
+      "late_targets": 0,
+      "skipped_frames": 2,
+      "cleared_targets": 15
+    },
+    "capture": {
+      "frames": 894,
+      "driver_drops": 0,
+      "drained_discards": 0,
+      "bad_frames": 0,
+      "timestamp_kind": "driver-monotonic"
+    },
+    "overwritten": 4,
+    "peak_rss_mib": 2260.68359375,
+    "gui_refreshes": 960,
+    "window_exposed": true,
+    "pending": 5,
+    "history": 300,
+    "actions": [
+      "view_6_Y",
+      "view_7_Cb",
+      "view_8_Cr",
+      "view_9_Combined Color (RGB preview)",
+      "freeze",
+      "freeze_snapshot",
+      "view_12_Y",
+      "view_12.5_Cb",
+      "view_13_Cr",
+      "view_13.5_Combined Color (RGB preview)",
+      "verify_freeze_save",
+      "load",
+      "resume"
+    ],
+    "failures": [],
+    "workers_stopped": true,
+    "duration_s": 30.29380033599955,
+    "tick_max_ms": 257.4941500024579,
+    "peak_vram_mib": 228.4306640625,
+    "steady_after_22s": {
+      "sample_count": 33,
+      "means": {
+        "input_fps": 30.000878986195,
+        "prediction_fps": 30.02480335930559,
+        "updates_per_s": 29.86282064057037,
+        "prediction_ms": 0.6795386965898091,
+        "update_ms": 6.784625332577641,
+        "preprocess_ms": 6.2106919087289665,
+        "step_ms": 8.490090241993489,
+        "observer_ms": 0.05171587878122051,
+        "display_ms": 2.9027293329074215,
+        "input_age_ms": 107.15591715162384,
+        "horizon_ms": 166.4254848484151
+      }
+    },
+    "camera_mode": {
+      "width": 640,
+      "height": 480,
+      "fourcc": "YUYV",
+      "fps": 30.0,
+      "stride": 1280,
+      "sizeimage": 614400,
+      "colorspace": 8,
+      "ycbcr_encoding": 1,
+      "quantization": 0,
+      "transfer": 1
+    },
+    "camera_controls": {
+      "exposure_auto": {
+        "requested": 1,
+        "actual": 1,
+        "original": 3
+      },
+      "exposure_auto_priority": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "exposure_absolute": {
+        "requested": 156,
+        "actual": 156,
+        "original": 250
+      },
+      "focus_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_temperature": {
+        "requested": 4500,
+        "actual": 4500,
+        "original": 4000
+      }
+    },
+    "camera_warnings": [],
+    "controls_restored": {
+      "exposure_auto": true,
+      "exposure_auto_priority": true,
+      "exposure_absolute": true,
+      "focus_auto": true,
+      "white_balance_auto": true,
+      "white_balance_temperature": true
+    }
+  },
+  "synthetic": {
+    "source": "color-moving",
+    "input_mode": "ycbcr",
+    "channels": 512,
+    "grid": 16,
+    "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+    "torch": "2.14.1+cu130",
+    "qt_platform": "offscreen",
+    "requested_seconds": 25.0,
+    "initial_diagnostic": "Combined Color (RGB preview)",
+    "counts": {
+      "predictions": 689,
+      "scores": 667,
+      "updates": 498,
+      "missed_targets": 2,
+      "late_targets": 0,
+      "skipped_frames": 2,
+      "cleared_targets": 15
+    },
+    "capture": {
+      "frames": 752,
+      "driver_drops": 0,
+      "drained_discards": 0,
+      "bad_frames": 0,
+      "timestamp_kind": "synthetic-monotonic"
+    },
+    "overwritten": 4,
+    "peak_rss_mib": 2221.76171875,
+    "gui_refreshes": 799,
+    "window_exposed": true,
+    "pending": 5,
+    "history": 203,
+    "actions": [
+      "view_6_Y",
+      "view_7_Cb",
+      "view_8_Cr",
+      "view_9_Combined Color (RGB preview)",
+      "freeze",
+      "freeze_snapshot",
+      "view_12_Y",
+      "view_12.5_Cb",
+      "view_13_Cr",
+      "view_13.5_Combined Color (RGB preview)",
+      "verify_freeze_save",
+      "load",
+      "resume",
+      "screenshot"
+    ],
+    "failures": [],
+    "workers_stopped": true,
+    "duration_s": 25.0643652439976,
+    "tick_max_ms": 265.45996900313185,
+    "peak_vram_mib": 228.4306640625,
+    "steady_after_22s": {
+      "sample_count": 13,
+      "means": {
+        "input_fps": 30.021834879012978,
+        "prediction_fps": 29.804948073786303,
+        "updates_per_s": 29.21829226546423,
+        "prediction_ms": 0.6430073842168965,
+        "update_ms": 6.915148000049298,
+        "preprocess_ms": 0.8196785375520659,
+        "step_ms": 8.447071692409317,
+        "observer_ms": 0.030309692262492787,
+        "display_ms": 2.564717922863425,
+        "input_age_ms": 85.80297876967681,
+        "horizon_ms": 166.60351615372258
+      }
+    },
+    "camera_mode": null,
+    "camera_controls": null,
+    "camera_warnings": [],
+    "controls_restored": null
+  },
+  "synthetic_screenshot_review": {
+    "size": [
+      1320,
+      940
+    ],
+    "passed": true,
+    "observations": "Distinct combined input/prediction color panels, mean-component error label, primary hidden state, controls and telemetry fit."
+  },
+  "limits": [
+    "Fixed BT.601 limited-range preview assumption; no color calibration or automatic colorimetry selection.",
+    "Short trials only; no long soak, physical unplug/replug or controlled physical color targets.",
+    "Live window exposure and panels verified programmatically; human scene-color judgment remains owner verification.",
+    "Identical-frame CPU/CUDA selector tests establish numerical independence; overloaded live scheduling can change delivered frames.",
+    "Model counters rewind on checkpoint restore; capture counters remain per process.",
+    "RSS is sampled and PyTorch allocation excludes CUDA context/other applications.",
+    "Only synthetic imagery was captured in /tmp; no imagery, checkpoints or raw reports are committed."
+  ]
+}
