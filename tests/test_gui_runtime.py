@@ -113,6 +113,31 @@ def test_cuda_fallback_is_explicit():
             select_device("cuda")
 
 
+def test_fault_keeps_new_input_labels_separate_from_last_prediction(app, monkeypatch):
+    engine = Engine()
+    forward = engine.model.forward
+    def fail_after_initial_frames(*args):
+        if engine.last_sequence >= 6:
+            raise RuntimeError("injected numerical backend failure")
+        return forward(*args)
+    monkeypatch.setattr(engine.model, "forward", fail_after_initial_frames)
+    runtime = Runtime(engine, "moving")
+    window = Window(runtime)
+    runtime.start()
+    try:
+        wait_for(app, lambda: runtime.latest() is not None and runtime.latest()["fault"] and
+                 runtime.latest()["visual"]["input_sequence"] > runtime.latest()["visual"]["source"])
+        snap = runtime.latest()
+        with patch.object(runtime, "latest", return_value=snap):
+            window.refresh()
+        visual = snap["visual"]
+        assert f"frame {visual['input_sequence']}" in window.input_label.text()
+        assert f"{visual['source']} → {visual['target']}" in window.prediction_label.text()
+        assert engine.counts["cleared_targets"] > 0 and not engine.pending
+    finally:
+        window.close()
+
+
 @pytest.mark.parametrize("timestamp_kind", ["driver-monotonic", "receipt-time"])
 def test_camera_disconnect_wrap_and_timestamp_guard(app, timestamp_kind):
     class FakeCamera:

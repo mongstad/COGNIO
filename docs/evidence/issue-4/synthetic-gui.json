@@ -1,0 +1,146 @@
+{
+  "source": "moving",
+  "channels": 512,
+  "grid": 16,
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "torch": "2.14.1+cu130",
+  "qt_platform": "offscreen",
+  "requested_seconds": 25.0,
+  "counts": {
+    "predictions": 694,
+    "scores": 673,
+    "updates": 504,
+    "missed_targets": 1,
+    "late_targets": 0,
+    "skipped_frames": 1,
+    "cleared_targets": 15
+  },
+  "capture": {
+    "frames": 756,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "synthetic-monotonic"
+  },
+  "overwritten": 3,
+  "capture_info": {
+    "warnings": []
+  },
+  "peak_rss_mib": 2205.1875,
+  "gui_refreshes": 787,
+  "window_exposed": true,
+  "pending": 5,
+  "history": 205,
+  "actions": [
+    "freeze",
+    "freeze_snapshot",
+    "verify_freeze_save",
+    "load",
+    "resume",
+    "screenshot"
+  ],
+  "failures": [],
+  "workers_stopped": true,
+  "duration_s": 25.195427493999887,
+  "tick_max_ms": 253.6046230015927,
+  "steady_sample_filter": "elapsed_s > 22 and training; 250 ms sampling; counts can rewind at checkpoint restore",
+  "steady_samples": 13,
+  "steady": {
+    "input_fps": {
+      "mean": 30.017323722580823,
+      "p95": 30.08929185114753,
+      "maximum": 30.217984168177942
+    },
+    "prediction_fps": {
+      "mean": 29.976889530065616,
+      "p95": 30.06643466719357,
+      "maximum": 30.07746841554662
+    },
+    "updates_per_s": {
+      "mean": 29.684895181833365,
+      "p95": 30.06643466719357,
+      "maximum": 30.07746841554662
+    },
+    "prediction_ms": {
+      "mean": 0.5988746922342286,
+      "p95": 0.7181560002209153,
+      "maximum": 0.7334020010603126
+    },
+    "update_ms": {
+      "mean": 6.214083153911186,
+      "p95": 7.035169999289792,
+      "maximum": 7.224070999654941
+    },
+    "step_ms": {
+      "mean": 7.54284538421556,
+      "p95": 8.992890800436724,
+      "maximum": 9.596471001714235
+    },
+    "transfer_ms": {
+      "mean": 0.2809786923395362,
+      "p95": 0.5793200019979845,
+      "maximum": 0.7740530018054415
+    },
+    "preprocess_ms": {
+      "mean": 0.4332973840064369,
+      "p95": 0.4894824000075459,
+      "maximum": 0.5051190019003116
+    },
+    "observer_ms": {
+      "mean": 0.020801076551344104,
+      "p95": 0.09423339943168683,
+      "maximum": 0.10244199802400544
+    },
+    "display_ms": {
+      "mean": 1.1056030002342037,
+      "p95": 1.3963434001198038,
+      "maximum": 1.4165040010993835
+    },
+    "rss_mib": {
+      "mean": 2205.1634615384614,
+      "p95": 2205.1828125,
+      "maximum": 2205.1875
+    },
+    "cpu_percent": {
+      "mean": 41.346153846153854,
+      "p95": 42.6,
+      "maximum": 42.6
+    },
+    "vram_mib": {
+      "mean": 113.5537109375,
+      "p95": 113.5537109375,
+      "maximum": 113.5537109375
+    },
+    "peak_vram_mib": {
+      "mean": 222.48876953125,
+      "p95": 222.48876953125,
+      "maximum": 222.48876953125
+    },
+    "input_age_ms": {
+      "mean": 83.81671638450756,
+      "p95": 111.94406340000569,
+      "maximum": 113.97443700116128
+    },
+    "mse": {
+      "mean": 0.0023845861701724622,
+      "p95": 0.0036735615693032735,
+      "maximum": 0.00403129868209362
+    },
+    "baseline_mse": {
+      "mean": 0.013180194422602654,
+      "p95": 0.013180194422602654,
+      "maximum": 0.013180194422602654
+    },
+    "horizon_ms": {
+      "mean": 166.56457769260248,
+      "p95": 166.73737580058514,
+      "maximum": 166.7961409984855
+    },
+    "lead_ms": {
+      "mean": 156.11969676991487,
+      "p95": 158.9826620016538,
+      "maximum": 159.16787300011492
+    }
+  },
+  "privacy": "No imagery stored in this evidence; hardware serial/path/bus omitted."
+}

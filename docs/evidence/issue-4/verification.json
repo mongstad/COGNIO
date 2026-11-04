@@ -1,0 +1,68 @@
+{
+  "date_utc": "2026-11-04",
+  "base_main": "3e216be95b3f9c5bbee0b6ea5375ea57d7f4ee4e",
+  "branch": "codex/issue-4-capacity-gpu",
+  "host": {
+    "os": "Fedora 44 KDE",
+    "kernel": "7.2.15-200.fc44.x86_64",
+    "cpu": "AMD Ryzen 7 5800X",
+    "memory_kib": 49223164,
+    "gpu": "NVIDIA GeForce RTX 3070 Ti 8 GiB",
+    "nvidia_driver": "615.78.08",
+    "torch_cuda_runtime": "13.0",
+    "loaded_libcudart_runtime_version": 13000,
+    "driver_api_version": 13040,
+    "cudnn": 92400
+  },
+  "numerical_settings": {
+    "seed": 7,
+    "learning_rate": 0.001,
+    "horizon": 5,
+    "threads": 2,
+    "precision": "float32",
+    "tf32": false,
+    "deterministic_algorithms": true,
+    "cudnn_benchmark": false,
+    "cublas_workspace_config": ":4096:8"
+  },
+  "regression": [
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q",
+      "torch": "2.15.0+cpu",
+      "passed": 64,
+      "skipped": 4,
+      "seconds": 11.26
+    },
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv-cuda/bin/python -m pytest -q",
+      "torch": "2.14.1+cu130",
+      "passed": 68,
+      "skipped": 0,
+      "seconds": 13.23
+    }
+  ],
+  "original_schema1": {
+    "producer_revision": "3e216be95b3f9c5bbee0b6ea5375ea57d7f4ee4e",
+    "producer_training_frames": 30,
+    "continued_frames": 20,
+    "cpu_predictions_bitwise_identical": true,
+    "final_updates": 40,
+    "loaded_in_cuda_build_cpu_mode": true
+  },
+  "synthetic_screenshot": {
+    "source": "moving",
+    "channels": 512,
+    "grid": 16,
+    "platform": "offscreen",
+    "visually_inspected": true,
+    "observation": "Four labeled views, channel page 2, parameter/state counts and controls fit; no camera image captured."
+  },
+  "limitations": [
+    "Single seed; no statistical learning superiority claim.",
+    "CPU/CUDA rounding can diverge during recurrent online learning.",
+    "Short camera trials, no long memory soak or physical unplug/replug test.",
+    "2048x32 and CPU 2048/32-grid upper cases not executed; 1024x16 CPU reached time limit.",
+    "No manual repeated-object/unfamiliar-scene owner protocol was performed.",
+    "Measurements were collected during implementation; final full regression suites checked finished source."
+  ]
+}

@@ -32,6 +32,14 @@ Reconnect requires relaunch. Normal exit closes handles and MMAP buffers.
 
 ## Architecture and learning
 
+The following dimensions describe the accepted 32×8 reference. Issue #4
+generalizes the same operations to configurable channels `C` and grid `G`
+(8, 16 or 32), with patch width `P=128/G`. Encoder/decoder channels are `P²`;
+the recurrent convolution has `2C+2` inputs and `C` outputs. Learned parameters
+are `18C² + (2P²+20)C + P²`; hidden values are `CG²`. Initialization order and
+the default architecture are unchanged. No learning objective or recurrent
+update rule changes with size. [Capacity guide](CAPACITY.md) documents bounds.
+
 PyTorch seeded random initialization; default seed 7. **35,712 learned
 parameters**, no pretrained weights/classes/labels/external data. Fixed
 coordinates are not learned parameters.
@@ -79,7 +87,8 @@ cross-version/device bitwise equivalence is not promised.
 ## Bounds, faults and checkpoints
 
 At most five pending contexts (source, prediction, detached previous state):
-approximately 680 KiB payload, with no autograd graph. Request three kernel
+approximately 680 KiB payload at 32×8, scaling as documented in the capacity
+guide, with no autograd graph. Request three kernel
 buffers; accept only 2–8 with checked sizes (maximum 4 MiB each). Capture drains
 only that finite queue. Capture→learner holds one newest frame; overwrites,
 kernel gaps, invalid and drained frames have separate counters. Learner→GUI
@@ -94,25 +103,31 @@ failed update restores pre-update weights and Adam state. Capture continues.
 Reset/load recovers; explicit save can preserve the last valid weights. No
 automatic disk write occurs on fault.
 
-Schema 1 checkpoints store architecture/config, weights, Adam, hidden state,
+Schema 2 checkpoints store complete dimensions/config, weights, Adam, hidden state,
 counters, training flag and framework version. Initialization is the only
 random operation, so seed plus complete weights suffices without advancing
 random-generator state. Load uses `weights_only=True`, limits file size to
-16 MiB, and validates shapes/dtypes/finiteness, fixed coordinates, Adam
+an available-host-memory archive limit plus a configuration-sized storage limit,
+and validates shapes/dtypes/finiteness, fixed coordinates, Adam
 configuration/moments and counters in a candidate engine. Swap only on success.
-Supported files are checkpoints produced by this application.
+Supported files are checkpoints produced by this application. Original schema 1
+checkpoints migrate explicitly at 32×8. GUI restore requires the current
+dimensions; CLI restore uses saved dimensions unless conflicting dimensions
+were explicitly requested. Serialized tensors are on CPU, regardless of the
+execution device. Limits and archive validation are detailed in CAPACITY.md.
 
 Save uses a temporary file, fsync and atomic replacement. No raw source/target
 images, pending predictions, error maps or sensory history are serialized.
 Successful save flushes pending pairs/history in the running engine so restored
 and running continuations share a clean pairing boundary. Hidden state remains.
-GUI/CLI restoration freezes training. A live restart has an unreproducible gap
+Restoration freezes training unless CLI `--resume-training` explicitly enables
+it. A live restart has an unreproducible gap
 in observations; retained hidden state does not reconstruct it.
 
 ## Display contract
 
-The primary canvas tiles all actual hidden activations: channels 0–31 in
-row-major 4×8 order, each 8×8 spatial map intact. This is a fixed reshape, not
+The primary canvas tiles at most 32 actual hidden channels per selected page
+in row-major order, with each configured spatial map intact. This is a fixed reshape, not
 PCA, a decoded camera image or an artistic projection. Signed colors use a
 fixed symmetric user range and report clipping. Display values never feed
 back to the engine.
@@ -125,7 +140,11 @@ remain visible alongside the last successful state.
 Process CPU% uses 100%=one core; RSS includes Qt/PyTorch overhead. GPU readings
 are PyTorch allocated/reserved memory, not whole-device utilization. Capture,
 prediction and update rates are independent; a responsive GUI does not imply
-capture-rate learning.
+capture-rate learning. Headless runs do not import Qt or create activation
+snapshots. Observation copies happen after causal issuance, at a separate
+bounded cadence, and only for the selected page. Identical delivered frames
+produce identical model updates with/without observation in CPU/CUDA tests; overloaded host
+scheduling can still change which live frames reach the bounded handoff.
 
 API references: [V4L2 MMAP](https://docs.kernel.org/userspace-api/media/v4l/mmap.html)
 and [PyTorch Adam](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html).

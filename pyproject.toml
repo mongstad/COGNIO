@@ -7,9 +7,10 @@ name = "cognio"
 version = "0.1.0"
 description = "Local online luminance prediction and measured neural activations"
 requires-python = ">=3.11"
-dependencies = ["numpy>=2,<3", "torch>=2.9,<3", "PySide6>=6.8,<7", "psutil>=6,<8"]
+dependencies = ["numpy>=2,<3", "torch>=2.9,<3", "psutil>=6,<8"]
 
 [project.optional-dependencies]
+gui = ["PySide6>=6.8,<7"]
 test = ["pytest>=8,<10"]
 
 [project.scripts]

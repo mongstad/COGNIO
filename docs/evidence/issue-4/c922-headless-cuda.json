@@ -1,0 +1,169 @@
+{
+  "source": "camera",
+  "training": true,
+  "fault": "",
+  "capture_error": "",
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "counts": {
+    "predictions": 436,
+    "scores": 429,
+    "updates": 429,
+    "missed_targets": 2,
+    "late_targets": 0,
+    "skipped_frames": 2,
+    "cleared_targets": 0
+  },
+  "capture": {
+    "frames": 437,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "driver-monotonic"
+  },
+  "overwritten": 2,
+  "synthetic_skips": 0,
+  "input_fps": 29.990258309764886,
+  "prediction_fps": 29.952050631482958,
+  "updates_per_s": 29.952050631482958,
+  "prediction_ms": 0.5583800011663698,
+  "update_ms": 5.644845001370413,
+  "step_ms": 6.669381000392605,
+  "transfer_ms": 0.20759399922098964,
+  "preprocess_ms": 3.3944970018637832,
+  "observer_ms": 0.0,
+  "rss_mib": 2018.98828125,
+  "peak_rss_mib": 2018.98828125,
+  "cpu_percent": 32.2,
+  "vram_mib": 58.18310546875,
+  "peak_vram_mib": 167.1181640625,
+  "reserved_vram_mib": 206.0,
+  "input_age_ms": 60.76940800267039,
+  "parameters": 4794432,
+  "hidden_values": 131072,
+  "pending": 5,
+  "elapsed_s": 14.983857991002878,
+  "config": {
+    "seed": 7,
+    "learning_rate": 0.001,
+    "horizon": 5,
+    "channels": 512,
+    "grid": 16
+  },
+  "rolling_mse": 0.007097742127565046,
+  "rolling_persistence_mse": 0.0004883768105476823,
+  "event": "run_end",
+  "workers_stopped": true,
+  "torch": "2.14.1+cu130",
+  "steady_sample_filter": "elapsed_s > 4, excluding duplicated run_end; roughly 1 second samples",
+  "steady_samples": 11,
+  "steady": {
+    "input_fps": {
+      "mean": 30.002995825333304,
+      "p95": 30.040878342456264,
+      "maximum": 30.057351463191196
+    },
+    "prediction_fps": {
+      "mean": 29.660303350900417,
+      "p95": 30.058770327926936,
+      "maximum": 30.06544221681176
+    },
+    "updates_per_s": {
+      "mean": 29.459518958500613,
+      "p95": 30.058770327926936,
+      "maximum": 30.06544221681176
+    },
+    "prediction_ms": {
+      "mean": 0.6762449097137009,
+      "p95": 1.0085020003316458,
+      "maximum": 1.2662810004258063
+    },
+    "update_ms": {
+      "mean": 6.466468181977027,
+      "p95": 8.0966499990609,
+      "maximum": 8.309508997626835
+    },
+    "step_ms": {
+      "mean": 7.859249636649937,
+      "p95": 9.983562500565313,
+      "maximum": 10.048227999504888
+    },
+    "transfer_ms": {
+      "mean": 0.314037999487482,
+      "p95": 0.626875498710433,
+      "maximum": 0.829633998364443
+    },
+    "preprocess_ms": {
+      "mean": 3.6037648176054726,
+      "p95": 4.223370999170584,
+      "maximum": 4.387024000607198
+    },
+    "observer_ms": {
+      "mean": 0.0,
+      "p95": 0.0,
+      "maximum": 0.0
+    },
+    "rss_mib": {
+      "mean": 2018.952059659091,
+      "p95": 2018.98828125,
+      "maximum": 2018.98828125
+    },
+    "cpu_percent": {
+      "mean": 39.0,
+      "p95": 42.650000000000006,
+      "maximum": 43.2
+    },
+    "vram_mib": {
+      "mean": 58.18310546875,
+      "p95": 58.18310546875,
+      "maximum": 58.18310546875
+    },
+    "peak_vram_mib": {
+      "mean": 167.1181640625,
+      "p95": 167.1181640625,
+      "maximum": 167.1181640625
+    },
+    "input_age_ms": {
+      "mean": 56.31588472732057,
+      "p95": 65.4048549986328,
+      "maximum": 66.90506399900187
+    },
+    "mse": {
+      "mean": 0.007129791235043244,
+      "p95": 0.007701013935729861,
+      "maximum": 0.007762136869132519
+    },
+    "baseline_mse": {
+      "mean": 0.00046857273297394965,
+      "p95": 0.0012086372298654169,
+      "maximum": 0.001762382686138153
+    },
+    "horizon_ms": {
+      "mean": 165.82227272705165,
+      "p95": 168.01050000140094,
+      "maximum": 168.0110000015702
+    },
+    "lead_ms": {
+      "mean": 122.97985872712822,
+      "p95": 128.94387600135815,
+      "maximum": 129.49012399985804
+    }
+  },
+  "checkpoint_saved": true,
+  "checkpoint_bytes": 58067669,
+  "installed_cli_resume": {
+    "training": true,
+    "counts": {
+      "predictions": 496,
+      "scores": 483,
+      "updates": 483,
+      "missed_targets": 3,
+      "late_targets": 0,
+      "skipped_frames": 3,
+      "cleared_targets": 5
+    },
+    "fault": "",
+    "capture_error": "",
+    "event": "run_end",
+    "workers_stopped": true
+  }
+}

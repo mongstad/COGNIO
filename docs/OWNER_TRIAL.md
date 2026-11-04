@@ -1,7 +1,7 @@
 # Owner trial for issue #2
 
 Run from the repository with `.venv` activated, close SENTIO or other camera
-users, and start `python -m cognio --source camera --compute cpu`. Expect a
+users, and start `python -m cognio --gui --source camera --compute cpu`. Expect a
 **NEW random initialization** unless `--checkpoint` was supplied. Camera
 activity is explicit; the application stores no raw scene images or video.
 
@@ -47,3 +47,10 @@ python -m tools.validate_gui --source camera --seconds 90 --compute cpu \
 Reports contain scalar measurements/settings only. Checkpoints remain explicit.
 After a disconnect, save wanted model state, close, reconnect and relaunch.
 No silent synthetic fallback is used.
+
+For issue #4, repeat with `--channels 512 --grid 16 --compute cuda` in the tested
+CUDA environment. Change **Channel page** as well as display range. Confirm
+the configuration/parameter/state counts, independently measured rates and
+drop accounting. Run the same source with `--headless --seconds 30`; inspect
+scalar telemetry and explicit checkpoint save/restore without a Qt window.
+See [capacity measurements and limits](CAPACITY.md) before choosing a size.
