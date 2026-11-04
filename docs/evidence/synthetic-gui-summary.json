@@ -1,0 +1,42 @@
+{
+  "source": "moving",
+  "compute": "CPU selected",
+  "torch": "2.15.0+cpu",
+  "qt_platform": "offscreen",
+  "requested_seconds": 25.0,
+  "counts": {
+    "predictions": 690,
+    "scores": 670,
+    "updates": 499,
+    "missed_targets": 0,
+    "late_targets": 0
+  },
+  "capture": {
+    "frames": 750,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "synthetic-monotonic"
+  },
+  "overwritten": 0,
+  "capture_info": {
+    "warnings": []
+  },
+  "peak_rss_mib": 493.171875,
+  "gui_refreshes": 781,
+  "window_exposed": true,
+  "pending": 5,
+  "history": 204,
+  "actions": [
+    "freeze",
+    "freeze_snapshot",
+    "verify_freeze_save",
+    "load",
+    "resume",
+    "screenshot"
+  ],
+  "failures": [],
+  "workers_stopped": true,
+  "duration_s": 25.00601515299968,
+  "tick_max_ms": 262.0260519997828
+}

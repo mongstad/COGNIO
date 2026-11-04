@@ -1,0 +1,376 @@
+{
+  "torch": "2.15.0+cpu",
+  "numpy": "2.4.3",
+  "threads": 2,
+  "precision": "float32",
+  "results": [
+    {
+      "mode": "static",
+      "seed": 7,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.12348863146406538,
+          "persistence_mse": 0.0,
+          "last_120_mse": 0.12349045276641846
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.0311848978094063,
+          "persistence_mse": 0.0,
+          "last_120_mse": 0.0011289869415728995
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.0009592218641588028,
+          "persistence_mse": 0.0,
+          "last_120_mse": 0.0009592325077392161
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": false,
+      "wall_seconds": 7.319083475000298,
+      "rss_mib": 369.96484375,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "static",
+      "seed": 11,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.12334345300146873,
+          "persistence_mse": 0.0,
+          "last_120_mse": 0.12334510684013367
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.025353813422629493,
+          "persistence_mse": 0.0,
+          "last_120_mse": 0.0011733312722450743
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.001035307640051271,
+          "persistence_mse": 0.0,
+          "last_120_mse": 0.0010353049729019403
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": false,
+      "wall_seconds": 6.542352019001555,
+      "rss_mib": 370.05078125,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "moving",
+      "seed": 7,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.023488562046847444,
+          "persistence_mse": 0.013180195682860435,
+          "last_120_mse": 0.023491472564637662
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.010181202234361305,
+          "persistence_mse": 0.01318019568047264,
+          "last_120_mse": 0.0007630832633973721
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.0008927843677117787,
+          "persistence_mse": 0.013180195682860435,
+          "last_120_mse": 0.0008919247513404116
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": true,
+      "wall_seconds": 6.827141462999862,
+      "rss_mib": 370.328125,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "moving",
+      "seed": 11,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.023417974532918728,
+          "persistence_mse": 0.013180195682860435,
+          "last_120_mse": 0.023421114931503933
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.019476123616317575,
+          "persistence_mse": 0.01318019568047264,
+          "last_120_mse": 0.011552301472208152
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.008187842898150074,
+          "persistence_mse": 0.013180195682860435,
+          "last_120_mse": 0.00818849167553708
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": true,
+      "wall_seconds": 6.462220649000301,
+      "rss_mib": 370.375,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "shape",
+      "seed": 7,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.14593792722580282,
+          "persistence_mse": 0.0120351110835203,
+          "last_120_mse": 0.14594015727440515
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.016480591063188957,
+          "persistence_mse": 0.012179105790481985,
+          "last_120_mse": 0.013660143494295578
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.013660152197042679,
+          "persistence_mse": 0.0120351110835203,
+          "last_120_mse": 0.013660123338922858
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": false,
+      "wall_seconds": 7.136217916000533,
+      "rss_mib": 370.3828125,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "shape",
+      "seed": 11,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.14619117106528992,
+          "persistence_mse": 0.0120351110835203,
+          "last_120_mse": 0.14619303420186042
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.016491544022220948,
+          "persistence_mse": 0.012179105790481985,
+          "last_120_mse": 0.013660193770192564
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.013660199278371131,
+          "persistence_mse": 0.0120351110835203,
+          "last_120_mse": 0.013660170440562069
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": false,
+      "wall_seconds": 7.256032010000126,
+      "rss_mib": 370.3828125,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "temporal",
+      "seed": 7,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.06309765504098477,
+          "persistence_mse": 0.03519778604064375,
+          "last_120_mse": 0.06213981091714231
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.0808709756062728,
+          "persistence_mse": 0.035745373217264294,
+          "last_120_mse": 0.07700380322033501
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.06355874349927887,
+          "persistence_mse": 0.03519778604064375,
+          "last_120_mse": 0.06275666318348765
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": false,
+      "beats_persistence": false,
+      "wall_seconds": 6.317036419999567,
+      "rss_mib": 370.3828125,
+      "pending": 5,
+      "history": 235
+    },
+    {
+      "mode": "temporal",
+      "seed": 11,
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.06306245844573416,
+          "persistence_mse": 0.03519778604064375,
+          "last_120_mse": 0.06210423012962565
+        },
+        {
+          "phase": "online_training",
+          "frames": 1200,
+          "pairs": 1195,
+          "updates": 1195,
+          "mean_mse": 0.07911423545303552,
+          "persistence_mse": 0.035745373217264294,
+          "last_120_mse": 0.07673969901918554
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 240,
+          "pairs": 235,
+          "updates": 0,
+          "mean_mse": 0.06276814640608636,
+          "persistence_mse": 0.03519778604064375,
+          "last_120_mse": 0.06193178179382812
+        }
+      ],
+      "counts": {
+        "predictions": 1680,
+        "scores": 1665,
+        "updates": 1195,
+        "missed_targets": 0,
+        "late_targets": 0
+      },
+      "improves_over_initial": true,
+      "beats_persistence": false,
+      "wall_seconds": 6.366874596998969,
+      "rss_mib": 370.40234375,
+      "pending": 5,
+      "history": 235
+    }
+  ]
+}
