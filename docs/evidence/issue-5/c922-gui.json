@@ -1,0 +1,294 @@
+{
+  "source": "camera",
+  "input_mode": "ycbcr",
+  "channels": 512,
+  "grid": 16,
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "torch": "2.14.1+cu130",
+  "qt_platform": "wayland",
+  "requested_seconds": 30.0,
+  "counts": {
+    "predictions": 826,
+    "scores": 804,
+    "updates": 635,
+    "missed_targets": 2,
+    "late_targets": 0,
+    "skipped_frames": 2,
+    "cleared_targets": 15
+  },
+  "capture": {
+    "frames": 889,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "driver-monotonic"
+  },
+  "overwritten": 4,
+  "capture_info": {
+    "identity": {
+      "card": "C922 Pro Stream Webcam",
+      "driver": "uvcvideo"
+    },
+    "mode": {
+      "width": 640,
+      "height": 480,
+      "fourcc": "YUYV",
+      "fps": 30.0,
+      "stride": 1280,
+      "sizeimage": 614400,
+      "colorspace": 8,
+      "ycbcr_encoding": 1,
+      "quantization": 0,
+      "transfer": 1
+    },
+    "controls": {
+      "exposure_auto": {
+        "requested": 1,
+        "actual": 1,
+        "original": 3
+      },
+      "exposure_auto_priority": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "exposure_absolute": {
+        "requested": 156,
+        "actual": 156,
+        "original": 250
+      },
+      "focus_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_temperature": {
+        "requested": 4500,
+        "actual": 4500,
+        "original": 4000
+      }
+    },
+    "warnings": []
+  },
+  "peak_rss_mib": 2262.1484375,
+  "gui_refreshes": 939,
+  "window_exposed": true,
+  "pending": 5,
+  "history": 300,
+  "actions": [
+    "freeze",
+    "freeze_snapshot",
+    "verify_freeze_save",
+    "load",
+    "resume",
+    "view_cr"
+  ],
+  "failures": [],
+  "workers_stopped": true,
+  "duration_s": 30.160192964001908,
+  "tick_max_ms": 263.4545269975206,
+  "controls_restored": {
+    "exposure_auto": true,
+    "exposure_auto_priority": true,
+    "exposure_absolute": true,
+    "focus_auto": true,
+    "white_balance_auto": true,
+    "white_balance_temperature": true
+  },
+  "steady_filter": "elapsed_s > 22 and training, 250ms sampling; checkpoint restore rewinds model counters",
+  "steady_samples": 33,
+  "steady": {
+    "input_fps": {
+      "mean": 30.00294845383184,
+      "p95": 30.02489022587597,
+      "minimum": 29.981427070293883,
+      "maximum": 30.0261566883984
+    },
+    "prediction_fps": {
+      "mean": 29.99395132199221,
+      "p95": 30.093814643204578,
+      "minimum": 29.869334544851526,
+      "maximum": 30.104821540677886
+    },
+    "updates_per_s": {
+      "mean": 29.86518847932253,
+      "p95": 30.093814643204578,
+      "minimum": 26.919448734496576,
+      "maximum": 30.104821540677886
+    },
+    "prediction_ms": {
+      "mean": 0.6679642122462885,
+      "p95": 1.1346890009008348,
+      "minimum": 0.5531189999601338,
+      "maximum": 1.260190998436883
+    },
+    "update_ms": {
+      "mean": 6.716654030517957,
+      "p95": 8.102048398723126,
+      "minimum": 5.903249002585653,
+      "maximum": 8.872198999597458
+    },
+    "step_ms": {
+      "mean": 8.32251748469196,
+      "p95": 9.985879201121861,
+      "minimum": 7.1317889996862505,
+      "maximum": 10.412144001747947
+    },
+    "preprocess_ms": {
+      "mean": 6.21242551476991,
+      "p95": 7.3272004003229085,
+      "minimum": 5.639594000967918,
+      "maximum": 7.450494998920476
+    },
+    "observer_ms": {
+      "mean": 0.05821399992617609,
+      "p95": 0.13991100058774464,
+      "minimum": 0.0,
+      "maximum": 0.1460329986002762
+    },
+    "display_ms": {
+      "mean": 1.947927939578552,
+      "p95": 2.5303106012870558,
+      "minimum": 1.5401159980683587,
+      "maximum": 2.5946830028260592
+    },
+    "transfer_ms": {
+      "mean": 0.28439421216854965,
+      "p95": 0.38272839883575205,
+      "minimum": 0.19678299941006117,
+      "maximum": 1.3348719985515345
+    },
+    "rss_mib": {
+      "mean": 2262.058475378788,
+      "p95": 2262.1484375,
+      "minimum": 2261.9453125,
+      "maximum": 2262.1484375
+    },
+    "cpu_percent": {
+      "mean": 74.06666666666668,
+      "p95": 76.2,
+      "minimum": 70.8,
+      "maximum": 76.2
+    },
+    "vram_mib": {
+      "mean": 117.181640625,
+      "p95": 117.181640625,
+      "minimum": 117.181640625,
+      "maximum": 117.181640625
+    },
+    "peak_vram_mib": {
+      "mean": 228.4306640625,
+      "p95": 228.4306640625,
+      "minimum": 228.4306640625,
+      "maximum": 228.4306640625
+    },
+    "input_age_ms": {
+      "mean": 109.45227078771109,
+      "p95": 136.09092679980677,
+      "minimum": 83.88271699732286,
+      "maximum": 139.89268399745924
+    },
+    "horizon_ms": {
+      "mean": 166.06145454561832,
+      "p95": 168.004999999539,
+      "minimum": 163.98900000058347,
+      "maximum": 168.004999999539
+    },
+    "lead_ms": {
+      "mean": 119.22022796969748,
+      "p95": 122.43380239888211,
+      "minimum": 115.49507000017911,
+      "maximum": 122.64264499754063
+    },
+    "component_mse": {
+      "Y": {
+        "mean": 0.005257173582459941,
+        "p95": 0.0061150633729994295,
+        "minimum": 0.004744846373796463,
+        "maximum": 0.006807229481637478
+      },
+      "Cb": {
+        "mean": 0.00010235437102065507,
+        "p95": 0.00012848286278313023,
+        "minimum": 9.23907064134255e-05,
+        "maximum": 0.00014590180944651365
+      },
+      "Cr": {
+        "mean": 0.00024663101816479343,
+        "p95": 0.0002763530646916479,
+        "minimum": 0.0002288909163326025,
+        "maximum": 0.00029338215244933963
+      }
+    },
+    "component_baseline_mse": {
+      "Y": {
+        "mean": 6.901990339387835e-05,
+        "p95": 0.0002350087190279737,
+        "minimum": 9.42499355005566e-07,
+        "maximum": 0.0004530353471636772
+      },
+      "Cb": {
+        "mean": 2.8522789052382875e-06,
+        "p95": 5.192835942580131e-06,
+        "minimum": 1.7263853351323633e-06,
+        "maximum": 8.051756594795734e-06
+      },
+      "Cr": {
+        "mean": 4.839608753613764e-06,
+        "p95": 1.1640446609817444e-05,
+        "minimum": 2.0824077182624023e-06,
+        "maximum": 1.9422901459620334e-05
+      }
+    }
+  },
+  "input_variation": {
+    "Y": {
+      "frame_mean": {
+        "mean": 0.2695917053883817,
+        "p95": 0.2788276135921478,
+        "minimum": 0.25721198320388794,
+        "maximum": 0.2790602445602417
+      },
+      "spatial_std": {
+        "mean": 0.16750032986913407,
+        "p95": 0.16970640569925308,
+        "minimum": 0.1643514484167099,
+        "maximum": 0.17012625932693481
+      }
+    },
+    "Cb": {
+      "frame_mean": {
+        "mean": 0.00967146605722794,
+        "p95": 0.010280751902610064,
+        "minimum": 0.00899943895637989,
+        "maximum": 0.012361137196421623
+      },
+      "spatial_std": {
+        "mean": 0.011820376819359655,
+        "p95": 0.01232920279726386,
+        "minimum": 0.011341869831085205,
+        "maximum": 0.015095680020749569
+      }
+    },
+    "Cr": {
+      "frame_mean": {
+        "mean": -0.014451764970078688,
+        "p95": -0.013405354134738446,
+        "minimum": -0.018382327631115913,
+        "maximum": -0.012990681454539299
+      },
+      "spatial_std": {
+        "mean": 0.018034535561915206,
+        "p95": 0.018497588112950325,
+        "minimum": 0.017457645386457443,
+        "maximum": 0.022662915289402008
+      }
+    }
+  },
+  "privacy": "Scalar evidence only; hardware serial/path/bus omitted. No camera imagery recorded."
+}

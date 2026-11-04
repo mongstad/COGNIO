@@ -19,7 +19,7 @@ import psutil
 import torch
 
 from cognio.engine import Engine
-from cognio.inputs import Frame, synthetic
+from cognio.inputs import INPUT_MODES, Frame, components, synthetic
 from cognio.model import Config, Predictor
 from cognio.resources import check_budget
 from cognio.runtime import select_device
@@ -58,6 +58,7 @@ def case(config, device, mode, train_frames, evaluate_frames, max_seconds, obser
                                        ("final_frozen", evaluate_frames, False)):
             engine.set_training(training)
             model_errors, baseline_errors = [], []
+            per_model, per_baseline = [], []
             before = engine.counts.copy()
             phase_started = time.perf_counter()
             processed = 0
@@ -67,7 +68,7 @@ def case(config, device, mode, train_frames, evaluate_frames, max_seconds, obser
                     break
                 logical[0] = sequence/30
                 previous_updates = engine.counts["updates"]
-                engine.step(Frame(sequence, logical[0], synthetic(sequence, mode)), observe=observer)
+                engine.step(Frame(sequence, logical[0], synthetic(sequence, mode, config.input_mode)), observe=observer)
                 if engine.fault:
                     raise RuntimeError(engine.fault)
                 if sequence >= 10:
@@ -77,6 +78,8 @@ def case(config, device, mode, train_frames, evaluate_frames, max_seconds, obser
                 if engine.last_result and engine.last_result["target"] == sequence:
                     model_errors.append(engine.last_result["mse"])
                     baseline_errors.append(engine.last_result["baseline_mse"])
+                    per_model.append(list(engine.last_result["component_mse"].values()))
+                    per_baseline.append(list(engine.last_result["component_baseline_mse"].values()))
                 peak_rss = max(peak_rss, process.memory_info().rss)
                 sequence += 1
                 processed += 1
@@ -84,7 +87,9 @@ def case(config, device, mode, train_frames, evaluate_frames, max_seconds, obser
                                wall_s=time.perf_counter()-phase_started,
                                updates=engine.counts["updates"]-before["updates"],
                                mse=float(np.mean(model_errors)) if model_errors else None,
-                               persistence_mse=float(np.mean(baseline_errors)) if baseline_errors else None))
+                               persistence_mse=float(np.mean(baseline_errors)) if baseline_errors else None,
+                               component_mse=dict(zip(components(config.input_mode), np.mean(per_model, axis=0).tolist())) if per_model else None,
+                               component_persistence_mse=dict(zip(components(config.input_mode), np.mean(per_baseline, axis=0).tolist())) if per_baseline else None))
             if truncated:
                 break
         elapsed = time.perf_counter()-started
@@ -124,7 +129,9 @@ def microbench(config, device, batch, iterations=12):
         torch.default_generator.manual_seed(config.seed)
         model = Predictor(config).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
-    frames = np.stack([synthetic(i, "moving") for i in range(batch)])[:, None]
+    frames = np.stack([synthetic(i, "moving", config.input_mode) for i in range(batch)])
+    if config.input_mode == "y":
+        frames = frames[:, None]
     hidden = torch.zeros((batch, config.channels, config.grid, config.grid), device=device)
     transfer, updates = [], []
     def sync():
@@ -156,7 +163,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--compute", choices=("cpu", "cuda"), required=True)
     parser.add_argument("--configs", nargs="+", default=["32x8", "128x16", "256x16", "512x16", "1024x8"])
-    parser.add_argument("--stimuli", nargs="+", choices=("static", "moving", "shape", "temporal"), default=["moving"])
+    parser.add_argument("--input-mode", choices=INPUT_MODES, default="y")
+    parser.add_argument("--stimuli", nargs="+", choices=("static", "moving", "shape", "temporal",
+                                                        "color-static", "color-moving", "color-temporal"), default=["moving"])
     parser.add_argument("--train-frames", type=int, default=80)
     parser.add_argument("--evaluation-frames", type=int, default=40)
     parser.add_argument("--max-seconds", type=float, default=45)
@@ -179,14 +188,14 @@ def main():
                   threads=args.threads, precision="float32, TF32 off", results=[], microbench=[])
     for text in args.configs:
         channels, grid = map(int, text.split("x"))
-        config = Config(seed=args.seed, channels=channels, grid=grid)
+        config = Config(seed=args.seed, channels=channels, grid=grid, input_mode=args.input_mode)
         for mode in args.stimuli:
             row = case(config, device, mode, args.train_frames, args.evaluation_frames, args.max_seconds, args.observer)
             report["results"].append(row)
             args.output.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
             print(json.dumps({"config": text, "stimulus": mode, "status": row["status"], "error": row.get("error")}), flush=True)
     if args.microbench:
-        for config in (Config(), Config(channels=512, grid=16)):
+        for config in (Config(input_mode=args.input_mode), Config(channels=512, grid=16, input_mode=args.input_mode)):
             for batch in (1, 4):
                 report["microbench"].append(microbench(config, device, batch))
     args.output.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")

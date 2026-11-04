@@ -1,0 +1,257 @@
+{
+  "source": "camera",
+  "training": true,
+  "fault": "",
+  "capture_error": "",
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "counts": {
+    "predictions": 437,
+    "scores": 431,
+    "updates": 431,
+    "missed_targets": 1,
+    "late_targets": 0,
+    "skipped_frames": 1,
+    "cleared_targets": 0
+  },
+  "capture": {
+    "frames": 438,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "driver-monotonic"
+  },
+  "overwritten": 1,
+  "synthetic_skips": 0,
+  "input_fps": 30.020008762174506,
+  "prediction_fps": 30.017504876341597,
+  "updates_per_s": 30.017504876341597,
+  "prediction_ms": 0.5803299973194953,
+  "update_ms": 5.652984000334982,
+  "step_ms": 6.772772998374421,
+  "transfer_ms": 0.16755300021031871,
+  "preprocess_ms": 5.562283000472235,
+  "observer_ms": 0.0,
+  "rss_mib": 2029.25,
+  "peak_rss_mib": 2029.25,
+  "cpu_percent": 40.0,
+  "vram_mib": 60.3095703125,
+  "peak_vram_mib": 171.55859375,
+  "reserved_vram_mib": 212.0,
+  "input_age_ms": 52.45513900081278,
+  "parameters": 4925632,
+  "hidden_values": 131072,
+  "pending": 5,
+  "elapsed_s": 15.005860609999218,
+  "input_statistics": {
+    "Y": {
+      "mean": 0.25027137994766235,
+      "std": 0.15621843934059143,
+      "minimum": 0.07283660024404526,
+      "maximum": 0.6859084963798523
+    },
+    "Cb": {
+      "mean": 0.01150410994887352,
+      "std": 0.012703168205916882,
+      "minimum": -0.03822222352027893,
+      "maximum": 0.09045751392841339
+    },
+    "Cr": {
+      "mean": -0.017159517854452133,
+      "std": 0.018625836819410324,
+      "minimum": -0.14949019253253937,
+      "maximum": 0.039895426481962204
+    }
+  },
+  "config": {
+    "seed": 7,
+    "learning_rate": 0.001,
+    "horizon": 5,
+    "channels": 512,
+    "grid": 16,
+    "input_mode": "ycbcr"
+  },
+  "rolling_mse": 0.001619382060598582,
+  "rolling_persistence_mse": 3.0266364429962778e-05,
+  "rolling_components": {
+    "Y": {
+      "mse": 0.004421161280479282,
+      "persistence_mse": 8.222977416304881e-05
+    },
+    "Cb": {
+      "mse": 0.00014528659979987424,
+      "persistence_mse": 3.3209807569771026e-06
+    },
+    "Cr": {
+      "mse": 0.00029169817605482725,
+      "persistence_mse": 5.2483344544877275e-06
+    }
+  },
+  "event": "run_end",
+  "workers_stopped": true,
+  "steady_filter": "elapsed_s > 4, excluding run_end, roughly 1s samples",
+  "steady_samples": 11,
+  "steady": {
+    "input_fps": {
+      "mean": 30.002587875856253,
+      "p95": 30.045918295972996,
+      "minimum": 29.98628192361237,
+      "maximum": 30.068944709593563
+    },
+    "prediction_fps": {
+      "mean": 29.71123963094253,
+      "p95": 30.103352994105375,
+      "minimum": 26.622109588498233,
+      "maximum": 30.13478263445436
+    },
+    "updates_per_s": {
+      "mean": 29.575527942301072,
+      "p95": 30.103352994105375,
+      "minimum": 25.129281013442256,
+      "maximum": 30.13478263445436
+    },
+    "prediction_ms": {
+      "mean": 0.55935754492318,
+      "p95": 0.5749049996666145,
+      "minimum": 0.5501999985426664,
+      "maximum": 0.5821999984618742
+    },
+    "update_ms": {
+      "mean": 5.817861908739856,
+      "p95": 6.027960998835624,
+      "minimum": 5.583694000961259,
+      "maximum": 6.131132999144029
+    },
+    "step_ms": {
+      "mean": 6.976033908854746,
+      "p95": 7.271907001268119,
+      "minimum": 6.677501998638036,
+      "maximum": 7.433285001752665
+    },
+    "preprocess_ms": {
+      "mean": 5.6983397265536375,
+      "p95": 5.994215000100667,
+      "minimum": 5.547142998693744,
+      "maximum": 6.023780999385053
+    },
+    "observer_ms": {
+      "mean": 0.0,
+      "p95": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "transfer_ms": {
+      "mean": 0.1899113637839698,
+      "p95": 0.2176830003008945,
+      "minimum": 0.16204300118261017,
+      "maximum": 0.23414300085278228
+    },
+    "rss_mib": {
+      "mean": 2029.0514914772727,
+      "p95": 2029.248046875,
+      "minimum": 2028.90625,
+      "maximum": 2029.25
+    },
+    "cpu_percent": {
+      "mean": 40.436363636363645,
+      "p95": 41.95,
+      "minimum": 39.1,
+      "maximum": 42.8
+    },
+    "vram_mib": {
+      "mean": 60.3095703125,
+      "p95": 60.3095703125,
+      "minimum": 60.3095703125,
+      "maximum": 60.3095703125
+    },
+    "peak_vram_mib": {
+      "mean": 171.55859375,
+      "p95": 171.55859375,
+      "minimum": 171.55859375,
+      "maximum": 171.55859375
+    },
+    "input_age_ms": {
+      "mean": 58.77823518180362,
+      "p95": 66.66990950179752,
+      "minimum": 48.079893000249285,
+      "maximum": 66.69106200206443
+    },
+    "horizon_ms": {
+      "mean": 166.18354545459044,
+      "p95": 168.00850000072387,
+      "minimum": 163.99699999965378,
+      "maximum": 168.01200000190875
+    },
+    "lead_ms": {
+      "mean": 121.93357654541614,
+      "p95": 125.0959379995038,
+      "minimum": 118.29100799877779,
+      "maximum": 126.80182899930514
+    },
+    "component_mse": {
+      "Y": {
+        "mean": 0.004448643377558751,
+        "p95": 0.005073656793683767,
+        "minimum": 0.0039124321192502975,
+        "maximum": 0.005280015524476767
+      },
+      "Cb": {
+        "mean": 0.00016377093164588916,
+        "p95": 0.00024334275803994387,
+        "minimum": 0.00010098004713654518,
+        "maximum": 0.000264349568169564
+      },
+      "Cr": {
+        "mean": 0.0003026850463356823,
+        "p95": 0.00036908857873640954,
+        "minimum": 0.000229492608923465,
+        "maximum": 0.0003748680173885077
+      }
+    },
+    "component_baseline_mse": {
+      "Y": {
+        "mean": 5.757866671791073e-05,
+        "p95": 0.0002052527415798977,
+        "minimum": 9.89272962215182e-07,
+        "maximum": 0.00028546422254294157
+      },
+      "Cb": {
+        "mean": 4.2110149768797616e-06,
+        "p95": 1.4294883726506669e-05,
+        "minimum": 1.6697197224857518e-06,
+        "maximum": 2.546753967180848e-05
+      },
+      "Cr": {
+        "mean": 7.123399717040064e-06,
+        "p95": 2.8239386210771045e-05,
+        "minimum": 1.9834612885460956e-06,
+        "maximum": 5.184259862289764e-05
+      }
+    }
+  },
+  "checkpoint_saved": true,
+  "checkpoint_bytes": 59642517,
+  "installed_cli_resume": {
+    "event": "run_end",
+    "workers_stopped": true,
+    "config": {
+      "seed": 7,
+      "learning_rate": 0.001,
+      "horizon": 5,
+      "channels": 512,
+      "grid": 16,
+      "input_mode": "ycbcr"
+    },
+    "training": true,
+    "counts": {
+      "predictions": 497,
+      "scores": 485,
+      "updates": 485,
+      "missed_targets": 2,
+      "late_targets": 0,
+      "skipped_frames": 2,
+      "cleared_targets": 5
+    },
+    "fault": "",
+    "capture_error": ""
+  }
+}

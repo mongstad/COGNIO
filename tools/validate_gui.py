@@ -16,17 +16,19 @@ from PySide6.QtWidgets import QApplication
 
 from cognio.engine import Engine
 from cognio.model import Config
+from cognio.inputs import INPUT_MODES
 from cognio.gui import Window
 from cognio.runtime import Runtime, select_device
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source", choices=("camera", "moving", "static"), default="moving")
+    parser.add_argument("--source", choices=("camera", "moving", "static", "color-moving", "color-static"), default="moving")
     parser.add_argument("--seconds", type=float, default=45)
     parser.add_argument("--compute", choices=("cpu", "auto", "cuda"), default="cpu")
     parser.add_argument("--channels", type=int, default=32)
     parser.add_argument("--grid", type=int, choices=(8, 16, 32), default=8)
+    parser.add_argument("--input-mode", choices=INPUT_MODES, default="y")
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--screenshot", type=Path, help="synthetic window only")
     args = parser.parse_args()
@@ -39,7 +41,7 @@ def main():
     torch.backends.cuda.matmul.allow_tf32 = False
     device, notice = select_device(args.compute)
     app = QApplication([])
-    runtime = Runtime(Engine(Config(channels=args.channels, grid=args.grid), device=device), args.source, device_notice=notice)
+    runtime = Runtime(Engine(Config(channels=args.channels, grid=args.grid, input_mode=args.input_mode), device=device), args.source, device_notice=notice)
     window = Window(runtime)
     window.show()
     runtime.start()
@@ -48,7 +50,7 @@ def main():
     frozen = {}
     directory = tempfile.TemporaryDirectory(prefix="cognio-gui-")
     checkpoint = Path(directory.name) / "validation.pt"
-    report = dict(source=args.source, channels=args.channels, grid=args.grid, compute=notice, torch=str(torch.__version__),
+    report = dict(source=args.source, input_mode=args.input_mode, channels=args.channels, grid=args.grid, compute=notice, torch=str(torch.__version__),
                   qt_platform=app.platformName(), requested_seconds=args.seconds)
 
     def sample():
@@ -79,6 +81,8 @@ def main():
                     window.display_range.setValue(.35)
                     if args.channels > 32:
                         window.channel_page.setValue(2)
+                    if args.input_mode == "ycbcr":
+                        window.component.setCurrentIndex(1)
                     runtime.submit("save", str(checkpoint))
                     actions.append("verify_freeze_save")
                 if elapsed >= 16 and "load" not in actions:
@@ -90,6 +94,9 @@ def main():
                     assert all(torch.equal(value, runtime.engine.model.state_dict()[key]) for key, value in frozen["model"].items())
                     window.training.setChecked(True)
                     actions.append("resume")
+                if elapsed >= 21 and args.input_mode == "ycbcr" and "view_cr" not in actions:
+                    window.component.setCurrentIndex(2)
+                    actions.append("view_cr")
                 if elapsed >= 20 and args.screenshot and "screenshot" not in actions:
                     window.grab().save(str(args.screenshot))
                     actions.append("screenshot")
@@ -97,8 +104,10 @@ def main():
                           "prediction_ms", "update_ms", "rss_mib", "cpu_percent", "vram_mib", "training",
                           "peak_vram_mib", "observer_ms", "transfer_ms", "preprocess_ms", "step_ms")}
                 record["display_ms"] = window.display_ms
+                record["input_statistics"] = snap["input_statistics"]
                 if snap["result"]:
                     record.update({key: snap["result"][key] for key in ("mse", "baseline_mse", "horizon_ms", "lead_ms")})
+                    record.update({key: snap["result"][key] for key in ("component_mse", "component_baseline_mse")})
                 if snap["visual"]:
                     record["input_age_ms"] = (now - snap["visual"]["input_time"]) * 1000
                 samples.append(record)

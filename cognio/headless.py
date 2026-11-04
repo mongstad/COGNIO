@@ -6,6 +6,7 @@ import signal
 import sys
 import threading
 import time
+from .inputs import components
 
 
 def scalar_snapshot(snapshot):
@@ -13,12 +14,18 @@ def scalar_snapshot(snapshot):
             "capture", "overwritten", "synthetic_skips", "input_fps", "prediction_fps",
             "updates_per_s", "prediction_ms", "update_ms", "step_ms", "transfer_ms", "preprocess_ms",
             "observer_ms", "rss_mib", "peak_rss_mib", "cpu_percent", "vram_mib", "peak_vram_mib",
-            "reserved_vram_mib", "input_age_ms", "parameters", "hidden_values", "pending", "elapsed_s")
+            "reserved_vram_mib", "input_age_ms", "parameters", "hidden_values", "pending", "elapsed_s",
+            "input_statistics")
     result = {key: snapshot[key] for key in keys}
     result["config"] = asdict(snapshot["config"])
     pairs = snapshot["history"]
     result["rolling_mse"] = sum(p[0] for p in pairs)/len(pairs) if pairs else None
     result["rolling_persistence_mse"] = sum(p[1] for p in pairs)/len(pairs) if pairs else None
+    history = snapshot["component_history"]
+    result["rolling_components"] = {
+        name: dict(mse=sum(p[0][i] for p in history)/len(history),
+                   persistence_mse=sum(p[1][i] for p in history)/len(history))
+        for i, name in enumerate(components(snapshot["config"].input_mode))} if history else None
     match = snapshot["result"]
     result["matched"] = {k: v for k, v in match.items() if k != "error"} if match else None
     return result

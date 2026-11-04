@@ -12,7 +12,7 @@ import torch
 
 from .camera import V4L2Camera
 from .engine import Engine
-from .inputs import Frame, normalize, synthetic
+from .inputs import Frame, component_statistics, normalize, normalize_ycbcr, synthetic
 from .model import Config, Predictor
 
 
@@ -52,6 +52,7 @@ class Runtime:
         self.channel_start = 0
         self.preprocess_ms = 0.0
         self.synthetic_skips = 0
+        self.input_statistics = None
         self.commands = queue.Queue(maxsize=16)
         self.stop_event = threading.Event()
         self.lock = threading.Lock()
@@ -103,7 +104,7 @@ class Runtime:
     def _capture(self):
         try:
             if self.source == "camera":
-                with V4L2Camera(self.camera_path) as camera:
+                with V4L2Camera(self.camera_path, input_mode=self.engine.config.input_mode) as camera:
                     self.capture_info = dict(identity=camera.info, mode=camera.mode, controls=camera.controls,
                                              warnings=camera.warnings)
                     last_received = time.monotonic()
@@ -115,7 +116,7 @@ class Runtime:
                             if time.monotonic() - last_received > 3:
                                 raise RuntimeError("No camera frame for three seconds; close and relaunch after reconnecting")
                             continue
-                        y, stamp, raw_sequence = item
+                        planes, stamp, raw_sequence = item
                         last_received = time.monotonic()
                         if camera.timestamp_kind != "driver-monotonic":
                             raise RuntimeError("Camera lacks monotonic capture timestamps; causal timing cannot be verified")
@@ -125,7 +126,7 @@ class Runtime:
                         sequence = raw_sequence if previous_raw is None else sequence + delta
                         previous_raw = raw_sequence
                         started = time.perf_counter()
-                        values = normalize(y)
+                        values = normalize(planes) if self.engine.config.input_mode == "y" else normalize_ycbcr(planes)
                         self.preprocess_ms = 1000 * (time.perf_counter() - started)
                         self._publish_frame(Frame(sequence, stamp, values), camera.stats())
                 self.capture_info["warnings"] = list(camera.warnings)
@@ -141,7 +142,7 @@ class Runtime:
                     self.synthetic_skips += delivered - sequence
                     sequence = delivered
                     started = time.perf_counter()
-                    values = synthetic(sequence, self.source)
+                    values = synthetic(sequence, self.source, self.engine.config.input_mode)
                     self.preprocess_ms = 1000 * (time.perf_counter() - started)
                     if values is not None:
                         stats = dict(frames=self.capture_count + 1, driver_drops=0, drained_discards=0,
@@ -198,6 +199,7 @@ class Runtime:
                             display_result = None
                         if action in ("load", "reset"):
                             visual = None
+                            self.input_statistics = None
                             samples.clear()
                         self.revision += 1
                     except Exception as exc:
@@ -207,6 +209,7 @@ class Runtime:
                 if frame is not None:
                     observe = self.observer and time.monotonic() - last_observe >= 1/self.display_hz
                     result = self.engine.step(frame, observe=observe, channel_start=self.channel_start)
+                    self.input_statistics = component_statistics(frame.values, self.engine.config.input_mode)
                     if observe and result is not None:
                         visual = result
                         last_observe = time.monotonic()
@@ -231,7 +234,8 @@ class Runtime:
                     fps = ((len(capture_times) - 1) / max(capture_times[-1] - capture_times[0], 1e-6)) if len(capture_times) > 1 else 0
                     gpu = self.engine.device.type == "cuda"
                     snap = dict(visual=visual, result=self.engine.last_result, display_result=display_result,
-                                history=list(self.engine.history), counts=counts, training=self.engine.training,
+                                history=list(self.engine.history), component_history=list(self.engine.component_history),
+                                input_statistics=self.input_statistics, counts=counts, training=self.engine.training,
                                 fault=self.engine.fault, capture_error=self.capture_error, notice=self.notice,
                                 origin=self.engine.origin, source=self.source, config=self.engine.config,
                                 input_sequence=self.engine.last_sequence,

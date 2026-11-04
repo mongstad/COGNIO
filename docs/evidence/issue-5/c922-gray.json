@@ -1,0 +1,187 @@
+{
+  "source": "camera",
+  "training": true,
+  "fault": "",
+  "capture_error": "",
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "counts": {
+    "predictions": 227,
+    "scores": 221,
+    "updates": 221,
+    "missed_targets": 1,
+    "late_targets": 0,
+    "skipped_frames": 1,
+    "cleared_targets": 0
+  },
+  "capture": {
+    "frames": 228,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "driver-monotonic"
+  },
+  "overwritten": 1,
+  "synthetic_skips": 0,
+  "input_fps": 30.01918807833613,
+  "prediction_fps": 30.008466214111667,
+  "updates_per_s": 30.008466214111667,
+  "prediction_ms": 0.4049760027555749,
+  "update_ms": 3.681541002151789,
+  "step_ms": 4.502034997130977,
+  "transfer_ms": 0.1708130002953112,
+  "preprocess_ms": 3.1803929996385705,
+  "observer_ms": 0.0,
+  "rss_mib": 1996.8125,
+  "peak_rss_mib": 1996.8125,
+  "cpu_percent": 25.8,
+  "vram_mib": 0.771484375,
+  "peak_vram_mib": 3.09326171875,
+  "reserved_vram_mib": 24.0,
+  "input_age_ms": 49.60814600053709,
+  "parameters": 35712,
+  "hidden_values": 2048,
+  "pending": 5,
+  "elapsed_s": 8.003555975999916,
+  "input_statistics": {
+    "Y": {
+      "mean": 0.25885576009750366,
+      "std": 0.16623297333717346,
+      "minimum": 0.0734640508890152,
+      "maximum": 0.684758186340332
+    }
+  },
+  "config": {
+    "seed": 7,
+    "learning_rate": 0.001,
+    "horizon": 5,
+    "channels": 32,
+    "grid": 8,
+    "input_mode": "y"
+  },
+  "rolling_mse": 0.02893010562715622,
+  "rolling_persistence_mse": 1.8094522622103634e-05,
+  "rolling_components": {
+    "Y": {
+      "mse": 0.02893010562715622,
+      "persistence_mse": 1.8094522622103634e-05
+    }
+  },
+  "event": "run_end",
+  "workers_stopped": true,
+  "steady_filter": "elapsed_s > 4, excluding run_end, roughly 1s samples",
+  "steady_samples": 4,
+  "steady": {
+    "input_fps": {
+      "mean": 30.01378741485766,
+      "p95": 30.051661568848825,
+      "minimum": 29.988548965795644,
+      "maximum": 30.05731947117418
+    },
+    "prediction_fps": {
+      "mean": 29.117734230764942,
+      "p95": 30.03216140196143,
+      "minimum": 26.660614404884534,
+      "maximum": 30.037518513806553
+    },
+    "updates_per_s": {
+      "mean": 28.577358570921415,
+      "p95": 30.03216140196143,
+      "minimum": 25.16562668124615,
+      "maximum": 30.037518513806553
+    },
+    "prediction_ms": {
+      "mean": 0.39465924965043087,
+      "p95": 0.3966303504057578,
+      "minimum": 0.3924369993910659,
+      "maximum": 0.3969770004914608
+    },
+    "update_ms": {
+      "mean": 3.8219317511902773,
+      "p95": 4.010304852454283,
+      "minimum": 3.5564799982239492,
+      "maximum": 4.034707002574578
+    },
+    "step_ms": {
+      "mean": 4.654065000977425,
+      "p95": 4.878363051466295,
+      "minimum": 4.340092000347795,
+      "maximum": 4.905122001218842
+    },
+    "preprocess_ms": {
+      "mean": 3.1769104998602415,
+      "p95": 3.2285103505273582,
+      "minimum": 3.1319730005634483,
+      "maximum": 3.2343140010198113
+    },
+    "observer_ms": {
+      "mean": 0.0,
+      "p95": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "transfer_ms": {
+      "mean": 0.17919250149134314,
+      "p95": 0.20568250056385295,
+      "minimum": 0.15503200120292604,
+      "maximum": 0.21082300008856691
+    },
+    "rss_mib": {
+      "mean": 1996.7314453125,
+      "p95": 1996.7890625,
+      "minimum": 1996.69140625,
+      "maximum": 1996.80078125
+    },
+    "cpu_percent": {
+      "mean": 25.6,
+      "p95": 26.564999999999998,
+      "minimum": 24.9,
+      "maximum": 26.7
+    },
+    "vram_mib": {
+      "mean": 0.771484375,
+      "p95": 0.771484375,
+      "minimum": 0.771484375,
+      "maximum": 0.771484375
+    },
+    "peak_vram_mib": {
+      "mean": 3.09326171875,
+      "p95": 3.09326171875,
+      "minimum": 3.09326171875,
+      "maximum": 3.09326171875
+    },
+    "input_age_ms": {
+      "mean": 54.18853975061211,
+      "p95": 63.971691298502265,
+      "minimum": 43.90409200277645,
+      "maximum": 64.65146099799313
+    },
+    "horizon_ms": {
+      "mean": 166.00149999976566,
+      "p95": 168.00384999914968,
+      "minimum": 163.99799999999232,
+      "maximum": 168.00399999920046
+    },
+    "lead_ms": {
+      "mean": 124.67321049916791,
+      "p95": 126.12602994777262,
+      "minimum": 123.55095999737387,
+      "maximum": 126.3566469970101
+    },
+    "component_mse": {
+      "Y": {
+        "mean": 0.020421858876943588,
+        "p95": 0.029789572395384305,
+        "minimum": 0.0157320536673069,
+        "maximum": 0.03180013224482536
+      }
+    },
+    "component_baseline_mse": {
+      "Y": {
+        "mean": 6.302503777533275e-06,
+        "p95": 9.60133061198576e-06,
+        "minimum": 9.639732070354512e-07,
+        "maximum": 9.664564458944369e-06
+      }
+    }
+  }
+}

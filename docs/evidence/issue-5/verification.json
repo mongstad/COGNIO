@@ -1,0 +1,75 @@
+{
+  "date_utc": "2026-11-04",
+  "issue": 5,
+  "base_main": "6341e666486e5abd93a33821fd8fa1f05be8471c",
+  "branch": "5-add-native-yuyv-color-measurement-learning-mode-y-cb-cr",
+  "reused_assigned_branch": true,
+  "regression": [
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q",
+      "torch": "2.15.0+cpu",
+      "passed": 88,
+      "skipped": 8,
+      "seconds": 19.45
+    },
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv-cuda/bin/python -m pytest -q",
+      "torch": "2.14.1+cu130",
+      "passed": 96,
+      "skipped": 0,
+      "seconds": 22.73
+    }
+  ],
+  "compatibility": {
+    "reference_revision": "6341e666486e5abd93a33821fd8fa1f05be8471c",
+    "preprocessing_bitwise_equal": true,
+    "schema2": [
+      {
+        "channels": 32,
+        "grid": 8,
+        "warmup_frames": 30,
+        "continued_frames": 20,
+        "predictions_bitwise_equal": true,
+        "final_updates": 40
+      },
+      {
+        "channels": 128,
+        "grid": 16,
+        "warmup_frames": 30,
+        "continued_frames": 20,
+        "predictions_bitwise_equal": true,
+        "final_updates": 40
+      }
+    ],
+    "schema1": {
+      "producer_revision": "3e216be95b3f9c5bbee0b6ea5375ea57d7f4ee4e",
+      "continued_frames": 20,
+      "predictions_bitwise_equal": true
+    },
+    "backend": "CPU torch 2.15.0+cpu"
+  },
+  "settings": {
+    "seed": 7,
+    "learning_rate": 0.001,
+    "threads": 2,
+    "precision": "float32",
+    "horizon": 5,
+    "deterministic": true,
+    "tf32": false,
+    "cudnn_autotuning": false
+  },
+  "checks": {
+    "compileall_passed": true,
+    "diff_check_passed": true,
+    "synthetic_gui_screenshot_visually_inspected": true,
+    "installed_cli_color_resume_passed": true
+  },
+  "limits": [
+    "Single seed and bounded runs; no broad generalization claim.",
+    "512x16 temporal color control remained finite but worse than persistence.",
+    "Live scene was uncontrolled and did not outperform persistence; no controlled similar-luma object study.",
+    "No color calibration, Bayer access, spectral inference, long soak or physical unplug/replug test.",
+    "No CPU 512x16 color live trial; PyTorch VRAM excludes context/other consumers; RSS peaks are sampled.",
+    "CPU and CUDA control environments use different PyTorch builds; their timings are not a controlled speed comparison."
+  ]
+}

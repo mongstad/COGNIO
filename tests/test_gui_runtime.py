@@ -8,7 +8,8 @@ import torch
 from PySide6.QtWidgets import QApplication
 
 from cognio.engine import Engine
-from cognio.gui import Window, activation_tiles, signed_rgb
+from cognio.gui import Window, activation_tiles, signed_rgb, measurement_rgb, gray_rgb
+from cognio.model import Config
 from cognio.runtime import Runtime, select_device
 
 
@@ -111,6 +112,31 @@ def test_cuda_fallback_is_explicit():
         assert device == "cpu" and "fallback" in notice
         with pytest.raises(ValueError, match="--compute cpu"):
             select_device("cuda")
+
+
+def test_color_diagnostics_are_component_views_and_display_only(app):
+    runtime = Runtime(Engine(Config(input_mode="ycbcr")), "color-moving")
+    window = Window(runtime)
+    runtime.start()
+    try:
+        wait_for(app, lambda: runtime.latest() is not None and runtime.latest()["counts"]["updates"] >= 5)
+        runtime.submit("training", False)
+        wait_for(app, lambda: not runtime.latest()["training"] and runtime.latest()["display_result"] is not None)
+        before = copy.deepcopy(runtime.engine.model.state_dict())
+        snap = runtime.latest()
+        with patch.object(runtime, "latest", return_value=snap):
+            for component, name in enumerate(("Y","Cb","Cr")):
+                window.component.setCurrentIndex(component)
+                window.display_range.setValue(.25)
+                window.refresh()
+                np.testing.assert_array_equal(window.input_view.rgb, measurement_rgb(snap["visual"]["input"], component))
+                np.testing.assert_array_equal(window.prediction_view.rgb, measurement_rgb(snap["visual"]["prediction"], component))
+                np.testing.assert_array_equal(window.error_view.rgb, gray_rgb(snap["display_result"]["error"][component], .25))
+                assert name in window.error_label.text()
+                assert "Component MSE / persistence" in window.telemetry.text()
+        assert all(torch.equal(value, runtime.engine.model.state_dict()[key]) for key,value in before.items())
+    finally:
+        window.close()
 
 
 def test_fault_keeps_new_input_labels_separate_from_last_prediction(app, monkeypatch):
