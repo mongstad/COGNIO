@@ -1,0 +1,172 @@
+{
+  "source": "camera",
+  "compute": "CPU fallback \u00b7 CUDA unavailable in this PyTorch installation",
+  "torch": "2.15.0+cpu",
+  "qt_platform": "wayland",
+  "requested_seconds": 90.0,
+  "counts": {
+    "predictions": 2633,
+    "scores": 2613,
+    "updates": 2443,
+    "missed_targets": 0,
+    "late_targets": 0
+  },
+  "capture": {
+    "frames": 2693,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "driver-monotonic"
+  },
+  "overwritten": 0,
+  "capture_info": {
+    "identity": {
+      "card": "C922 Pro Stream Webcam",
+      "driver": "uvcvideo"
+    },
+    "mode": {
+      "width": 640,
+      "height": 480,
+      "fourcc": "YUYV",
+      "fps": 30.0,
+      "stride": 1280,
+      "sizeimage": 614400,
+      "colorspace": 8,
+      "quantization": 0,
+      "transfer": 1
+    },
+    "controls": {
+      "exposure_auto": {
+        "requested": 1,
+        "actual": 1,
+        "original": 3
+      },
+      "exposure_auto_priority": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "exposure_absolute": {
+        "requested": 156,
+        "actual": 156,
+        "original": 250
+      },
+      "focus_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_temperature": {
+        "requested": 4500,
+        "actual": 4500,
+        "original": 4000
+      }
+    },
+    "warnings": []
+  },
+  "peak_rss_mib": 541.18359375,
+  "gui_refreshes": 2819,
+  "window_exposed": true,
+  "pending": 5,
+  "history": 300,
+  "actions": [
+    "freeze",
+    "freeze_snapshot",
+    "verify_freeze_save",
+    "load",
+    "resume"
+  ],
+  "failures": [],
+  "workers_stopped": true,
+  "duration_s": 90.29369146799945,
+  "tick_max_ms": 255.40615799945954,
+  "controls_restored": {
+    "exposure_auto": true,
+    "exposure_auto_priority": true,
+    "exposure_absolute": true,
+    "focus_auto": true,
+    "white_balance_auto": true,
+    "white_balance_temperature": true
+  },
+  "summary_interval": "samples after 25 s, training enabled; scalar snapshots every 250 ms",
+  "sample_count": 261,
+  "summary": {
+    "input_fps": {
+      "mean": 30.00429733720113,
+      "p95": 30.026797491118224,
+      "minimum": 29.978634801356332,
+      "maximum": 30.03673364805505
+    },
+    "prediction_fps": {
+      "mean": 29.99490062191919,
+      "p95": 30.141537024344327,
+      "minimum": 29.826921750587374,
+      "maximum": 30.189213260105358
+    },
+    "updates_per_s": {
+      "mean": 29.99490062191919,
+      "p95": 30.141537024344327,
+      "minimum": 29.826921750587374,
+      "maximum": 30.189213260105358
+    },
+    "prediction_ms": {
+      "mean": 0.3371660153356883,
+      "p95": 0.43899799857172184,
+      "minimum": 0.28331499925116077,
+      "maximum": 1.8698820003919536
+    },
+    "update_ms": {
+      "mean": 2.0980496015191172,
+      "p95": 3.469060000497848,
+      "minimum": 1.7013289998430992,
+      "maximum": 4.872984000030556
+    },
+    "cpu_percent": {
+      "mean": 70.82567049808429,
+      "p95": 73.2,
+      "minimum": 67.8,
+      "maximum": 73.5
+    },
+    "rss_mib": {
+      "mean": 530.3504100814176,
+      "p95": 534.27734375,
+      "minimum": 529.1015625,
+      "maximum": 538.83984375
+    },
+    "horizon_ms": {
+      "mean": 167.11300383136836,
+      "p95": 168.00599999987753,
+      "minimum": 163.98999999910302,
+      "maximum": 168.01699999996345
+    },
+    "lead_ms": {
+      "mean": 124.16138626047896,
+      "p95": 128.61188600072637,
+      "minimum": 118.77036700025201,
+      "maximum": 130.8367579986225
+    },
+    "input_age_ms": {
+      "mean": 73.94412202299404,
+      "p95": 94.12909200000286,
+      "minimum": 44.004332999975304,
+      "maximum": 95.96204599984048
+    },
+    "mse": {
+      "mean": 0.002679747693469013,
+      "p95": 0.0051971240900456905,
+      "minimum": 0.0006975253345444798,
+      "maximum": 0.006057161837816238
+    },
+    "baseline_mse": {
+      "mean": 0.0003070214736305538,
+      "p95": 0.0010687243193387985,
+      "minimum": 8.122061672111158e-07,
+      "maximum": 0.008442722260951996
+    }
+  }
+}
