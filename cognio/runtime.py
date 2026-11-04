@@ -13,6 +13,7 @@ import torch
 from .camera import V4L2Camera
 from .engine import Engine
 from .inputs import Frame, normalize, synthetic
+from .model import Config, Predictor
 
 
 def select_device(requested):
@@ -21,9 +22,20 @@ def select_device(requested):
     try:
         if not torch.cuda.is_available():
             raise RuntimeError("CUDA unavailable in this PyTorch installation")
-        torch.zeros(1, device="cuda").add_(1)
+        # Detection alone is insufficient: exercise convolution, backward and Adam.
+        with torch.random.fork_rng(devices=[]):
+            torch.default_generator.manual_seed(0)
+            model = Predictor().to("cuda")
+        optimizer = torch.optim.Adam(model.parameters())
+        before = model.decoder.bias.detach().clone()
+        prediction, _ = model(torch.zeros(1, 1, 128, 128, device="cuda"),
+                              torch.zeros(Config().hidden_shape, device="cuda"))
+        prediction.square().mean().backward()
+        optimizer.step()
         torch.cuda.synchronize()
-        return "cuda", f"CUDA · {torch.cuda.get_device_name(0)}"
+        if torch.equal(before, model.decoder.bias) or not torch.isfinite(model.decoder.bias).all():
+            raise RuntimeError("CUDA optimizer probe did not produce a finite parameter update")
+        return "cuda", f"CUDA training probe passed · {torch.cuda.get_device_name(0)} · torch {torch.__version__} / runtime {torch.version.cuda}"
     except Exception as exc:
         if requested == "cuda":
             raise ValueError(f"CUDA startup failed: {exc}. Run with --compute cpu.") from exc
@@ -31,9 +43,15 @@ def select_device(requested):
 
 
 class Runtime:
-    def __init__(self, engine, source="static", camera_path=None, device_notice=""):
+    def __init__(self, engine, source="static", camera_path=None, device_notice="", observer=True, display_hz=15):
         self.engine, self.source, self.camera_path = engine, source, camera_path
         self.device_notice = device_notice
+        if not 1 <= display_hz <= 30:
+            raise ValueError("display frequency must be in [1,30] Hz")
+        self.observer, self.display_hz = observer, display_hz
+        self.channel_start = 0
+        self.preprocess_ms = 0.0
+        self.synthetic_skips = 0
         self.commands = queue.Queue(maxsize=16)
         self.stop_event = threading.Event()
         self.lock = threading.Lock()
@@ -106,7 +124,10 @@ class Runtime:
                             raise RuntimeError("Camera sequence restarted or moved backwards")
                         sequence = raw_sequence if previous_raw is None else sequence + delta
                         previous_raw = raw_sequence
-                        self._publish_frame(Frame(sequence, stamp, normalize(y)), camera.stats())
+                        started = time.perf_counter()
+                        values = normalize(y)
+                        self.preprocess_ms = 1000 * (time.perf_counter() - started)
+                        self._publish_frame(Frame(sequence, stamp, values), camera.stats())
                 self.capture_info["warnings"] = list(camera.warnings)
             else:
                 start = time.monotonic()
@@ -116,8 +137,12 @@ class Runtime:
                     if self.stop_event.wait(max(0, due - time.monotonic())):
                         break
                     # Skip elapsed synthetic instants instead of generating a catch-up burst.
-                    sequence = max(sequence, int((time.monotonic() - start) * 30))
+                    delivered = max(sequence, int((time.monotonic() - start) * 30))
+                    self.synthetic_skips += delivered - sequence
+                    sequence = delivered
+                    started = time.perf_counter()
                     values = synthetic(sequence, self.source)
+                    self.preprocess_ms = 1000 * (time.perf_counter() - started)
                     if values is not None:
                         stats = dict(frames=self.capture_count + 1, driver_drops=0, drained_discards=0,
                                      bad_frames=0, timestamp_kind="synthetic-monotonic")
@@ -131,24 +156,33 @@ class Runtime:
             self.engine.set_training(value)
             self.notice = ""
         elif action == "reset":
-            self.engine = Engine(replace(self.engine.config, seed=secrets.randbits(32)), str(self.engine.device))
+            self.engine = Engine(replace(self.engine.config, seed=secrets.randbits(32)), str(self.engine.device),
+                                 memory_budget_mib=self.engine.memory_budget_mib)
             self.engine.set_training(False)
             self.notice = "New random model, training paused. Enable training explicitly."
         elif action == "save":
             self.engine.save(value)
             self.notice = "Checkpoint saved. Pending pairs cleared; five-frame warm-up."
         elif action == "load":
-            candidate = Engine.load(value, str(self.engine.device))
+            candidate = Engine.load(value, str(self.engine.device), expected_config=self.engine.config,
+                                    memory_budget_mib=self.engine.memory_budget_mib)
             candidate.set_training(False)
             self.engine = candidate
             self.notice = "Checkpoint restored, training paused. Live sensory history is unavailable."
+        elif action == "channel_page":
+            pages = (self.engine.config.channels + 31) // 32
+            if type(value) is not int or not 0 <= value < pages:
+                raise ValueError("channel page is out of range")
+            self.channel_start = value * 32
         else:
             raise ValueError(f"unknown command: {action}")
 
     def _work(self):
         visual = None
+        display_result = None
         samples = deque(maxlen=120)
         last_publish = 0
+        last_observe = 0
         cpu = 0.0
         while not self.stop_event.is_set():
             try:
@@ -160,6 +194,8 @@ class Runtime:
                         break
                     try:
                         self._command(action, value)
+                        if action in ("load", "reset", "save", "training"):
+                            display_result = None
                         if action in ("load", "reset"):
                             visual = None
                             samples.clear()
@@ -169,11 +205,16 @@ class Runtime:
                 with self.lock:
                     frame, self.frame = self.frame, None
                 if frame is not None:
-                    result = self.engine.step(frame)
-                    if result is not None:
+                    observe = self.observer and time.monotonic() - last_observe >= 1/self.display_hz
+                    result = self.engine.step(frame, observe=observe, channel_start=self.channel_start)
+                    if observe and result is not None:
                         visual = result
-                    elif visual is not None:
-                        visual = {**visual, "input": frame.values, "input_time": frame.timestamp}
+                        last_observe = time.monotonic()
+                        if self.engine.last_result is not None and self.engine.last_result["error"] is not None:
+                            display_result = self.engine.last_result
+                    elif result is None and visual is not None:
+                        visual = {**visual, "input": frame.values, "input_time": frame.timestamp,
+                                  "input_sequence": frame.sequence}
                 now = time.monotonic()
                 if now - last_publish >= 1 / 30:
                     counts = self.engine.counts.copy()
@@ -189,11 +230,17 @@ class Runtime:
                         overwritten = self.overwrites
                     fps = ((len(capture_times) - 1) / max(capture_times[-1] - capture_times[0], 1e-6)) if len(capture_times) > 1 else 0
                     gpu = self.engine.device.type == "cuda"
-                    snap = dict(visual=visual, result=self.engine.last_result,
+                    snap = dict(visual=visual, result=self.engine.last_result, display_result=display_result,
                                 history=list(self.engine.history), counts=counts, training=self.engine.training,
                                 fault=self.engine.fault, capture_error=self.capture_error, notice=self.notice,
                                 origin=self.engine.origin, source=self.source, config=self.engine.config,
                                 input_sequence=self.engine.last_sequence,
+                                input_age_ms=(now-self.engine.last_timestamp)*1000 if self.engine.last_timestamp is not None else None,
+                                parameters=self.engine.config.parameters, hidden_values=self.engine.config.hidden_values,
+                                pending=len(self.engine.pending), synthetic_skips=self.synthetic_skips,
+                                preprocess_ms=self.preprocess_ms, step_ms=self.engine.step_ms,
+                                observer_ms=self.engine.observer_ms, transfer_ms=self.engine.transfer_ms,
+                                observer=self.observer, channel_start=self.channel_start,
                                 capture=capture, capture_info=copy_capture_info(self.capture_info),
                                 overwritten=overwritten, revision=self.revision,
                                 input_fps=fps if capture_times and now - capture_times[-1] < 3 else 0,
@@ -204,6 +251,7 @@ class Runtime:
                                 rss_mib=rss, peak_rss_mib=self.peak_rss, cpu_percent=cpu,
                                 vram_mib=torch.cuda.memory_allocated() / 1024**2 if gpu else 0,
                                 reserved_vram_mib=torch.cuda.memory_reserved() / 1024**2 if gpu else 0,
+                                peak_vram_mib=torch.cuda.max_memory_allocated() / 1024**2 if gpu else 0,
                                 compute=self.device_notice, timestamp=now,
                                 elapsed_s=now - self.started)
                     with self.lock:
@@ -214,6 +262,7 @@ class Runtime:
                 # Keep control/save/restore and capture available after a model/input fault.
                 self.engine.fault = f"Runtime fault: {type(exc).__name__}: {exc}"
                 self.engine.training = False
+                self.engine.counts["cleared_targets"] += len(self.engine.pending)
                 self.engine.pending.clear()
 
 

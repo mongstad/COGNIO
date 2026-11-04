@@ -1,0 +1,200 @@
+{
+  "source": "camera",
+  "channels": 512,
+  "grid": 16,
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "torch": "2.14.1+cu130",
+  "qt_platform": "wayland",
+  "requested_seconds": 30.0,
+  "counts": {
+    "predictions": 832,
+    "scores": 811,
+    "updates": 642,
+    "missed_targets": 1,
+    "late_targets": 0,
+    "skipped_frames": 1,
+    "cleared_targets": 15
+  },
+  "capture": {
+    "frames": 894,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "driver-monotonic"
+  },
+  "overwritten": 3,
+  "capture_info": {
+    "identity": {
+      "card": "C922 Pro Stream Webcam",
+      "driver": "uvcvideo"
+    },
+    "mode": {
+      "width": 640,
+      "height": 480,
+      "fourcc": "YUYV",
+      "fps": 30.0,
+      "stride": 1280,
+      "sizeimage": 614400,
+      "colorspace": 8,
+      "quantization": 0,
+      "transfer": 1
+    },
+    "controls": {
+      "exposure_auto": {
+        "requested": 1,
+        "actual": 1,
+        "original": 3
+      },
+      "exposure_auto_priority": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "exposure_absolute": {
+        "requested": 156,
+        "actual": 156,
+        "original": 250
+      },
+      "focus_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_auto": {
+        "requested": 0,
+        "actual": 0,
+        "original": 1
+      },
+      "white_balance_temperature": {
+        "requested": 4500,
+        "actual": 4500,
+        "original": 4000
+      }
+    },
+    "warnings": []
+  },
+  "peak_rss_mib": 2251.4296875,
+  "gui_refreshes": 944,
+  "window_exposed": true,
+  "pending": 5,
+  "history": 300,
+  "actions": [
+    "freeze",
+    "freeze_snapshot",
+    "verify_freeze_save",
+    "load",
+    "resume"
+  ],
+  "failures": [],
+  "workers_stopped": true,
+  "duration_s": 30.327006026000163,
+  "tick_max_ms": 253.86892699862074,
+  "controls_restored": {
+    "exposure_auto": true,
+    "exposure_auto_priority": true,
+    "exposure_absolute": true,
+    "focus_auto": true,
+    "white_balance_auto": true,
+    "white_balance_temperature": true
+  },
+  "steady_sample_filter": "elapsed_s > 22 and training; 250 ms sampling; counts can rewind at checkpoint restore",
+  "steady_samples": 33,
+  "steady": {
+    "input_fps": {
+      "mean": 30.003384134751617,
+      "p95": 30.022705468224753,
+      "maximum": 30.02801278743476
+    },
+    "prediction_fps": {
+      "mean": 29.989167151521084,
+      "p95": 30.085735728665522,
+      "maximum": 30.133138076203092
+    },
+    "updates_per_s": {
+      "mean": 29.887804396217618,
+      "p95": 30.085735728665522,
+      "maximum": 30.133138076203092
+    },
+    "prediction_ms": {
+      "mean": 0.6288476059015727,
+      "p95": 0.9614922000764634,
+      "maximum": 1.4480249992629979
+    },
+    "update_ms": {
+      "mean": 6.495545454361656,
+      "p95": 7.695367400083341,
+      "maximum": 8.461561999865808
+    },
+    "step_ms": {
+      "mean": 7.896684272605908,
+      "p95": 9.326132401110954,
+      "maximum": 9.865354999419651
+    },
+    "transfer_ms": {
+      "mean": 0.317884303016895,
+      "p95": 0.7001814003160685,
+      "maximum": 1.0012160000769654
+    },
+    "preprocess_ms": {
+      "mean": 3.350177575736201,
+      "p95": 3.601800799879129,
+      "maximum": 3.8206339995667804
+    },
+    "observer_ms": {
+      "mean": 0.0373994241795806,
+      "p95": 0.09638400078983976,
+      "maximum": 0.1453219992981758
+    },
+    "display_ms": {
+      "mean": 1.116028757513215,
+      "p95": 1.3414866003586212,
+      "maximum": 1.4838139995845268
+    },
+    "rss_mib": {
+      "mean": 2246.6821732954545,
+      "p95": 2246.71484375,
+      "maximum": 2246.84375
+    },
+    "cpu_percent": {
+      "mean": 53.37272727272727,
+      "p95": 55.9,
+      "maximum": 55.9
+    },
+    "vram_mib": {
+      "mean": 113.5537109375,
+      "p95": 113.5537109375,
+      "maximum": 113.5537109375
+    },
+    "peak_vram_mib": {
+      "mean": 222.48876953125,
+      "p95": 222.48876953125,
+      "maximum": 222.48876953125
+    },
+    "input_age_ms": {
+      "mean": 95.02195072728324,
+      "p95": 134.0932743998564,
+      "maximum": 165.71372100042936
+    },
+    "mse": {
+      "mean": 0.0033674224519707036,
+      "p95": 0.0034472995437681677,
+      "maximum": 0.0034650310408324003
+    },
+    "baseline_mse": {
+      "mean": 9.714766983995904e-05,
+      "p95": 0.00025483289500698446,
+      "maximum": 0.00026130612241104245
+    },
+    "horizon_ms": {
+      "mean": 167.3953030302514,
+      "p95": 168.0050000002666,
+      "maximum": 168.00500000135798
+    },
+    "lead_ms": {
+      "mean": 124.09144772711002,
+      "p95": 128.39161080046324,
+      "maximum": 128.84861800012004
+    }
+  },
+  "privacy": "No imagery stored in this evidence; hardware serial/path/bus omitted."
+}

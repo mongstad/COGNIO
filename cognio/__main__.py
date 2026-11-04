@@ -1,5 +1,7 @@
 import argparse
 import json
+import math
+import os
 import sys
 
 from .inputs import MODES
@@ -17,28 +19,64 @@ def main():
     parser.add_argument("--threads", type=int, default=2, choices=range(1, 9))
     parser.add_argument("--checkpoint", help="explicitly restore this checkpoint; begins with training frozen")
     parser.add_argument("--frozen", action="store_true")
+    parser.add_argument("--resume-training", action="store_true", help="explicitly enable training after --checkpoint restore")
+    parser.add_argument("--channels", type=int, help="new model channels (default 32); restore must match")
+    parser.add_argument("--grid", type=int, choices=(8, 16, 32), help="spatial state grid (default 8)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--gui", action="store_true", help="open the optional four-view observer")
+    mode.add_argument("--headless", action="store_true", help="scalar telemetry only (default)")
+    parser.add_argument("--seconds", type=float, help="headless duration; otherwise stop with Ctrl-C/SIGTERM")
+    parser.add_argument("--telemetry-interval", type=float, default=1.)
+    parser.add_argument("--save-on-exit", help="explicit headless checkpoint destination (atomic replacement)")
+    parser.add_argument("--display-hz", type=float, default=15.)
+    parser.add_argument("--memory-budget-mib", type=float, help="optional lower working-memory allowance")
     args = parser.parse_args()
     if args.list_devices:
         from .camera import devices
         print(json.dumps(devices(), indent=2))
         return 0
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
     import torch
-    from PySide6.QtWidgets import QApplication
     from .engine import Engine
-    from .gui import Window
     from .model import Config
     from .runtime import Runtime, select_device
     torch.set_num_threads(args.threads)
     torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cuda.matmul.allow_tf32 = False
     try:
+        if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
+            raise ValueError("seconds must be positive and finite")
+        if not math.isfinite(args.telemetry_interval) or args.telemetry_interval < .1:
+            raise ValueError("telemetry interval must be finite and at least 0.1 seconds")
+        if args.gui and (args.seconds is not None or args.save_on_exit):
+            raise ValueError("--seconds and --save-on-exit are headless options; use GUI checkpoint controls")
+        if args.resume_training and (not args.checkpoint or args.frozen):
+            raise ValueError("--resume-training requires --checkpoint and cannot be combined with --frozen")
         device, notice = select_device(args.compute)
-        engine = Engine.load(args.checkpoint, device) if args.checkpoint else Engine(Config(args.seed, args.learning_rate), device)
-        if args.frozen or args.checkpoint:
+        if args.checkpoint:
+            engine = Engine.load(args.checkpoint, device, memory_budget_mib=args.memory_budget_mib)
+            if ((args.channels is not None and args.channels != engine.config.channels) or
+                    (args.grid is not None and args.grid != engine.config.grid)):
+                raise ValueError("checkpoint dimensions differ from the explicitly requested architecture")
+        else:
+            engine = Engine(Config(args.seed, args.learning_rate, channels=args.channels if args.channels is not None else 32,
+                                   grid=args.grid if args.grid is not None else 8), device,
+                            memory_budget_mib=args.memory_budget_mib)
+        if args.resume_training:
+            engine.set_training(True)
+        elif args.frozen or args.checkpoint:
             engine.set_training(False)
+        runtime = Runtime(engine, args.source, args.device, notice, observer=args.gui, display_hz=args.display_hz)
     except Exception as exc:
         parser.error(str(exc))
+    if not args.gui:
+        from .headless import run
+        return run(runtime, args.seconds, args.telemetry_interval, args.save_on_exit)
+    from PySide6.QtWidgets import QApplication
+    from .gui import Window
     app = QApplication(sys.argv[:1])
-    runtime = Runtime(engine, args.source, args.device, notice)
     window = Window(runtime)
     window.show()
     runtime.start()

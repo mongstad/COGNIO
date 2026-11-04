@@ -3,16 +3,19 @@
 import argparse
 import copy
 import json
+import os
 from pathlib import Path
 import tempfile
 import time
 
 import numpy as np
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 import torch
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
 
 from cognio.engine import Engine
+from cognio.model import Config
 from cognio.gui import Window
 from cognio.runtime import Runtime, select_device
 
@@ -22,6 +25,8 @@ def main():
     parser.add_argument("--source", choices=("camera", "moving", "static"), default="moving")
     parser.add_argument("--seconds", type=float, default=45)
     parser.add_argument("--compute", choices=("cpu", "auto", "cuda"), default="cpu")
+    parser.add_argument("--channels", type=int, default=32)
+    parser.add_argument("--grid", type=int, choices=(8, 16, 32), default=8)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--screenshot", type=Path, help="synthetic window only")
     args = parser.parse_args()
@@ -29,9 +34,12 @@ def main():
         parser.error("trial must last >=25 seconds; camera screenshots are disabled")
     torch.set_num_threads(2)
     torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cuda.matmul.allow_tf32 = False
     device, notice = select_device(args.compute)
     app = QApplication([])
-    runtime = Runtime(Engine(device=device), args.source, device_notice=notice)
+    runtime = Runtime(Engine(Config(channels=args.channels, grid=args.grid), device=device), args.source, device_notice=notice)
     window = Window(runtime)
     window.show()
     runtime.start()
@@ -40,7 +48,7 @@ def main():
     frozen = {}
     directory = tempfile.TemporaryDirectory(prefix="cognio-gui-")
     checkpoint = Path(directory.name) / "validation.pt"
-    report = dict(source=args.source, compute=notice, torch=str(torch.__version__),
+    report = dict(source=args.source, channels=args.channels, grid=args.grid, compute=notice, torch=str(torch.__version__),
                   qt_platform=app.platformName(), requested_seconds=args.seconds)
 
     def sample():
@@ -69,6 +77,8 @@ def main():
                     assert snap["counts"]["predictions"] > frozen["predictions"]
                     assert not torch.equal(frozen["hidden"], runtime.engine.hidden)
                     window.display_range.setValue(.35)
+                    if args.channels > 32:
+                        window.channel_page.setValue(2)
                     runtime.submit("save", str(checkpoint))
                     actions.append("verify_freeze_save")
                 if elapsed >= 16 and "load" not in actions:
@@ -84,7 +94,9 @@ def main():
                     window.grab().save(str(args.screenshot))
                     actions.append("screenshot")
                 record = {key: snap[key] for key in ("elapsed_s", "input_fps", "prediction_fps", "updates_per_s",
-                          "prediction_ms", "update_ms", "rss_mib", "cpu_percent", "vram_mib", "training")}
+                          "prediction_ms", "update_ms", "rss_mib", "cpu_percent", "vram_mib", "training",
+                          "peak_vram_mib", "observer_ms", "transfer_ms", "preprocess_ms", "step_ms")}
+                record["display_ms"] = window.display_ms
                 if snap["result"]:
                     record.update({key: snap["result"][key] for key in ("mse", "baseline_mse", "horizon_ms", "lead_ms")})
                 if snap["visual"]:

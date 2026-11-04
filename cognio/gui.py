@@ -7,14 +7,19 @@ from PySide6.QtCore import QPointF, Qt, QTimer
 from PySide6.QtGui import QColor, QImage, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (QCheckBox, QDoubleSpinBox, QFileDialog, QHBoxLayout,
                                QLabel, QMainWindow, QMessageBox, QPushButton,
-                               QVBoxLayout, QWidget)
+                               QVBoxLayout, QWidget, QSpinBox)
 
 
 def activation_tiles(hidden):
-    """All 32 real channels, row-major 4x8 tiles, each preserving its 8x8 positions."""
-    if hidden.shape != (32, 8, 8):
-        raise ValueError("expected 32 channels of 8x8 hidden activations")
-    return hidden.reshape(4, 8, 8, 8).transpose(0, 2, 1, 3).reshape(32, 64)
+    """At most 32 measured channels; raster tiles with the full spatial grid intact."""
+    if hidden.ndim != 3 or not 1 <= hidden.shape[0] <= 32 or hidden.shape[1] != hidden.shape[2]:
+        raise ValueError("expected a page of 1..32 square hidden channels")
+    count, grid, _ = hidden.shape
+    columns = min(8, count)
+    rows = (count + columns - 1) // columns
+    padded = np.zeros((rows*columns, grid, grid), dtype=hidden.dtype)
+    padded[:count] = hidden
+    return padded.reshape(rows, columns, grid, grid).transpose(0, 2, 1, 3).reshape(rows*grid, columns*grid)
 
 
 def signed_rgb(values, display_range):
@@ -100,7 +105,7 @@ class Window(QMainWindow):
         title = QLabel("COGNIO / 4 · actual recurrent neural state")
         title.setStyleSheet("font-size: 24px; font-weight: bold;")
         main.addWidget(title)
-        self.state_label = QLabel("32 channels · channel 0–31 in row-major tiles · each tile = 8×8 spatial positions")
+        self.state_label = QLabel("Measured hidden channels · waiting for observer snapshot")
         self.state_label.setWordWrap(True)
         main.addWidget(self.state_label)
         self.hidden_view = ImageView((480, 240))
@@ -120,6 +125,11 @@ class Window(QMainWindow):
         self.display_range.setValue(1)
         controls.addWidget(QLabel("Display ±"))
         controls.addWidget(self.display_range)
+        self.channel_page = QSpinBox()
+        self.channel_page.setRange(1, (runtime.engine.config.channels + 31)//32)
+        self.channel_page.valueChanged.connect(lambda value: self.send("channel_page", value-1))
+        controls.addWidget(QLabel("Channel page"))
+        controls.addWidget(self.channel_page)
         main.addLayout(controls)
         buttons = QHBoxLayout()
         for label, action in (("Reset to new random model…", self.reset), ("Save checkpoint…", self.save),
@@ -149,6 +159,7 @@ class Window(QMainWindow):
         self.prediction_label, self.prediction_view = self.panel(side, "2 / Predicted future luminance")
         self.error_label, self.error_view = self.panel(side, "3 / Matched squared prediction error")
         self.refresh_count = 0
+        self.display_ms = 0.0
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh)
         self.timer.start(33)
@@ -183,6 +194,7 @@ class Window(QMainWindow):
             self.send("load", path)
 
     def refresh(self):
+        started = time.perf_counter()
         snap = self.runtime.latest()
         if snap is None:
             return
@@ -191,24 +203,29 @@ class Window(QMainWindow):
         self.training.setChecked(snap["training"])
         self.training.blockSignals(False)
         self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']}")
-        visual, result = snap["visual"], snap["result"]
+        visual, result = snap["visual"], snap.get("display_result", snap["result"])
         now = time.monotonic()
         if visual is not None:
             limit = self.display_range.value()
+            first = visual.get("channel_start", 0)
+            last = first + len(visual["hidden"]) - 1
+            config = snap["config"]
+            self.state_label.setText(f"Channels {first}–{last} of {config.channels} · each tile {config.grid}×{config.grid} · "
+                                     f"{config.hidden_values:,} actual state values · {config.parameters:,} learned parameters")
             self.hidden_view.display(signed_rgb(activation_tiles(visual["hidden"]), limit))
             self.legend.setText(f"Blue negative / dark zero / amber positive · fixed display ±{limit:.2f}"
                                 f" · {100*np.mean(np.abs(visual['hidden']) > limit):.1f}% clipped\n"
                                 "All tiles are measured activations, with no learned or adaptive display projection.")
             self.input_view.display(gray_rgb(visual["input"]))
             self.prediction_view.display(gray_rgb(visual["prediction"]))
-            self.input_label.setText(f"1 / Current measured luminance · frame {snap['input_sequence']}\n"
+            self.input_label.setText(f"1 / Current measured luminance snapshot · frame {visual['input_sequence']}\n"
                                      f"Y/255 · age {1000*(now-visual['input_time']):.0f} ms")
             self.prediction_label.setText(f"2 / Predicted future luminance · {visual['source']} → {visual['target']}\n"
                                           f"Issued {1000*(now-visual['issued']):.0f} ms ago · horizon +5 camera frames")
         else:
             for view in (self.hidden_view, self.input_view, self.prediction_view):
                 view.clear_image()
-        if result is not None:
+        if result is not None and result["error"] is not None:
             self.error_view.display(gray_rgb(result["error"], .25))
             self.error_label.setText(f"3 / Squared error · {result['source']} → observed {result['target']}\n"
                                      f"Horizon {result['horizon_ms']:.1f} ms · target age {1000*(now-result['target_time']):.0f} ms"
@@ -227,6 +244,7 @@ class Window(QMainWindow):
             f"Rolling unseen MSE {means[0]:.6f} · persistence {means[1]:.6f} · pairs {len(snap['history'])}\n"
             f"Adam lr {snap['config'].learning_rate:g} · latest training loss {loss_text}\n"
             f"Prediction {snap['prediction_ms']:.2f} ms · update {snap['update_ms']:.2f} ms · total updates {counts['updates']}\n"
+            f"Observer copy {snap['observer_ms']:.2f} ms · display {self.display_ms:.2f} ms · step {snap['step_ms']:.2f} ms\n"
             f"Drops: driver {capture['driver_drops']}, drained {capture['drained_discards']}, invalid {capture['bad_frames']}, "
             f"handoff {snap['overwritten']} · missed targets {counts['missed_targets']} · late targets {counts['late_targets']}\n"
             f"RSS {snap['rss_mib']:.0f} MiB (peak {snap['peak_rss_mib']:.0f}) · CPU {snap['cpu_percent']:.0f}% (100% = one core) "
@@ -234,6 +252,7 @@ class Window(QMainWindow):
         self.status.setText("\n".join(v for v in (snap["fault"], snap["capture_error"], snap["notice"],
                                                   *snap["capture_info"].get("warnings", [])) if v)
                             or ("Learning online" if snap["training"] else "Training frozen · sensory processing continues"))
+        self.display_ms = (time.perf_counter() - started)*1000
 
     def closeEvent(self, event):
         self.timer.stop()
