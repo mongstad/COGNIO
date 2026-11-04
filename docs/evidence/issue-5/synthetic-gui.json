@@ -1,0 +1,241 @@
+{
+  "source": "color-moving",
+  "input_mode": "ycbcr",
+  "channels": 512,
+  "grid": 16,
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "torch": "2.14.1+cu130",
+  "qt_platform": "offscreen",
+  "requested_seconds": 25.0,
+  "counts": {
+    "predictions": 689,
+    "scores": 668,
+    "updates": 499,
+    "missed_targets": 1,
+    "late_targets": 0,
+    "skipped_frames": 1,
+    "cleared_targets": 15
+  },
+  "capture": {
+    "frames": 751,
+    "driver_drops": 0,
+    "drained_discards": 0,
+    "bad_frames": 0,
+    "timestamp_kind": "synthetic-monotonic"
+  },
+  "overwritten": 3,
+  "capture_info": {
+    "warnings": []
+  },
+  "peak_rss_mib": 2238.96875,
+  "gui_refreshes": 782,
+  "window_exposed": true,
+  "pending": 5,
+  "history": 205,
+  "actions": [
+    "freeze",
+    "freeze_snapshot",
+    "verify_freeze_save",
+    "load",
+    "resume",
+    "screenshot",
+    "view_cr"
+  ],
+  "failures": [],
+  "workers_stopped": true,
+  "duration_s": 25.026416054999572,
+  "tick_max_ms": 261.3251629991282,
+  "steady_filter": "elapsed_s > 22 and training, 250ms sampling; checkpoint restore rewinds model counters",
+  "steady_samples": 13,
+  "steady": {
+    "input_fps": {
+      "mean": 30.000199353073647,
+      "p95": 30.003032673524974,
+      "minimum": 29.9960889637165,
+      "maximum": 30.003314806558212
+    },
+    "prediction_fps": {
+      "mean": 29.978743391718897,
+      "p95": 30.113922202841856,
+      "minimum": 29.79634196424305,
+      "maximum": 30.11501310665323
+    },
+    "updates_per_s": {
+      "mean": 29.756781776370232,
+      "p95": 30.113922202841856,
+      "minimum": 27.393411160675065,
+      "maximum": 30.11501310665323
+    },
+    "prediction_ms": {
+      "mean": 0.5713865385377386,
+      "p95": 0.6244789998163469,
+      "minimum": 0.5490889998327475,
+      "maximum": 0.6444709979405161
+    },
+    "update_ms": {
+      "mean": 6.279456615000247,
+      "p95": 7.0908891982981,
+      "minimum": 5.657975001668092,
+      "maximum": 7.2540009969088715
+    },
+    "step_ms": {
+      "mean": 7.596103153236282,
+      "p95": 8.522200199513463,
+      "minimum": 6.735312003002036,
+      "maximum": 8.78255700081354
+    },
+    "preprocess_ms": {
+      "mean": 0.804925846750848,
+      "p95": 0.8968952002760486,
+      "minimum": 0.7344120022025891,
+      "maximum": 0.9739669985719956
+    },
+    "observer_ms": {
+      "mean": 0.03479061538550573,
+      "p95": 0.11784399903262965,
+      "minimum": 0.0,
+      "maximum": 0.11852199895656668
+    },
+    "display_ms": {
+      "mean": 1.7402830769872077,
+      "p95": 2.08063879981637,
+      "minimum": 1.4396040023711976,
+      "maximum": 2.1464660021592863
+    },
+    "transfer_ms": {
+      "mean": 0.28142946198036395,
+      "p95": 0.6679333986539854,
+      "minimum": 0.16356199921574444,
+      "maximum": 0.8973349977168255
+    },
+    "rss_mib": {
+      "mean": 2233.0189302884614,
+      "p95": 2238.96171875,
+      "minimum": 2219.6953125,
+      "maximum": 2238.96875
+    },
+    "cpu_percent": {
+      "mean": 53.153846153846146,
+      "p95": 54.66,
+      "minimum": 51.4,
+      "maximum": 55.8
+    },
+    "vram_mib": {
+      "mean": 117.181640625,
+      "p95": 117.181640625,
+      "minimum": 117.181640625,
+      "maximum": 117.181640625
+    },
+    "peak_vram_mib": {
+      "mean": 228.4306640625,
+      "p95": 228.4306640625,
+      "minimum": 228.4306640625,
+      "maximum": 228.4306640625
+    },
+    "input_age_ms": {
+      "mean": 70.65788830816298,
+      "p95": 123.63576679999824,
+      "minimum": 24.15729400308919,
+      "maximum": 123.73985000158427
+    },
+    "horizon_ms": {
+      "mean": 166.5583285385555,
+      "p95": 166.90143279920449,
+      "minimum": 165.9547070012195,
+      "maximum": 167.16699700191384
+    },
+    "lead_ms": {
+      "mean": 156.11758376941836,
+      "p95": 159.06427759982762,
+      "minimum": 148.88050200170255,
+      "maximum": 159.38821700183325
+    },
+    "component_mse": {
+      "Y": {
+        "mean": 4.134419409988018e-05,
+        "p95": 4.4075922050978986e-05,
+        "minimum": 3.587044921005145e-05,
+        "maximum": 4.448666368261911e-05
+      },
+      "Cb": {
+        "mean": 0.0005025844259832341,
+        "p95": 0.0007381776697002351,
+        "minimum": 0.00030199799221009016,
+        "maximum": 0.0007586213760077953
+      },
+      "Cr": {
+        "mean": 0.0003836975912026201,
+        "p95": 0.0004939668579027057,
+        "minimum": 0.00023444241378456354,
+        "maximum": 0.0004952166345901787
+      }
+    },
+    "component_baseline_mse": {
+      "Y": {
+        "mean": 0.0,
+        "p95": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "Cb": {
+        "mean": 0.013180194422602654,
+        "p95": 0.013180194422602654,
+        "minimum": 0.013180194422602654,
+        "maximum": 0.013180194422602654
+      },
+      "Cr": {
+        "mean": 0.009152913466095924,
+        "p95": 0.009152913466095924,
+        "minimum": 0.009152913466095924,
+        "maximum": 0.009152913466095924
+      }
+    }
+  },
+  "input_variation": {
+    "Y": {
+      "frame_mean": {
+        "mean": 0.5,
+        "p95": 0.5,
+        "minimum": 0.5,
+        "maximum": 0.5
+      },
+      "spatial_std": {
+        "mean": 0.0,
+        "p95": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      }
+    },
+    "Cb": {
+      "frame_mean": {
+        "mean": 0.0,
+        "p95": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "spatial_std": {
+        "mean": 0.15000000596046448,
+        "p95": 0.15000000596046448,
+        "minimum": 0.15000000596046448,
+        "maximum": 0.15000000596046448
+      }
+    },
+    "Cr": {
+      "frame_mean": {
+        "mean": 0.0,
+        "p95": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "spatial_std": {
+        "mean": 0.125,
+        "p95": 0.125,
+        "minimum": 0.125,
+        "maximum": 0.125
+      }
+    }
+  },
+  "privacy": "Scalar evidence only; hardware serial/path/bus omitted. No camera imagery recorded.",
+  "screenshot_visually_inspected": true,
+  "screenshot_observation": "Actual activations remain primary; Cb input/prediction/error, signed units, selector, component metrics and controls fit at 1320x940."
+}

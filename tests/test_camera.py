@@ -45,6 +45,7 @@ class CameraTests(unittest.TestCase):
     def test_drains_newest_counts_gaps_bad_frames_and_requeues(self):
         camera = cam.V4L2Camera.__new__(cam.V4L2Camera)
         camera.fd = 10
+        camera.input_mode = "y"
         camera.buffers = [bytes([120, 50])*640*480 for _ in range(3)]
         camera.mode = dict(stride=1280)
         camera.frames = camera.driver_drops = camera.discarded = camera.bad_frames = 0

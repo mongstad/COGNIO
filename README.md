@@ -1,7 +1,8 @@
 # COGNIO
 
-COGNIO Prototype 1 learns online from local luminance measurements, starting
-with random weights. It predicts the frame **five camera sequence numbers in
+COGNIO Prototype 1 learns online from local camera measurements, starting
+with random weights. The default `y` mode uses luminance; optional `ycbcr`
+also uses native color-difference measurements. It predicts the frame **five camera sequence numbers in
 the future**, compares that earlier prediction with the real observation and
 a copy-current-frame baseline, and displays its actual recurrent activations.
 
@@ -80,6 +81,40 @@ Without it, no checkpoint is written. Headless observation never transfers or
 renders activations. GUI observation is separately paced (`--display-hz`, default
 15); use **Channel page** for at most 32 measured channels at once.
 
+## Native Y + Cb + Cr measurements
+
+Choose the sensory mode when creating a new model; `y` remains the unchanged
+grayscale baseline. Color mode extracts packed **Y0 Cb Y1 Cr** bytes directly
+from YUYV: native Y is 640×480, Cb/Cr each 320×480 (one measurement per horizontal
+pixel pair). Each plane is area-averaged over the full frame to 128×128.
+Normalization is fixed: Y/255 and signed (Cb−128)/255, (Cr−128)/255. No RGB
+conversion is used for learning. These are processed camera code values,
+not Bayer RAW, calibrated photon measurements or wavelength spectra.
+
+```bash
+# Existing grayscale experiment:
+.venv-cuda/bin/python -m cognio --gui --source camera --compute cuda --input-mode y
+# Color measurements, integrated with the larger configuration:
+.venv-cuda/bin/python -m cognio --gui --source camera --compute cuda \
+  --input-mode ycbcr --channels 512 --grid 16
+# Constant-Y, changing-chroma control without a camera or GUI:
+.venv-cuda/bin/python -m cognio --headless --source color-moving --compute cuda \
+  --input-mode ycbcr --channels 512 --grid 16 --seconds 30
+```
+
+Color predictions and targets contain all three components. Aggregate MSE is
+the equal mean of Y, Cb and Cr MSE; each also has its own persistence comparison.
+The GUI **Diagnostic component** selector changes input/prediction/error views
+only. Cb/Cr are shown with labeled signed blue/amber colors, not sensor-native
+RGB. The primary canvas still shows actual neural state. Headless telemetry
+includes per-component errors and input statistics with no image arrays.
+
+Schema-3 checkpoints record mode, tensor layout and normalization. Restoring
+uses the saved mode; explicitly conflicting `--input-mode` choices and GUI
+cross-mode restores fail. Old schema-1/2 checkpoints remain grayscale; no weight
+resizing or color conversion occurs. [Color contract and validation](docs/COLOR.md)
+contains geometry, loss weighting, evidence and owner steps.
+
 ## Controls and interpretation
 
 - **Train online:** off freezes weights and Adam state. Camera capture,
@@ -127,7 +162,10 @@ python -m tools.validate_gui --source camera --seconds 90 --report /tmp/cognio-l
 For manual review, follow the [owner protocol](docs/OWNER_TRIAL.md). Synthetic
 controls are `static`, `moving` (translating grating), `shape` (translating
 Gaussian blob), `temporal` (brightness variation), `zero` (valid black frames),
-and `no-input` (no observations).
+and `no-input` (no observations). `color-static`, `color-moving` and
+`color-temporal` keep Y=0.5 while varying chroma; Y-only models receive the
+same constant brightness in these controls. Ordinary controls use neutral
+chroma when run in `ycbcr` mode.
 
 See [architecture and numerical contract](docs/ARCHITECTURE.md),
 [baseline validation](docs/VALIDATION.md), and

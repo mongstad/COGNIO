@@ -1,4 +1,4 @@
-# Owner trial for issue #2
+# Owner trial
 
 Run from the repository with `.venv` activated, close SENTIO or other camera
 users, and start `python -m cognio --gui --source camera --compute cpu`. Expect a
@@ -54,3 +54,14 @@ the configuration/parameter/state counts, independently measured rates and
 drop accounting. Run the same source with `--headless --seconds 30`; inspect
 scalar telemetry and explicit checkpoint save/restore without a Qt window.
 See [capacity measurements and limits](CAPACITY.md) before choosing a size.
+
+For issue #5, explicitly create a new color model with `--input-mode ycbcr`.
+Use the Diagnostic component selector to inspect Y, Cb and Cr input, future
+prediction and matched error; the signed chroma display colors are not RGB.
+Check all three component MSE/persistence values, not just the aggregate. While
+training is frozen, change colored items/lighting and compare Cb/Cr responses
+with Y; ordinary camera scenes cannot guarantee constant luminance. Save and
+restore within this mode, then verify loading a grayscale checkpoint is rejected
+without changing the active model. Use the constant-Y `color-moving` synthetic
+source for an exact control. [COLOR.md](COLOR.md) records performed checks and
+the remaining physical-scene validation.

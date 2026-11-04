@@ -116,6 +116,8 @@ def test_resource_guard_precedes_allocation():
 def test_version1_migration_and_architecture_mismatch(tmp_path):
     old = Engine().state()
     old["schema"], old["architecture"] = 1, "patch16-spatial-rnn32-v1"
+    old.pop("sensory")
+    old["config"].pop("input_mode")
     old["config"].pop("channels")
     old["config"].pop("grid")
     old["counts"].pop("skipped_frames")
@@ -124,7 +126,7 @@ def test_version1_migration_and_architecture_mismatch(tmp_path):
     torch.save(old, path)
     restored = Engine.load(path)
     assert restored.config == Config()
-    assert restored.state()["schema"] == 2
+    assert restored.state()["schema"] == 3
     with pytest.raises(ValueError, match="architecture"):
         Engine.load(path, expected_config=Config(channels=128, grid=16))
 
@@ -189,7 +191,8 @@ def test_runtime_headless_clean_stop_save_and_scalar_only(tmp_path):
     assert Engine.load(tmp_path/"headless.pt").config == engine.config
 
 
-def test_cli_headless_no_qt_import_and_sigterm(tmp_path):
+@pytest.mark.parametrize("input_mode", ["y", "ycbcr"])
+def test_cli_headless_no_qt_import_and_sigterm(tmp_path, input_mode):
     root = Path(__file__).resolve().parents[1]
     checkpoint = tmp_path/"signal.pt"
     script = """import sys
@@ -204,7 +207,7 @@ raise SystemExit(main())
     log = tmp_path/"out.jsonl"
     with log.open("w") as output:
         process = subprocess.Popen([sys.executable, "-c", script, "--headless", "--source", "moving",
-                                    "--compute", "cpu", "--save-on-exit", str(checkpoint)],
+                                    "--compute", "cpu", "--input-mode", input_mode, "--save-on-exit", str(checkpoint)],
                                    cwd=root, stdout=output, stderr=subprocess.PIPE, text=True)
         try:
             deadline = time.monotonic()+20
@@ -226,6 +229,12 @@ raise SystemExit(main())
     assert resumed.returncode == 0, resumed.stderr
     final = json.loads(resumed.stdout.splitlines()[-1])
     assert final["training"] and final["counts"]["updates"] > 0
+    assert final["config"]["input_mode"] == input_mode
+    assert set(final["input_statistics"]) == ({"Y"} if input_mode == "y" else {"Y","Cb","Cr"})
+    conflict = subprocess.run([sys.executable, "-c", script, "--headless", "--compute", "cpu",
+                               "--checkpoint", str(checkpoint), "--input-mode", "ycbcr" if input_mode == "y" else "y",
+                               "--seconds", ".1"], cwd=root, capture_output=True, text=True, timeout=20)
+    assert conflict.returncode == 2 and "checkpoint input mode differs" in conflict.stderr
 
 
 def test_slow_processing_keeps_exact_targets_and_bounded_handoffs():

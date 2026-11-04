@@ -4,6 +4,9 @@ The accepted 32-channel, 8×8 model remains the default and numerical reference.
 The objective, 128² luminance input, five-camera-frame horizon, MSE/Adam update,
 one-step detached recurrence, persistence comparison and privacy contract remain
 unchanged. Increasing capacity is an experiment, not evidence of better learning.
+Issue #5 adds a separate [native color measurement mode](COLOR.md). The counts
+and table below describe `--input-mode y`; color uses three sensory components
+in the encoder/decoder while preserving the same recurrent dimensions.
 
 ## Reproduce the environments
 
@@ -58,6 +61,8 @@ launch-time choices, not silent resizing of a running or restored learned model.
 GUI Reset changes the seed and clears learning at the same dimensions.
 
 Before constructing a model, estimate working bytes as **40N + 128H + 512 MiB**.
+Color adds 1.25 MiB for the extra two components in five pending input/prediction
+contexts, and uses its own increased parameter count `N`.
 This includes weights, gradients, Adam moments, rollback copies, candidate/
 serialization transients, detached contexts, activations and a workspace reserve.
 Require that estimate to fit half of currently available host memory and, on
@@ -104,13 +109,14 @@ source/target IDs and age. Headless and observer engines produce identical updat
 on identical delivered frames in CPU and CUDA regression tests. Under overload, scheduling can change
 which live frames are delivered; the counters expose that sampling difference.
 
-## Checkpoint schema 2
+## Checkpoint storage
 
 Store complete dimensions, weights, Adam moments, recurrent state, seed/settings,
-counters and framework metadata. All serialized tensors are on CPU. Original
-schema 1 is migrated only as the original 32×8 model. A GUI restore requires the
-current dimensions; CLI restore uses saved dimensions and rejects explicitly
-conflicting `--channels`/`--grid` arguments. No weight interpolation occurs.
+counters and framework metadata. All serialized tensors are on CPU. Current
+schema 3 also records the sensory contract. Original schema 1 is migrated only
+as grayscale 32×8; schema 2 retains its grayscale dimensions. A GUI restore
+requires current mode/dimensions; CLI restore uses saved choices and rejects
+explicitly conflicting mode/channel/grid arguments. No weight interpolation occurs.
 
 The old 16 MiB cap is replaced by **12N + 4H + 8G² + 256 KiB**: float32 model
 weights plus two Adam moments, hidden state, positions, and serialization

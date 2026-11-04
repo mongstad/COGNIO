@@ -14,7 +14,7 @@ import os
 import select
 import time
 
-from .inputs import extract_y
+from .inputs import components, extract_y, extract_ycbcr
 
 U32 = C.c_uint32
 
@@ -159,11 +159,13 @@ def validate_mode(fmt, parm):
         raise ValueError("invalid stride/size or non-progressive negotiated format")
     return dict(width=640, height=480, fourcc="YUYV", fps=fps, stride=pix.bytesperline,
                 sizeimage=pix.sizeimage, colorspace=pix.colorspace,
-                quantization=pix.quantization, transfer=pix.xfer_func)
+                ycbcr_encoding=pix.ycbcr_enc, quantization=pix.quantization, transfer=pix.xfer_func)
 
 
 class V4L2Camera:
-    def __init__(self, path=None, exposure=156):
+    def __init__(self, path=None, exposure=156, input_mode="y"):
+        components(input_mode)
+        self.input_mode = input_mode
         if type(exposure) is not int or not 1 <= exposure <= 300:
             raise ValueError("exposure must be 1..300 units of 100 microseconds")
         self.fd = None
@@ -226,7 +228,7 @@ class V4L2Camera:
             raise
 
     def read(self, timeout=0.1):
-        """Drain at most the bounded kernel queue, returning only its newest Y."""
+        """Return newest native Y or (Y,Cb,Cr) planes with capture timestamp/sequence."""
         if not select.select([self.fd], [], [], timeout)[0]:
             return None
         newest = None
@@ -256,10 +258,11 @@ class V4L2Camera:
                     self.timestamp_kind = "driver-monotonic"
                 else:
                     self.timestamp_kind = "receipt-time (driver age unknown)"
-                y = extract_y(self.buffers[buf.index], 640, 480, self.mode["stride"])
+                extract = extract_y if self.input_mode == "y" else extract_ycbcr
+                planes = extract(self.buffers[buf.index], 640, 480, self.mode["stride"])
                 if newest is not None:
                     self.discarded += 1
-                newest = (y, stamp, seq)
+                newest = (planes, stamp, seq)
             finally:
                 ioctl(self.fd, QBUF, buf)
         return newest

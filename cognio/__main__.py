@@ -4,7 +4,7 @@ import math
 import os
 import sys
 
-from .inputs import MODES
+from .inputs import INPUT_MODES, MODES
 
 
 def main():
@@ -22,6 +22,7 @@ def main():
     parser.add_argument("--resume-training", action="store_true", help="explicitly enable training after --checkpoint restore")
     parser.add_argument("--channels", type=int, help="new model channels (default 32); restore must match")
     parser.add_argument("--grid", type=int, choices=(8, 16, 32), help="spatial state grid (default 8)")
+    parser.add_argument("--input-mode", choices=INPUT_MODES, help="new model sensory mode (default y); restore must match")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--gui", action="store_true", help="open the optional four-view observer")
     mode.add_argument("--headless", action="store_true", help="scalar telemetry only (default)")
@@ -57,12 +58,15 @@ def main():
         device, notice = select_device(args.compute)
         if args.checkpoint:
             engine = Engine.load(args.checkpoint, device, memory_budget_mib=args.memory_budget_mib)
+            if args.input_mode is not None and args.input_mode != engine.config.input_mode:
+                raise ValueError("checkpoint input mode differs from the explicitly requested --input-mode")
             if ((args.channels is not None and args.channels != engine.config.channels) or
                     (args.grid is not None and args.grid != engine.config.grid)):
                 raise ValueError("checkpoint dimensions differ from the explicitly requested architecture")
         else:
             engine = Engine(Config(args.seed, args.learning_rate, channels=args.channels if args.channels is not None else 32,
-                                   grid=args.grid if args.grid is not None else 8), device,
+                                   grid=args.grid if args.grid is not None else 8,
+                                   input_mode=args.input_mode or "y"), device,
                             memory_budget_mib=args.memory_budget_mib)
         if args.resume_training:
             engine.set_training(True)

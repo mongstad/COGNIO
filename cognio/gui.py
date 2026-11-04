@@ -7,7 +7,8 @@ from PySide6.QtCore import QPointF, Qt, QTimer
 from PySide6.QtGui import QColor, QImage, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (QCheckBox, QDoubleSpinBox, QFileDialog, QHBoxLayout,
                                QLabel, QMainWindow, QMessageBox, QPushButton,
-                               QVBoxLayout, QWidget, QSpinBox)
+                               QVBoxLayout, QWidget, QSpinBox, QComboBox)
+from .inputs import CHROMA_OFFSET, components
 
 
 def activation_tiles(hidden):
@@ -32,6 +33,15 @@ def signed_rgb(values, display_range):
 def gray_rgb(values, maximum=1):
     gray = (255 * np.clip(values / maximum, 0, 1)).astype(np.uint8)
     return np.repeat(gray[..., None], 3, axis=-1)
+
+
+def component_plane(values, component):
+    return values if values.ndim == 2 else values[component]
+
+
+def measurement_rgb(values, component):
+    plane = component_plane(values, component)
+    return gray_rgb(plane) if component == 0 else signed_rgb(plane, CHROMA_OFFSET)
 
 
 class ImageView(QLabel):
@@ -155,6 +165,11 @@ class Window(QMainWindow):
                          "Patterns and lower prediction error do not establish recognition or consciousness.")
         privacy.setWordWrap(True)
         main.addWidget(privacy)
+        self.component = QComboBox()
+        self.component.addItems(components(runtime.engine.config.input_mode))
+        if runtime.engine.config.input_mode == "ycbcr":
+            side.addWidget(QLabel("Diagnostic component · signed Cb/Cr colors are not RGB"))
+            side.addWidget(self.component)
         self.input_label, self.input_view = self.panel(side, "1 / Current measured luminance")
         self.prediction_label, self.prediction_view = self.panel(side, "2 / Predicted future luminance")
         self.error_label, self.error_view = self.panel(side, "3 / Matched squared prediction error")
@@ -202,8 +217,12 @@ class Window(QMainWindow):
         self.training.blockSignals(True)
         self.training.setChecked(snap["training"])
         self.training.blockSignals(False)
-        self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']}")
+        self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']} · input: {snap['config'].input_mode}")
         visual, result = snap["visual"], snap.get("display_result", snap["result"])
+        component = self.component.currentIndex()
+        name = self.component.currentText()
+        measurement = "luminance" if name == "Y" else f"{name} color difference"
+        units = "Y/255" if name == "Y" else f"({name}−128)/255 · blue negative / amber positive · display only"
         now = time.monotonic()
         if visual is not None:
             limit = self.display_range.value()
@@ -216,18 +235,18 @@ class Window(QMainWindow):
             self.legend.setText(f"Blue negative / dark zero / amber positive · fixed display ±{limit:.2f}"
                                 f" · {100*np.mean(np.abs(visual['hidden']) > limit):.1f}% clipped\n"
                                 "All tiles are measured activations, with no learned or adaptive display projection.")
-            self.input_view.display(gray_rgb(visual["input"]))
-            self.prediction_view.display(gray_rgb(visual["prediction"]))
-            self.input_label.setText(f"1 / Current measured luminance snapshot · frame {visual['input_sequence']}\n"
-                                     f"Y/255 · age {1000*(now-visual['input_time']):.0f} ms")
-            self.prediction_label.setText(f"2 / Predicted future luminance · {visual['source']} → {visual['target']}\n"
+            self.input_view.display(measurement_rgb(visual["input"], component))
+            self.prediction_view.display(measurement_rgb(visual["prediction"], component))
+            self.input_label.setText(f"1 / Current measured {measurement} snapshot · frame {visual['input_sequence']}\n"
+                                     f"{units} · age {1000*(now-visual['input_time']):.0f} ms")
+            self.prediction_label.setText(f"2 / Predicted future {measurement} · {visual['source']} → {visual['target']}\n"
                                           f"Issued {1000*(now-visual['issued']):.0f} ms ago · horizon +5 camera frames")
         else:
             for view in (self.hidden_view, self.input_view, self.prediction_view):
                 view.clear_image()
         if result is not None and result["error"] is not None:
-            self.error_view.display(gray_rgb(result["error"], .25))
-            self.error_label.setText(f"3 / Squared error · {result['source']} → observed {result['target']}\n"
+            self.error_view.display(gray_rgb(component_plane(result["error"], component), .25))
+            self.error_label.setText(f"3 / {name} squared error · {result['source']} → observed {result['target']}\n"
                                      f"Horizon {result['horizon_ms']:.1f} ms · target age {1000*(now-result['target_time']):.0f} ms"
                                      " · black 0 / white ≥0.25")
         else:
@@ -239,9 +258,15 @@ class Window(QMainWindow):
         counts, capture = snap["counts"], snap["capture"]
         loss = snap["training_loss"]
         loss_text = f"{loss:.6f}" if loss is not None else "—"
+        component_text = ""
+        if snap["config"].input_mode == "ycbcr" and snap["component_history"]:
+            per = np.mean(snap["component_history"], axis=0)
+            component_text = "Component MSE / persistence: " + " · ".join(
+                f"{name} {per[0,i]:.5f}/{per[1,i]:.5f}" for i, name in enumerate(components("ycbcr"))) + "\n"
         self.telemetry.setText(
             f"Input {snap['input_fps']:.1f} FPS · predictions {snap['prediction_fps']:.1f}/s · updates {snap['updates_per_s']:.1f}/s\n"
             f"Rolling unseen MSE {means[0]:.6f} · persistence {means[1]:.6f} · pairs {len(snap['history'])}\n"
+            f"{component_text}"
             f"Adam lr {snap['config'].learning_rate:g} · latest training loss {loss_text}\n"
             f"Prediction {snap['prediction_ms']:.2f} ms · update {snap['update_ms']:.2f} ms · total updates {counts['updates']}\n"
             f"Observer copy {snap['observer_ms']:.2f} ms · display {self.display_ms:.2f} ms · step {snap['step_ms']:.2f} ms\n"

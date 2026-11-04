@@ -14,7 +14,7 @@ import numpy as np
 import psutil
 import torch
 
-from .inputs import Frame
+from .inputs import CHROMA_OFFSET, Frame, components
 from .model import Config, Predictor
 from .resources import check_budget
 
@@ -66,6 +66,7 @@ class Engine:
         self.hidden = torch.zeros(config.hidden_shape, device=self.device)
         self.pending = {}
         self.history = deque(maxlen=300)
+        self.component_history = deque(maxlen=300)
         self.training = True
         self.fault = ""
         self.origin = f"NEW random initialization · seed {config.seed}"
@@ -90,7 +91,16 @@ class Engine:
         self.counts["cleared_targets"] += len(self.pending)
         self.pending.clear()
         self.history.clear()
+        self.component_history.clear()
         self.last_result = None
+
+    def _tensor(self, values):
+        data = torch.from_numpy(values).to(self.device)
+        return data[None, None] if self.config.input_mode == "y" else data[None]
+
+    def _array(self, data):
+        planes = data[0, 0] if self.config.input_mode == "y" else data[0]
+        return planes.cpu().numpy().copy()
 
     def _update(self, pending, target):
         """Recompute old context using current weights; never replace the scored prediction.
@@ -103,7 +113,7 @@ class Engine:
         before_optimizer = copy.deepcopy(self.optimizer.state_dict())
         try:
             self.optimizer.zero_grad(set_to_none=True)
-            old_input = torch.from_numpy(pending.source.values).to(self.device)[None, None]
+            old_input = self._tensor(pending.source.values)
             prediction, _ = self.model(old_input, pending.previous)
             loss = (prediction - target).square().mean()
             if not finite_tensor(loss, 1):
@@ -134,10 +144,15 @@ class Engine:
     def step(self, frame, observe=True, channel_start=0):
         step_started = time.perf_counter()
         if (type(frame.sequence) is not int or frame.sequence < 0 or
-                not math.isfinite(frame.timestamp) or frame.values.shape != (128, 128) or
-                frame.values.dtype != np.float32 or not np.isfinite(frame.values).all() or
-                np.min(frame.values) < 0 or np.max(frame.values) > 1):
-            raise ValueError("invalid frame: expected monotonic sequence/time and finite float32 [0,1] 128x128")
+                not math.isfinite(frame.timestamp) or frame.values.shape != self.config.input_shape or
+                frame.values.dtype != np.float32 or not np.isfinite(frame.values).all()):
+            raise ValueError(f"invalid frame: expected finite float32 {self.config.input_mode} {self.config.input_shape}")
+        luminance = frame.values if self.config.input_mode == "y" else frame.values[0]
+        if (np.min(luminance) < 0 or np.max(luminance) > 1 or
+                (self.config.input_mode == "ycbcr" and
+                 (np.min(frame.values[1:]) < np.float32(-CHROMA_OFFSET) or
+                  np.max(frame.values[1:]) > np.float32(1-CHROMA_OFFSET)))):
+            raise ValueError("invalid frame range: Y in [0,1], Cb/Cr in [-128/255,127/255]")
         if self.last_sequence is not None and (frame.sequence <= self.last_sequence or frame.timestamp <= self.last_timestamp):
             raise ValueError("frame sequence and timestamps must strictly increase")
         if self.last_sequence is not None:
@@ -153,7 +168,7 @@ class Engine:
         pending = self.pending.pop(frame.sequence, None)
         try:
             transfer_started = time.perf_counter()
-            target = torch.from_numpy(frame.values).to(self.device)[None, None]
+            target = self._tensor(frame.values)
             if self.device.type == "cuda":
                 torch.cuda.synchronize(self.device)
             self.transfer_ms = 1000 * (time.perf_counter() - transfer_started)
@@ -162,16 +177,26 @@ class Engine:
                     self.counts["late_targets"] += 1
                 else:
                     error = (pending.prediction - target).square()
-                    baseline = torch.from_numpy(pending.source.values).to(self.device)[None, None]
+                    baseline = self._tensor(pending.source.values)
+                    baseline_error = (baseline - target).square()
                     result = dict(source=pending.source.sequence, target=frame.sequence,
                                   source_time=pending.source.timestamp, target_time=frame.timestamp,
                                   issued=pending.issued, mse=float(error.mean()),
-                                  baseline_mse=float((baseline - target).square().mean()),
+                                  baseline_mse=float(baseline_error.mean()),
                                   horizon_ms=1000 * (frame.timestamp - pending.source.timestamp),
                                   lead_ms=1000 * (frame.timestamp - pending.issued),
-                                  error=error[0, 0].cpu().numpy().copy() if observe else None)
+                                  error=self._array(error) if observe else None)
+                    names = components(self.config.input_mode)
+                    if self.config.input_mode == "y":
+                        per_model, per_baseline = [result["mse"]], [result["baseline_mse"]]
+                    else:
+                        per_model = error.mean(dim=(0, 2, 3)).cpu().tolist()
+                        per_baseline = baseline_error.mean(dim=(0, 2, 3)).cpu().tolist()
+                    result["component_mse"] = dict(zip(names, per_model))
+                    result["component_baseline_mse"] = dict(zip(names, per_baseline))
                     self.last_result = result
                     self.history.append((result["mse"], result["baseline_mse"]))
+                    self.component_history.append((per_model, per_baseline))
                     self.counts["scores"] += 1
                     if self.training:
                         self._update(pending, target)
@@ -197,7 +222,7 @@ class Engine:
             if observe:
                 observer_started = time.perf_counter()
                 channel_start = max(0, min(channel_start, self.config.channels - 1))
-                result.update(input=owned.values, prediction=prediction[0, 0].cpu().numpy().copy(),
+                result.update(input=owned.values, prediction=self._array(prediction),
                               hidden=hidden[0, channel_start:channel_start+32].cpu().numpy().copy(),
                               channel_start=channel_start)
                 self.observer_ms = 1000 * (time.perf_counter() - observer_started)
@@ -212,7 +237,8 @@ class Engine:
 
     def state(self):
         """No sensory inputs, targets, pending predictions or metric maps are serialized."""
-        return dict(schema=2, architecture="patch-spatial-rnn-v2", config=asdict(self.config),
+        return dict(schema=3, architecture="patch-spatial-rnn-v3", config=asdict(self.config),
+                    sensory=self.config.sensory_contract,
                     model=cpu_copy(self.model.state_dict()),
                     optimizer=cpu_copy(self.optimizer.state_dict()),
                     hidden=cpu_copy(self.hidden), counts=dict(self.counts),
@@ -255,23 +281,34 @@ class Engine:
             raise ValueError("invalid checkpoint archive") from exc
         data = torch.load(path, map_location="cpu", weights_only=True, mmap=True)
         expected = {"schema", "architecture", "config", "model", "optimizer", "hidden", "counts", "training", "torch_version"}
-        if not isinstance(data, dict) or set(data) != expected:
+        if not isinstance(data, dict):
+            raise ValueError("unsupported checkpoint schema or architecture")
+        if set(data) != (expected | {"sensory"} if data.get("schema") == 3 else expected):
             raise ValueError("unsupported checkpoint schema or architecture")
         legacy = data["schema"] == 1 and data["architecture"] == "patch16-spatial-rnn32-v1"
+        config_fields = {"seed", "learning_rate", "horizon", "channels", "grid"}
         if legacy:
             if set(data["config"]) != {"seed", "learning_rate", "horizon"}:
                 raise ValueError("invalid Prototype 1 configuration")
             data["counts"] = {**data["counts"], "skipped_frames": 0, "cleared_targets": 0}
-        elif data["schema"] != 2 or data["architecture"] != "patch-spatial-rnn-v2":
+        elif data["schema"] == 2 and data["architecture"] == "patch-spatial-rnn-v2":
+            if set(data["config"]) != config_fields:
+                raise ValueError("incomplete grayscale architecture configuration")
+        elif data["schema"] == 3 and data["architecture"] == "patch-spatial-rnn-v3":
+            if set(data["config"]) != config_fields | {"input_mode"}:
+                raise ValueError("incomplete sensory architecture configuration")
+        else:
             raise ValueError("unsupported checkpoint schema or architecture")
-        elif set(data["config"]) != {"seed", "learning_rate", "horizon", "channels", "grid"}:
-            raise ValueError("incomplete architecture configuration")
         config = Config(**data["config"])
+        if data["schema"] == 3 and data["sensory"] != config.sensory_contract:
+            raise ValueError("checkpoint sensory shape/normalization contract differs")
         if path.stat().st_size > config.checkpoint_bytes:
             raise ValueError("checkpoint exceeds configuration-sized limit")
         if expected_config is not None and (config.channels, config.grid) != (expected_config.channels, expected_config.grid):
             raise ValueError(f"checkpoint architecture {config.channels}×{config.grid} differs from selected "
                              f"{expected_config.channels}×{expected_config.grid}; launch a matching model explicitly")
+        if expected_config is not None and config.input_mode != expected_config.input_mode:
+            raise ValueError(f"checkpoint input mode {config.input_mode} differs from selected {expected_config.input_mode}")
         candidate = cls(config, device, clock, memory_budget_mib)
         expected_model = candidate.model.state_dict()
         if set(data["model"]) != set(expected_model):
