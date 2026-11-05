@@ -177,6 +177,9 @@ class Runtime:
         elif action == "training":
             self.engine.set_training(value)
             self.notice = ""
+        elif action == "reset_hidden":
+            self.engine.reset_hidden()
+            self.notice = "Transient hidden state reset; weights/Adam and training mode retained. Five-frame warm-up."
         elif action == "reset":
             self.engine = Engine(replace(self.engine.config, seed=secrets.randbits(32)), str(self.engine.device),
                                  memory_budget_mib=self.engine.memory_budget_mib)
@@ -216,9 +219,9 @@ class Runtime:
                         break
                     try:
                         self._command(action, value)
-                        if action in ("load", "reset", "save", "training", "video_restart"):
+                        if action in ("load", "reset", "save", "training", "video_restart", "reset_hidden"):
                             display_result = None
-                        if action in ("load", "reset", "video_restart"):
+                        if action in ("load", "reset", "video_restart", "reset_hidden"):
                             visual = None
                             self.input_statistics = None
                             samples.clear()

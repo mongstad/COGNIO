@@ -13,7 +13,7 @@ import numpy as np
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 import torch
 from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from cognio.engine import Engine
 from cognio.model import Config
@@ -33,6 +33,7 @@ def main():
     parser.add_argument("--input-mode", choices=INPUT_MODES, default="y")
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--screenshot", type=Path, help="synthetic window only")
+    parser.add_argument("--check-hidden-reset", action="store_true", help="exercise confirmed hidden-only reset during frozen phase")
     args = parser.parse_args()
     if args.seconds < 25 or (args.screenshot and args.source in ("camera","video")):
         parser.error("trial must last >=25 seconds; camera/video screenshots are disabled")
@@ -116,6 +117,22 @@ def main():
                     frozen["predictions"] = snap["counts"]["predictions"]
                     frozen["updates"] = snap["counts"]["updates"]
                     actions.append("freeze_snapshot")
+                if args.check_hidden_reset and elapsed >= 11.5 and "reset_hidden" not in actions:
+                    engine = runtime.engine
+                    original_reset = engine.reset_hidden
+                    def checked_reset():
+                        pending = len(engine.pending)
+                        clocks = (engine.last_sequence,engine.last_timestamp,engine.last_media_time,engine.last_segment)
+                        original_reset()
+                        engine.reset_hidden = original_reset
+                        report["hidden_reset"] = dict(zero_hidden=bool(torch.count_nonzero(engine.hidden) == 0),
+                            pending_before=pending,pending_after=len(engine.pending),
+                            clocks_preserved=clocks == (engine.last_sequence,engine.last_timestamp,engine.last_media_time,engine.last_segment),
+                            training=engine.training)
+                    engine.reset_hidden = checked_reset
+                    with patch.object(QMessageBox,"question",return_value=QMessageBox.StandardButton.Yes):
+                        window.reset_hidden()
+                    actions.append("reset_hidden")
                 if elapsed >= 14 and "verify_freeze_save" not in actions:
                     assert all(torch.equal(value, runtime.engine.model.state_dict()[key]) for key, value in frozen["model"].items())
                     for key, state in frozen["optimizer"]["state"].items():
@@ -124,6 +141,9 @@ def main():
                     assert snap["counts"]["updates"] == frozen["updates"]
                     assert snap["counts"]["predictions"] > frozen["predictions"]
                     assert not torch.equal(frozen["hidden"], runtime.engine.hidden)
+                    if args.check_hidden_reset:
+                        reset = report["hidden_reset"]
+                        assert reset["zero_hidden"] and reset["pending_after"] == 0 and reset["clocks_preserved"] and not reset["training"]
                     window.display_range.setValue(.35)
                     if args.channels > 32:
                         window.channel_page.setValue(2)

@@ -144,6 +144,12 @@ is processed imagery, not native C922 measurements; audio is ignored.
   configured spatial grid. Unused cells of a partial page are blank.
 - **Reset to new random model:** confirms discarding unsaved learning, picks a
   fresh seed, clears progress, and pauses training.
+- **Reset transient hidden state only:** an explicit diagnostic action that
+  clears recurrence and pending prediction/error history, retaining learned
+  weights, Adam, training mode and sequence clocks. It does not repair learned
+  weights. Normal restart/restore behavior is unchanged. For a frozen checkpoint
+  comparison, add `--reset-hidden` to a `--checkpoint` launch; omit it for the
+  saved-state reference. See [grid-artifact investigation](docs/GRID_DIAGNOSTICS.md).
 - **Save checkpoint / Restore checkpoint:** explicit local `.pt` files with
   model/config, Adam state, recurrent state, and counters; no raw input images
   or pending targets. Restore begins frozen. Successful save clears pending

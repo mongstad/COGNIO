@@ -102,11 +102,20 @@ class Engine:
 
     def reset_context(self, segment=None):
         """New video pass: retain learned weights/Adam, discard temporal context."""
-        self.flush()
-        self.hidden.zero_()
+        self.reset_hidden()
         self.last_media_time = None
         if segment is not None:
             self.last_segment = segment
+
+    def reset_hidden(self):
+        """Explicit diagnostic reset of transient recurrence, never learned state.
+
+        Keep sequence/media clocks, optimizer, weights, training/fault status and
+        progress. In-flight predictions and their histories belong to the old
+        context and are cleared; five new observations are needed for pairing.
+        """
+        self.flush()
+        self.hidden.zero_()
 
     def _array(self, data):
         planes = data[0, 0] if self.config.input_mode == "y" else data[0]
