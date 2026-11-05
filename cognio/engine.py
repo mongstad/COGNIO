@@ -1,7 +1,7 @@
 """Causal prequential scoring and bounded, one-step recurrent online training."""
 
 from collections import deque
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 import copy
 import math
 import os
@@ -74,6 +74,8 @@ class Engine:
                            skipped_frames=0, cleared_targets=0)
         self.last_sequence = None
         self.last_timestamp = None
+        self.last_media_time = None
+        self.last_segment = None
         self.last_result = None
         self.last_training_loss = None
         self.prediction_ms = self.update_ms = 0.0
@@ -97,6 +99,14 @@ class Engine:
     def _tensor(self, values):
         data = torch.from_numpy(values).to(self.device)
         return data[None, None] if self.config.input_mode == "y" else data[None]
+
+    def reset_context(self, segment=None):
+        """New video pass: retain learned weights/Adam, discard temporal context."""
+        self.flush()
+        self.hidden.zero_()
+        self.last_media_time = None
+        if segment is not None:
+            self.last_segment = segment
 
     def _array(self, data):
         planes = data[0, 0] if self.config.input_mode == "y" else data[0]
@@ -143,6 +153,11 @@ class Engine:
 
     def step(self, frame, observe=True, channel_start=0):
         step_started = time.perf_counter()
+        if (type(frame.segment) is not int or frame.segment < 0 or
+                (frame.media_time is None) != (frame.media_index is None) or
+                (frame.media_time is not None and (not math.isfinite(frame.media_time) or
+                 type(frame.media_index) is not int or frame.media_index < 0))):
+            raise ValueError("invalid media frame metadata")
         if (type(frame.sequence) is not int or frame.sequence < 0 or
                 not math.isfinite(frame.timestamp) or frame.values.shape != self.config.input_shape or
                 frame.values.dtype != np.float32 or not np.isfinite(frame.values).all()):
@@ -155,6 +170,11 @@ class Engine:
             raise ValueError("invalid frame range: Y in [0,1], Cb/Cr in [-128/255,127/255]")
         if self.last_sequence is not None and (frame.sequence <= self.last_sequence or frame.timestamp <= self.last_timestamp):
             raise ValueError("frame sequence and timestamps must strictly increase")
+        if self.last_segment is not None and self.last_segment != frame.segment:
+            self.reset_context(frame.segment)
+        if frame.media_time is not None and self.last_media_time is not None and frame.media_time <= self.last_media_time:
+            raise ValueError("media timestamps must increase within a video pass")
+        self.last_segment, self.last_media_time = frame.segment, frame.media_time
         if self.last_sequence is not None:
             self.counts["skipped_frames"] += frame.sequence - self.last_sequence - 1
         self.last_sequence, self.last_timestamp = frame.sequence, frame.timestamp
@@ -194,6 +214,10 @@ class Engine:
                         per_baseline = baseline_error.mean(dim=(0, 2, 3)).cpu().tolist()
                     result["component_mse"] = dict(zip(names, per_model))
                     result["component_baseline_mse"] = dict(zip(names, per_baseline))
+                    if frame.media_time is not None and pending.source.media_time is not None:
+                        result.update(media_horizon_ms=1000*(frame.media_time-pending.source.media_time),
+                                      source_media_index=pending.source.media_index,
+                                      target_media_index=frame.media_index, segment=frame.segment)
                     self.last_result = result
                     self.history.append((result["mse"], result["baseline_mse"]))
                     self.component_history.append((per_model, per_baseline))
@@ -211,13 +235,15 @@ class Engine:
             issued = self.clock()
             self.prediction_ms = 1000 * (time.perf_counter() - started)
             self.hidden = hidden.detach()
-            owned = Frame(frame.sequence, frame.timestamp, frame.values.copy())
+            owned = replace(frame, values=frame.values.copy())
             target_sequence = frame.sequence + self.config.horizon
             self.pending[target_sequence] = Pending(owned, issued, previous, prediction.detach())
             assert len(self.pending) <= self.config.horizon
             self.counts["predictions"] += 1
             result = dict(source=frame.sequence, target=target_sequence, issued=issued,
                           input_time=frame.timestamp, input_sequence=frame.sequence)
+            if frame.media_time is not None:
+                result.update(media_time=frame.media_time, media_index=frame.media_index, segment=frame.segment)
             self.observer_ms = 0.0
             if observe:
                 observer_started = time.perf_counter()

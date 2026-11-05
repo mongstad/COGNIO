@@ -1,0 +1,370 @@
+{
+  "compute": "CPU selected",
+  "channels": 32,
+  "grid": 8,
+  "input_mode": "ycbcr",
+  "seed": 7,
+  "torch": "2.15.0+cpu",
+  "controls": {
+    "static": {
+      "initial": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.24925210600486025,
+        "delivery_fps": 1373.1174300390676,
+        "mse": 0.03263106242470119,
+        "persistence_mse": 0.0,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          3.5996711219448354
+        ],
+        "minimum_lead_ms": 2.8112279978813604,
+        "sampled_peak_rss_mib": 378.96875,
+        "sampled_peak_decoder_rss_mib": 61.36328125,
+        "rss_first_last_mib": [
+          378.37109375,
+          378.96875
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      },
+      "training": {
+        "training": true,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 600,
+        "counts": {
+          "predictions": 600,
+          "scores": 595,
+          "updates": 595,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 2.174931881003431,
+        "delivery_fps": 296.66337452853287,
+        "mse": 0.0007980068850156385,
+        "persistence_mse": 0.0,
+        "mean_media_wall_horizon_ms": [
+          166.6672268907563,
+          16.894784613444955
+        ],
+        "minimum_lead_ms": 3.552130001480691,
+        "sampled_peak_rss_mib": 386.328125,
+        "sampled_peak_decoder_rss_mib": 61.45703125,
+        "rss_first_last_mib": [
+          385.52734375,
+          386.328125
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      },
+      "frozen": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.24960055299743544,
+        "delivery_fps": 1302.9574319793858,
+        "mse": 0.0002836918610188624,
+        "persistence_mse": 0.0,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          3.800575495520404
+        ],
+        "minimum_lead_ms": 2.9782110068481416,
+        "sampled_peak_rss_mib": 384.84375,
+        "sampled_peak_decoder_rss_mib": 61.265625,
+        "rss_first_last_mib": [
+          384.65625,
+          384.84375
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      }
+    },
+    "moving": {
+      "initial": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.25055639899801463,
+        "delivery_fps": 1373.1495942524953,
+        "mse": 0.03266367870180503,
+        "persistence_mse": 0.011224112060406934,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          3.6367368087192755
+        ],
+        "minimum_lead_ms": 2.7547970094019547,
+        "sampled_peak_rss_mib": 384.84375,
+        "sampled_peak_decoder_rss_mib": 66.40234375,
+        "rss_first_last_mib": [
+          384.84375,
+          384.84375
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      },
+      "training": {
+        "training": true,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 600,
+        "counts": {
+          "predictions": 600,
+          "scores": 595,
+          "updates": 595,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 2.2028343379934086,
+        "delivery_fps": 293.0304534301585,
+        "mse": 0.0077430658787488935,
+        "persistence_mse": 0.011346310088410973,
+        "mean_media_wall_horizon_ms": [
+          166.6672268907563,
+          17.107309956307045
+        ],
+        "minimum_lead_ms": 2.8405179909896106,
+        "sampled_peak_rss_mib": 386.0703125,
+        "sampled_peak_decoder_rss_mib": 61.4296875,
+        "rss_first_last_mib": [
+          385.875,
+          386.0703125
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      },
+      "frozen": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.24983218699344434,
+        "delivery_fps": 1357.194438658368,
+        "mse": 0.007804337678396184,
+        "persistence_mse": 0.011224112060406934,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          3.6704808695029225
+        ],
+        "minimum_lead_ms": 2.882439992390573,
+        "sampled_peak_rss_mib": 386.0703125,
+        "sampled_peak_decoder_rss_mib": 61.44140625,
+        "rss_first_last_mib": [
+          386.0703125,
+          386.0703125
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      }
+    },
+    "color": {
+      "initial": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.2505477380036609,
+        "delivery_fps": 1332.2818981153107,
+        "mse": 0.016514903355551804,
+        "persistence_mse": 0.009164328452037728,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          3.733155843371566
+        ],
+        "minimum_lead_ms": 2.7676669997163117,
+        "sampled_peak_rss_mib": 386.1953125,
+        "sampled_peak_decoder_rss_mib": 61.46484375,
+        "rss_first_last_mib": [
+          386.1953125,
+          386.1953125
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      },
+      "training": {
+        "training": true,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 600,
+        "counts": {
+          "predictions": 600,
+          "scores": 595,
+          "updates": 595,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 2.2222500089992536,
+        "delivery_fps": 290.41278037653314,
+        "mse": 0.000757301867173131,
+        "persistence_mse": 0.009164328454062343,
+        "mean_media_wall_horizon_ms": [
+          166.6672268907563,
+          17.251925287399434
+        ],
+        "minimum_lead_ms": 2.8135979955550283,
+        "sampled_peak_rss_mib": 386.5859375,
+        "sampled_peak_decoder_rss_mib": 61.3828125,
+        "rss_first_last_mib": [
+          386.1953125,
+          386.5859375
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      },
+      "frozen": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.2585986159974709,
+        "delivery_fps": 1287.4578837689394,
+        "mse": 0.0004650304740568137,
+        "persistence_mse": 0.009164328452037728,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          3.8691858087828304
+        ],
+        "minimum_lead_ms": 2.891128999181092,
+        "sampled_peak_rss_mib": 386.6015625,
+        "sampled_peak_decoder_rss_mib": 61.45703125,
+        "rss_first_last_mib": [
+          386.6015625,
+          386.6015625
+        ],
+        "peak_pytorch_vram_mib": 0,
+        "maximum_pending_bound": 5
+      }
+    }
+  },
+  "cadence": {
+    "1.0": {
+      "training": true,
+      "speed": 1.0,
+      "fastest": false,
+      "frames": 30,
+      "counts": {
+        "predictions": 30,
+        "scores": 25,
+        "updates": 25,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 0
+      },
+      "elapsed_s": 1.1459631489997264,
+      "delivery_fps": 29.530451664253267,
+      "mse": 0.02892391361296177,
+      "persistence_mse": 0.010409458540380001,
+      "mean_media_wall_horizon_ms": [
+        166.68,
+        169.28572888020426
+      ],
+      "minimum_lead_ms": 162.5807359960163,
+      "sampled_peak_rss_mib": 386.1328125,
+      "sampled_peak_decoder_rss_mib": 61.0234375,
+      "rss_first_last_mib": [
+        386.1328125,
+        386.1328125
+      ],
+      "peak_pytorch_vram_mib": 0,
+      "maximum_pending_bound": 5
+    },
+    "0.1": {
+      "training": true,
+      "speed": 0.1,
+      "fastest": false,
+      "frames": 30,
+      "counts": {
+        "predictions": 30,
+        "scores": 25,
+        "updates": 25,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 0
+      },
+      "elapsed_s": 9.844907562001026,
+      "delivery_fps": 2.994703246993338,
+      "mse": 0.02892391361296177,
+      "persistence_mse": 0.010409458540380001,
+      "mean_media_wall_horizon_ms": [
+        166.68,
+        1669.081897639553
+      ],
+      "minimum_lead_ms": 1657.5995470047928,
+      "sampled_peak_rss_mib": 386.234375,
+      "sampled_peak_decoder_rss_mib": 61.25390625,
+      "rss_first_last_mib": [
+        386.234375,
+        386.234375
+      ],
+      "peak_pytorch_vram_mib": 0,
+      "maximum_pending_bound": 5
+    }
+  }
+}

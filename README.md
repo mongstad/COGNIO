@@ -121,6 +121,20 @@ contains geometry, loss weighting, evidence and owner steps.
 
 ## Controls and interpretation
 
+Local video files are also supported with the existing model:
+
+```bash
+.venv-cuda/bin/python -m cognio --gui --source video --video-file /path/to/clip.mp4 \
+  --input-mode ycbcr --compute cuda --channels 512 --grid 16 --video-speed 0.1 --video-loop
+```
+
+Video requires FFmpeg/ffprobe, supports sequential paced or fastest-safe headless
+delivery, and provides pause/resume, speed, repeat and restart controls. GUI mode
+opens a file chooser if `--video-file` is omitted. Media and wall-time horizons
+are reported separately; repeated/paused images are never invented as targets.
+See [video contracts, supported formats and owner trial](docs/VIDEO.md). Video
+is processed imagery, not native C922 measurements; audio is ignored.
+
 - **Train online:** off freezes weights and Adam state. Camera capture,
   prediction, scoring, and recurrent activations continue. Transitions clear
   pending pairs and error history so phases are not mixed.

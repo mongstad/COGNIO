@@ -75,3 +75,10 @@ and Display ±; they still affect only the primary actual-state canvas. Launch
 with `--input-mode y` separately and confirm the original grayscale panels.
 The preview assumes BT.601 limited range, clips display RGB and is not calibrated
 sensor color. Exact commands and performed checks are in [RGB_PREVIEW.md](RGB_PREVIEW.md).
+
+For issue #9, use a local SDR video with `--source video --video-file /path/to/clip.mp4`.
+Compare 1× and 0.1× delivery using the separate media/wall horizons. Exercise
+Pause video independently of Train online, repeat/restart with a fresh five-frame
+pairing warm-up, EOF with repeat off, and checkpoint transfer to a matching-mode
+camera/synthetic run. Review color metadata/fallback warnings. The exact protocol,
+backend limits and generated-fixture commands are in [VIDEO.md](VIDEO.md).

@@ -1,0 +1,291 @@
+{
+  "date_local": "2026-11-05",
+  "timezone": "Europe/Oslo",
+  "accepted_base": "c84b8e1acb3c90f1b851fe0fbde1d73e53e8fe24",
+  "branch": "9-add-local-video-file-input-with-controlled-playback-for-continuous-learning",
+  "ffmpeg": "8.1.3",
+  "tests": {
+    "cpu": {
+      "passed": 130,
+      "skipped": 11,
+      "seconds": 47.5,
+      "torch": "2.15.0+cpu"
+    },
+    "cuda": {
+      "passed": 141,
+      "skipped": 0,
+      "seconds": 53.15,
+      "torch": "2.14.1+cu130"
+    },
+    "baseline_cpu": {
+      "passed": 95,
+      "skipped": 9,
+      "seconds": 19.77
+    }
+  },
+  "video_gui": {
+    "source": "video",
+    "input_mode": "ycbcr",
+    "channels": 512,
+    "grid": 16,
+    "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+    "torch": "2.14.1+cu130",
+    "qt_platform": "wayland",
+    "requested_seconds": 30.0,
+    "counts": {
+      "predictions": 679,
+      "scores": 629,
+      "updates": 487,
+      "missed_targets": 0,
+      "late_targets": 0,
+      "skipped_frames": 0,
+      "cleared_targets": 45
+    },
+    "capture": {
+      "frames": 735,
+      "driver_drops": 0,
+      "drained_discards": 0,
+      "bad_frames": 0,
+      "timestamp_kind": "video-delivery-monotonic"
+    },
+    "overwritten": 0,
+    "peak_rss_mib": 2253.05078125,
+    "gui_refreshes": 950,
+    "window_exposed": true,
+    "pending": 5,
+    "history": 10,
+    "actions": [
+      "video_pause",
+      "video_pause_snapshot",
+      "video_resume_slow",
+      "video_speed_restore",
+      "view_6_Y",
+      "view_7_Cb",
+      "view_8_Cr",
+      "view_9_Combined Color (RGB preview)",
+      "freeze",
+      "freeze_snapshot",
+      "view_12_Y",
+      "view_12.5_Cb",
+      "view_13_Cr",
+      "view_13.5_Combined Color (RGB preview)",
+      "verify_freeze_save",
+      "load",
+      "resume"
+    ],
+    "failures": [],
+    "workers_stopped": true,
+    "duration_s": 31.100505959999282,
+    "tick_max_ms": 264.9568009946961,
+    "capture_info": {
+      "video": {
+        "index": 0,
+        "codec_name": "ffv1",
+        "width": 128,
+        "height": 128,
+        "pix_fmt": "yuv444p",
+        "color_range": "tv",
+        "color_space": "smpte170m",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "avg_frame_rate": "30/1",
+        "time_base": "1/1000",
+        "resolved_matrix": "bt601",
+        "resolved_range": "tv",
+        "warnings": [],
+        "output": "128x128 planar BT.601 limited-range YCbCr; area scaling; code-domain SDR"
+      },
+      "warnings": []
+    },
+    "after_22s": {
+      "sample_count": 33,
+      "means": {
+        "input_fps": 27.74028577086323,
+        "prediction_fps": 27.73941751163173,
+        "updates_per_s": 26.453942382788966,
+        "prediction_ms": 0.6022169404649035,
+        "update_ms": 6.232779816579723,
+        "step_ms": 7.186549422013658,
+        "display_ms": 2.1087095149348234,
+        "observer_ms": 0.03934548426927491,
+        "input_age_ms": 59.748340210662164
+      }
+    },
+    "peak_vram_mib": 228.4306640625,
+    "video": {
+      "speed": 1.0,
+      "fastest": false,
+      "paused": false,
+      "loop": true,
+      "eof": false,
+      "segment": 6,
+      "media_index": 14,
+      "media_time": 0.467,
+      "decoded_frames": 15,
+      "decode_wait_ms": 0.21156399452593178,
+      "metadata": {
+        "index": 0,
+        "codec_name": "ffv1",
+        "width": 128,
+        "height": 128,
+        "pix_fmt": "yuv444p",
+        "color_range": "tv",
+        "color_space": "smpte170m",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709",
+        "avg_frame_rate": "30/1",
+        "time_base": "1/1000",
+        "resolved_matrix": "bt601",
+        "resolved_range": "tv",
+        "warnings": [],
+        "output": "128x128 planar BT.601 limited-range YCbCr; area scaling; code-domain SDR"
+      }
+    }
+  },
+  "c922_gui": {
+    "source": "camera",
+    "input_mode": "ycbcr",
+    "channels": 512,
+    "grid": 16,
+    "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+    "torch": "2.14.1+cu130",
+    "qt_platform": "wayland",
+    "requested_seconds": 30.0,
+    "counts": {
+      "predictions": 831,
+      "scores": 810,
+      "updates": 640,
+      "missed_targets": 1,
+      "late_targets": 0,
+      "skipped_frames": 1,
+      "cleared_targets": 15
+    },
+    "capture": {
+      "frames": 892,
+      "driver_drops": 0,
+      "drained_discards": 0,
+      "bad_frames": 0,
+      "timestamp_kind": "driver-monotonic"
+    },
+    "overwritten": 1,
+    "peak_rss_mib": 2268.0,
+    "gui_refreshes": 958,
+    "window_exposed": true,
+    "pending": 4,
+    "history": 300,
+    "actions": [
+      "view_6_Y",
+      "view_7_Cb",
+      "view_8_Cr",
+      "view_9_Combined Color (RGB preview)",
+      "freeze",
+      "freeze_snapshot",
+      "view_12_Y",
+      "view_12.5_Cb",
+      "view_13_Cr",
+      "view_13.5_Combined Color (RGB preview)",
+      "verify_freeze_save",
+      "load",
+      "resume"
+    ],
+    "failures": [],
+    "workers_stopped": true,
+    "duration_s": 30.262647652998567,
+    "tick_max_ms": 257.58982700062916,
+    "controls_restored": {
+      "exposure_auto": true,
+      "exposure_auto_priority": true,
+      "exposure_absolute": true,
+      "focus_auto": true,
+      "white_balance_auto": true,
+      "white_balance_temperature": true
+    },
+    "capture_info": {
+      "mode": {
+        "width": 640,
+        "height": 480,
+        "fourcc": "YUYV",
+        "fps": 30.0,
+        "stride": 1280,
+        "sizeimage": 614400,
+        "colorspace": 8,
+        "ycbcr_encoding": 1,
+        "quantization": 0,
+        "transfer": 1
+      },
+      "controls": {
+        "exposure_auto": {
+          "requested": 1,
+          "actual": 1,
+          "original": 3
+        },
+        "exposure_auto_priority": {
+          "requested": 0,
+          "actual": 0,
+          "original": 1
+        },
+        "exposure_absolute": {
+          "requested": 156,
+          "actual": 156,
+          "original": 250
+        },
+        "focus_auto": {
+          "requested": 0,
+          "actual": 0,
+          "original": 1
+        },
+        "white_balance_auto": {
+          "requested": 0,
+          "actual": 0,
+          "original": 1
+        },
+        "white_balance_temperature": {
+          "requested": 4500,
+          "actual": 4500,
+          "original": 4000
+        }
+      },
+      "warnings": []
+    },
+    "after_22s": {
+      "sample_count": 33,
+      "means": {
+        "input_fps": 29.99982198081616,
+        "prediction_fps": 29.98908281695401,
+        "updates_per_s": 29.847169328394642,
+        "prediction_ms": 0.6233892733386407,
+        "update_ms": 6.632511333340187,
+        "step_ms": 8.186360939307082,
+        "display_ms": 2.4892257881054487,
+        "observer_ms": 0.06350212083127575,
+        "input_age_ms": 103.96747263704046
+      }
+    },
+    "peak_vram_mib": 228.4306640625
+  },
+  "synthetic_video_layout": {
+    "size": [
+      1320,
+      940
+    ],
+    "visually_reviewed": true,
+    "images_committed": false
+  },
+  "owner_video_file_tested": false,
+  "corrected_findings": [
+    "Fixture encoder required explicit input color metadata; corrected without relaxing color tolerances.",
+    "Initial video GUI validator assumed an error map during loop warm-up; corrected to verify intentionally empty views, final trial passed.",
+    "Truncated MKV could make FFmpeg return zero after partial decoding; reject truncation/corruption diagnostics, regression passed.",
+    "Later-pass checkpoint restore could clear saved hidden state; corrected, exact continuation and final visible trial passed."
+  ],
+  "limitations": [
+    "Generated media only; owner pointed camera at video but supplied no local file path.",
+    "8-bit SDR planar YUV only; no HDR/high-bit-depth/RGB/interlaced support, no seek or rotation metadata handling.",
+    "One seed, short repeated stimuli; frozen evaluations are later observations of repeated content, not unfamiliar scenes.",
+    "No long soak, physical disconnect, color calibration, 4K performance validation or universal codec coverage.",
+    "CPU/CUDA suite durations include concurrent test execution. Video learning runs are bounded controls, not controlled cross-backend speed comparisons.",
+    "Application RSS excludes decoder; learning reports separately sample decoder RSS. PyTorch allocation excludes context and other GPU consumers.",
+    "GUI counters rewind on checkpoint restore; media source sequence and capture counters remain per playback runtime.",
+    "Reports contain scalar evidence only; no copyrighted media, camera images, checkpoints or raw temporary logs committed."
+  ]
+}

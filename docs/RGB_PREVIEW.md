@@ -26,6 +26,10 @@ auto-select matrices/ranges for other devices, profiles or synthetic sources.
 Synthetic controls use the same display assumption; they remain analytic model
 measurements, not calibrated color targets.
 
+The [local video source](VIDEO.md) explicitly canonicalizes supported decoded
+YCbCr to BT.601 limited-range model codes before learning. Its metadata-aware
+preprocessing is separate from this fixed display conversion.
+
 For stored model planes `y = Ycode/255`, `cb = (Cbcode−128)/255`,
 `cr = (Crcode−128)/255`, first recover limited-range signal values:
 

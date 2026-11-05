@@ -43,7 +43,8 @@ def select_device(requested):
 
 
 class Runtime:
-    def __init__(self, engine, source="static", camera_path=None, device_notice="", observer=True, display_hz=15):
+    def __init__(self, engine, source="static", camera_path=None, device_notice="", observer=True, display_hz=15,
+                 video_path=None, video_speed=1., video_loop=False, video_paused=False, video_fastest=False):
         self.engine, self.source, self.camera_path = engine, source, camera_path
         self.device_notice = device_notice
         if not 1 <= display_hz <= 30:
@@ -71,9 +72,19 @@ class Runtime:
         self.started = time.monotonic()
         self.peak_rss = 0
         self.revision = 0
+        self.video = None
+        self.video_failed = False
+        self.video_segment = 0
+        if source == "video":
+            if not video_path:
+                raise ValueError("--source video requires --video-file PATH")
+            from .video import VideoPlayback
+            self.video = VideoPlayback(video_path, engine.config.input_mode, self.stop_event,
+                                       video_speed, video_loop, video_paused, video_fastest)
 
     def start(self):
-        for name, target in (("cognio-capture", self._capture), ("cognio-learning", self._work)):
+        workers = [("cognio-learning", self._work)] if self.video else [("cognio-capture", self._capture), ("cognio-learning", self._work)]
+        for name, target in workers:
             thread = threading.Thread(name=name, target=target, daemon=True)
             self.threads.append(thread)
             thread.start()
@@ -153,7 +164,17 @@ class Runtime:
             self.capture_error = f"{type(exc).__name__}: {exc}"
 
     def _command(self, action, value):
-        if action == "training":
+        if action.startswith("video_"):
+            if self.video is None:
+                raise ValueError("Video controls require a video source")
+            self.video.control(action, value)
+            if action == "video_restart":
+                self.engine.reset_context(self.video.segment)
+                self.video_segment = self.video.segment
+                self.capture_error = ""
+                self.video_failed = False
+            self.notice = ""
+        elif action == "training":
             self.engine.set_training(value)
             self.notice = ""
         elif action == "reset":
@@ -195,15 +216,37 @@ class Runtime:
                         break
                     try:
                         self._command(action, value)
-                        if action in ("load", "reset", "save", "training"):
+                        if action in ("load", "reset", "save", "training", "video_restart"):
                             display_result = None
-                        if action in ("load", "reset"):
+                        if action in ("load", "reset", "video_restart"):
                             visual = None
                             self.input_statistics = None
                             samples.clear()
                         self.revision += 1
                     except Exception as exc:
                         self.notice = f"{action} failed; previous state retained: {exc}"
+                if self.video is not None and not self.video_failed:
+                    try:
+                        delivered = self.video.poll()
+                        if self.video.segment != self.video_segment:
+                            self.engine.reset_context(self.video.segment)
+                            self.video_segment = self.video.segment
+                            visual = display_result = None
+                        self.capture_info = dict(video=self.video.info, warnings=self.video.info.get("warnings", []))
+                        if delivered is not None:
+                            stats = dict(frames=self.capture_count+1, driver_drops=0, drained_discards=0,
+                                         bad_frames=0, timestamp_kind="video-delivery-monotonic")
+                            self._publish_frame(delivered, stats)
+                        if self.video.eof:
+                            # No observed target exists for the tail; preserve scored metrics.
+                            self.engine.counts["cleared_targets"] += len(self.engine.pending)
+                            self.engine.pending.clear()
+                    except InterruptedError:
+                        break
+                    except Exception as exc:
+                        self.capture_error = f"Video input: {type(exc).__name__}: {exc}"
+                        self.video_failed = True
+                        self.video.close()
                 with self.lock:
                     frame, self.frame = self.frame, None
                 if frame is not None:
@@ -234,6 +277,7 @@ class Runtime:
                     fps = ((len(capture_times) - 1) / max(capture_times[-1] - capture_times[0], 1e-6)) if len(capture_times) > 1 else 0
                     gpu = self.engine.device.type == "cuda"
                     snap = dict(visual=visual, result=self.engine.last_result, display_result=display_result,
+                                video=self.video.status() if self.video else None,
                                 history=list(self.engine.history), component_history=list(self.engine.component_history),
                                 input_statistics=self.input_statistics, counts=counts, training=self.engine.training,
                                 fault=self.engine.fault, capture_error=self.capture_error, notice=self.notice,
@@ -247,7 +291,8 @@ class Runtime:
                                 observer=self.observer, channel_start=self.channel_start,
                                 capture=capture, capture_info=copy_capture_info(self.capture_info),
                                 overwritten=overwritten, revision=self.revision,
-                                input_fps=fps if capture_times and now - capture_times[-1] < 3 else 0,
+                                input_fps=fps if capture_times and now - capture_times[-1] < 3 and
+                                          not (self.video and (self.video.paused or self.video.eof)) else 0,
                                 prediction_fps=(counts["predictions"] - samples[0][1]) / elapsed,
                                 updates_per_s=(counts["updates"] - samples[0][2]) / elapsed,
                                 prediction_ms=self.engine.prediction_ms, update_ms=self.engine.update_ms,
@@ -268,6 +313,8 @@ class Runtime:
                 self.engine.training = False
                 self.engine.counts["cleared_targets"] += len(self.engine.pending)
                 self.engine.pending.clear()
+        if self.video:
+            self.video.close()
 
 
 def copy_capture_info(info):
