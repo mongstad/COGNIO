@@ -24,7 +24,8 @@ from cognio.runtime import Runtime, select_device
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source", choices=("camera", "moving", "static", "color-moving", "color-static"), default="moving")
+    parser.add_argument("--source", choices=("camera", "video", "moving", "static", "color-moving", "color-static"), default="moving")
+    parser.add_argument("--video-file", type=Path)
     parser.add_argument("--seconds", type=float, default=45)
     parser.add_argument("--compute", choices=("cpu", "auto", "cuda"), default="cpu")
     parser.add_argument("--channels", type=int, default=32)
@@ -33,8 +34,8 @@ def main():
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--screenshot", type=Path, help="synthetic window only")
     args = parser.parse_args()
-    if args.seconds < 25 or (args.screenshot and args.source == "camera"):
-        parser.error("trial must last >=25 seconds; camera screenshots are disabled")
+    if args.seconds < 25 or (args.screenshot and args.source in ("camera","video")):
+        parser.error("trial must last >=25 seconds; camera/video screenshots are disabled")
     torch.set_num_threads(2)
     torch.use_deterministic_algorithms(True)
     torch.backends.cudnn.benchmark = False
@@ -42,7 +43,8 @@ def main():
     torch.backends.cuda.matmul.allow_tf32 = False
     device, notice = select_device(args.compute)
     app = QApplication([])
-    runtime = Runtime(Engine(Config(channels=args.channels, grid=args.grid, input_mode=args.input_mode), device=device), args.source, device_notice=notice)
+    runtime = Runtime(Engine(Config(channels=args.channels, grid=args.grid, input_mode=args.input_mode), device=device), args.source,
+                      device_notice=notice, video_path=args.video_file, video_loop=args.source == "video")
     window = Window(runtime)
     window.show()
     runtime.start()
@@ -64,6 +66,23 @@ def main():
             if snap:
                 if snap["fault"] or snap["capture_error"]:
                     raise AssertionError(snap["fault"] or snap["capture_error"])
+                if args.source == "video":
+                    if elapsed >= 2 and "video_pause" not in actions:
+                        window.video_pause.setChecked(True)
+                        actions.append("video_pause")
+                    if elapsed >= 2.5 and "video_pause_snapshot" not in actions:
+                        assert snap["video"]["paused"]
+                        frozen["paused_counts"] = snap["counts"].copy()
+                        actions.append("video_pause_snapshot")
+                    if elapsed >= 3.5 and "video_resume_slow" not in actions:
+                        assert snap["counts"] == frozen["paused_counts"]
+                        window.video_speed.setValue(.1)
+                        window.video_pause.setChecked(False)
+                        actions.append("video_resume_slow")
+                    if elapsed >= 5.5 and "video_speed_restore" not in actions:
+                        assert snap["video"]["speed"] == .1 and not snap["video"]["paused"]
+                        window.video_speed.setValue(1)
+                        actions.append("video_speed_restore")
                 if args.input_mode == "ycbcr":
                     for at, name in ((6, "Y"), (7, "Cb"), (8, "Cr"), (9, "Combined Color (RGB preview)"),
                                      (12, "Y"), (12.5, "Cb"), (13, "Cr"), (13.5, "Combined Color (RGB preview)")):
@@ -74,11 +93,17 @@ def main():
                                 window.component.setCurrentText(name)
                                 window.refresh()
                             component = window.component.currentData()
-                            np.testing.assert_array_equal(window.input_view.rgb, measurement_rgb(snap["visual"]["input"], component))
-                            np.testing.assert_array_equal(window.prediction_view.rgb, measurement_rgb(snap["visual"]["prediction"], component))
-                            error = snap["display_result"]["error"]
-                            expected = error.mean(axis=0) if component is None else error[component]
-                            np.testing.assert_array_equal(window.error_view.rgb, gray_rgb(expected, .25))
+                            if snap["visual"]:
+                                np.testing.assert_array_equal(window.input_view.rgb, measurement_rgb(snap["visual"]["input"], component))
+                                np.testing.assert_array_equal(window.prediction_view.rgb, measurement_rgb(snap["visual"]["prediction"], component))
+                            else:
+                                assert window.input_view.rgb is None and window.prediction_view.rgb is None
+                            if snap["display_result"]:
+                                error = snap["display_result"]["error"]
+                                expected = error.mean(axis=0) if component is None else error[component]
+                                np.testing.assert_array_equal(window.error_view.rgb, gray_rgb(expected, .25))
+                            else:
+                                assert window.error_view.rgb is None
                             actions.append(action)
                 if elapsed >= 10 and "freeze" not in actions:
                     window.training.setChecked(False)
@@ -122,6 +147,8 @@ def main():
                 record["display_ms"] = window.display_ms
                 record["diagnostic"] = window.component.currentText()
                 record["input_statistics"] = snap["input_statistics"]
+                if snap.get("video"):
+                    record["video"] = snap["video"]
                 if snap["result"]:
                     record.update({key: snap["result"][key] for key in ("mse", "baseline_mse", "horizon_ms", "lead_ms")})
                     record.update({key: snap["result"][key] for key in ("component_mse", "component_baseline_mse")})
@@ -134,6 +161,9 @@ def main():
                               capture_info=snap["capture_info"], peak_rss_mib=snap["peak_rss_mib"],
                               gui_refreshes=window.refresh_count, window_exposed=window.windowHandle().isExposed(),
                               pending=len(runtime.engine.pending), history=len(runtime.engine.history))
+                if args.source == "video":
+                    assert snap["video"]["segment"] > 0
+                    report["video"] = snap["video"]
                 timer.stop()
                 window.close()
         except Exception as exc:

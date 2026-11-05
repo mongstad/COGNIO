@@ -7,6 +7,14 @@ synthetic streams; `model.py` is the neural network; `engine.py` owns pairing,
 learning and checkpoints; `runtime.py` separates capture/learning threads;
 `gui.py` only presents snapshots and sends explicit commands.
 
+`video.py` owns optional local FFmpeg decoding, source color conversion and
+sequential playback. It supplies real monotonic delivery timestamps plus separate
+media PTS/index/segment metadata. Unlike live capture, video delivery happens on
+the learner worker after the preceding step, preserving all frames even in
+fastest mode. New passes clear temporal contexts; the +5 target, issuance guard,
+optimizer and model remain unchanged. [VIDEO.md](VIDEO.md) defines the precise
+pacing, VFR, pause, EOF, resource and source-color contracts.
+
 The V4L2 adapter, area-integration method and camera ABI tests were adapted
 from the same owner's [SENTIO at 4bf7a98](https://github.com/mongstad/SENTIO/tree/4bf7a98c6ed9441c6cda9667d821aff7bc78776f).
 COGNIO imports no SENTIO package, wave solver or learned state. Its layout

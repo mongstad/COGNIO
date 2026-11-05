@@ -2,6 +2,8 @@
 
 from dataclasses import asdict
 import json
+import os
+import select
 import signal
 import sys
 import threading
@@ -17,6 +19,8 @@ def scalar_snapshot(snapshot):
             "reserved_vram_mib", "input_age_ms", "parameters", "hidden_values", "pending", "elapsed_s",
             "input_statistics")
     result = {key: snapshot[key] for key in keys}
+    if snapshot.get("video") is not None:
+        result["video"] = snapshot["video"]
     result["config"] = asdict(snapshot["config"])
     pairs = snapshot["history"]
     result["rolling_mse"] = sum(p[0] for p in pairs)/len(pairs) if pairs else None
@@ -31,7 +35,23 @@ def scalar_snapshot(snapshot):
     return result
 
 
-def run(runtime, seconds=None, interval=1., save_path=None, output=sys.stdout):
+def video_command(line):
+    words = line.split()
+    if words == ["pause"] or words == ["resume"]:
+        return "video_pause", words == ["pause"]
+    if words == ["restart"]:
+        return "video_restart", None
+    if len(words) == 2 and words[0] == "speed":
+        from .video import VideoPlayback
+        speed = float(words[1])
+        VideoPlayback.validate_speed(speed)
+        return "video_speed", speed
+    if len(words) == 2 and words[0] in ("loop", "train") and words[1] in ("on", "off"):
+        return ("video_loop" if words[0] == "loop" else "training"), words[1] == "on"
+    raise ValueError("Use pause, resume, restart, speed 0.1..4, loop on|off, or train on|off")
+
+
+def run(runtime, seconds=None, interval=1., save_path=None, output=sys.stdout, control_input=None):
     stop = threading.Event()
     previous = {}
     if threading.current_thread() is threading.main_thread():
@@ -40,9 +60,24 @@ def run(runtime, seconds=None, interval=1., save_path=None, output=sys.stdout):
     started = time.monotonic()
     next_report = started
     failed = False
+    control_buffer = b""
     runtime.start()
     try:
         while not stop.wait(.02):
+            if control_input is not None and select.select([control_input], [], [], 0)[0]:
+                chunk = os.read(control_input.fileno(), 1024)
+                if not chunk:
+                    control_input = None
+                control_buffer += chunk
+                if len(control_buffer) > 1024:
+                    print(json.dumps(dict(event="control_error", error="Command buffer exceeds 1024 bytes; stdin controls disabled")), file=output, flush=True)
+                    control_buffer, control_input = b"", None
+                while b"\n" in control_buffer:
+                    line, control_buffer = control_buffer.split(b"\n", 1)
+                    try:
+                        runtime.submit(*video_command(line.decode("utf-8")))
+                    except Exception as exc:
+                        print(json.dumps(dict(event="control_error", error=str(exc))), file=output, flush=True)
             now = time.monotonic()
             snapshot = runtime.latest()
             if snapshot is not None:
@@ -50,7 +85,7 @@ def run(runtime, seconds=None, interval=1., save_path=None, output=sys.stdout):
                 if now >= next_report or failed:
                     print(json.dumps(scalar_snapshot(snapshot), allow_nan=False), file=output, flush=True)
                     next_report = now + interval
-            if failed or (seconds is not None and now-started >= seconds):
+            if failed or (snapshot and snapshot.get("video") and snapshot["video"]["eof"]) or (seconds is not None and now-started >= seconds):
                 break
     finally:
         try:

@@ -6,6 +6,11 @@ measurements. It integrates with configurable channels/grid, CUDA, headless
 execution and the optional GUI. The sensory mode is fixed for a model's lifetime;
 GUI Reset starts new random weights in that same mode and architecture.
 
+This document describes the camera measurement path. The optional local video
+source has a separate [decoded-video color contract](VIDEO.md): it canonicalizes
+supported source YCbCr matrices/ranges into compatible model units and does not
+claim native C922 sampling. Camera preprocessing remains unchanged.
+
 ## Measurement and target contract
 
 The accepted capture format remains progressive YUYV 640×480 at 30 FPS.

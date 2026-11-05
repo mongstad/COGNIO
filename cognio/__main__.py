@@ -9,10 +9,16 @@ from .inputs import INPUT_MODES, MODES
 
 def main():
     parser = argparse.ArgumentParser(description="COGNIO: local, randomly initialized online predictive learning")
-    parser.add_argument("--source", choices=("camera", *MODES), default="static",
+    parser.add_argument("--source", choices=("camera", "video", *MODES), default="static",
                         help="default static synthetic control; camera is explicit")
     parser.add_argument("--device", help="V4L2 path, preferably /dev/v4l/by-id/...")
     parser.add_argument("--list-devices", action="store_true")
+    parser.add_argument("--video-file", help="local video path (requires ffmpeg/ffprobe)")
+    parser.add_argument("--video-speed", type=float, default=1., help="paced video speed 0.1..4 (default 1)")
+    parser.add_argument("--video-loop", action="store_true", help="repeat video; clear temporal context between passes")
+    parser.add_argument("--video-paused", action="store_true", help="begin video paused; resume with GUI or headless control")
+    parser.add_argument("--video-fastest", action="store_true", help="sequential unpaced video; retain real wall-clock causality")
+    parser.add_argument("--video-controls", action="store_true", help="headless commands on stdin: pause/resume/restart/speed X/loop on|off/train on|off")
     parser.add_argument("--compute", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--learning-rate", type=float, default=.001)
@@ -47,6 +53,23 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.backends.cuda.matmul.allow_tf32 = False
     try:
+        if args.source != "video" and (args.video_file or args.video_speed != 1 or args.video_loop or args.video_paused or args.video_fastest or args.video_controls):
+            raise ValueError("video options require --source video")
+        if args.gui and args.video_controls:
+            raise ValueError("--video-controls is headless only; use the GUI playback controls")
+        if args.video_paused and not args.gui and not args.video_controls:
+            raise ValueError("--video-paused in headless mode requires --video-controls to resume")
+        if args.source == "video" and args.gui and not args.video_file:
+            from PySide6.QtWidgets import QApplication, QFileDialog
+            app = QApplication.instance() or QApplication(sys.argv[:1])
+            args.video_file, _ = QFileDialog.getOpenFileName(None, "Choose local visual video (audio ignored)")
+            if not args.video_file:
+                return 0
+        if args.source == "video" and not args.video_file:
+            raise ValueError("--source video requires --video-file PATH")
+        if args.source == "video":
+            from .video import VideoPlayback
+            VideoPlayback.validate_speed(args.video_speed)
         if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
             raise ValueError("seconds must be positive and finite")
         if not math.isfinite(args.telemetry_interval) or args.telemetry_interval < .1:
@@ -72,15 +95,18 @@ def main():
             engine.set_training(True)
         elif args.frozen or args.checkpoint:
             engine.set_training(False)
-        runtime = Runtime(engine, args.source, args.device, notice, observer=args.gui, display_hz=args.display_hz)
+        runtime = Runtime(engine, args.source, args.device, notice, observer=args.gui, display_hz=args.display_hz,
+                          video_path=args.video_file, video_speed=args.video_speed, video_loop=args.video_loop,
+                          video_paused=args.video_paused, video_fastest=args.video_fastest)
     except Exception as exc:
         parser.error(str(exc))
     if not args.gui:
         from .headless import run
-        return run(runtime, args.seconds, args.telemetry_interval, args.save_on_exit)
+        return run(runtime, args.seconds, args.telemetry_interval, args.save_on_exit,
+                   control_input=sys.stdin if args.video_controls else None)
     from PySide6.QtWidgets import QApplication
     from .gui import Window
-    app = QApplication(sys.argv[:1])
+    app = QApplication.instance() or QApplication(sys.argv[:1])
     window = Window(runtime)
     window.show()
     runtime.start()

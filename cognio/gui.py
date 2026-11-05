@@ -174,6 +174,31 @@ class Window(QMainWindow):
             button.clicked.connect(action)
             buttons.addWidget(button)
         main.addLayout(buttons)
+        if runtime.video is not None:
+            playback = QHBoxLayout()
+            self.video_pause = QCheckBox("Pause video")
+            self.video_pause.setChecked(runtime.video.paused)
+            self.video_pause.toggled.connect(lambda value: self.send("video_pause", value))
+            playback.addWidget(self.video_pause)
+            self.video_speed = QDoubleSpinBox()
+            self.video_speed.setRange(.1, 4)
+            self.video_speed.setSingleStep(.1)
+            self.video_speed.setValue(runtime.video.speed)
+            self.video_speed.setEnabled(not runtime.video.fastest)
+            self.video_speed.valueChanged.connect(lambda value: self.send("video_speed", value))
+            playback.addWidget(QLabel("Playback ×"))
+            playback.addWidget(self.video_speed)
+            self.video_loop = QCheckBox("Repeat video")
+            self.video_loop.setChecked(runtime.video.loop)
+            self.video_loop.toggled.connect(lambda value: self.send("video_loop", value))
+            playback.addWidget(self.video_loop)
+            restart = QPushButton("Restart video")
+            restart.clicked.connect(lambda: self.send("video_restart"))
+            playback.addWidget(restart)
+            main.addLayout(playback)
+            self.video_label = QLabel()
+            self.video_label.setWordWrap(True)
+            main.addWidget(self.video_label)
         self.origin = QLabel()
         self.origin.setWordWrap(True)
         main.addWidget(self.origin)
@@ -253,6 +278,17 @@ class Window(QMainWindow):
         self.training.setChecked(snap["training"])
         self.training.blockSignals(False)
         self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']} · input: {snap['config'].input_mode}")
+        video = snap.get("video")
+        if video:
+            for control, value in ((self.video_pause, video["paused"]), (self.video_loop, video["loop"]), (self.video_speed, video["speed"])):
+                control.blockSignals(True)
+                control.setValue(value) if control is self.video_speed else control.setChecked(value)
+                control.blockSignals(False)
+            position = f"{video['media_time']:.3f} s" if video["media_time"] is not None else "waiting"
+            state = "EOF · restart to replay" if video["eof"] else "PAUSED · no observations" if video["paused"] else "playing"
+            pace = "fastest sequential" if video["fastest"] else f"requested {video['speed']:g}×"
+            self.video_label.setText(f"Processed local video · {state} · {pace}\n"
+                                     f"Pass {video['segment']+1} · media frame {video['media_index']} · media time {position} · no audio")
         visual, result = snap["visual"], snap.get("display_result", snap["result"])
         component = self.component.currentData()
         name = self.component.currentText()
@@ -277,7 +313,7 @@ class Window(QMainWindow):
             self.input_label.setText(f"1 / Current measured {measurement} snapshot · frame {visual['input_sequence']}\n"
                                      f"{units} · age {1000*(now-visual['input_time']):.0f} ms")
             self.prediction_label.setText(f"2 / Predicted future {measurement} · {visual['source']} → {visual['target']}\n"
-                                          f"Issued {1000*(now-visual['issued']):.0f} ms ago · horizon +5 camera frames")
+                                          f"Issued {1000*(now-visual['issued']):.0f} ms ago · horizon +5 {'video' if video else 'camera'} frames")
         else:
             for view in (self.hidden_view, self.input_view, self.prediction_view):
                 view.clear_image()
@@ -288,6 +324,10 @@ class Window(QMainWindow):
             self.error_label.setText(f"3 / {error_name} · {result['source']} → observed {result['target']}\n"
                                      f"Horizon {result['horizon_ms']:.1f} ms · target age {1000*(now-result['target_time']):.0f} ms"
                                      " · black 0 / white ≥0.25")
+            if "media_horizon_ms" in result:
+                self.error_label.setText(self.error_label.text().replace("Horizon ", "Wall horizon ") +
+                    f"\nMedia horizon {result['media_horizon_ms']:.1f} ms · media frames "
+                    f"{result['source_media_index']} → {result['target_media_index']} · pass {result['segment']+1}")
         else:
             self.error_view.clear_image()
             self.error_label.setText("3 / Matched squared error · waiting for a causal +5 target")

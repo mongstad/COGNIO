@@ -1,0 +1,370 @@
+{
+  "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "channels": 512,
+  "grid": 16,
+  "input_mode": "ycbcr",
+  "seed": 7,
+  "torch": "2.14.1+cu130",
+  "controls": {
+    "static": {
+      "initial": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.2974535090033896,
+        "delivery_fps": 879.7007065957065,
+        "mse": 0.03229638998923094,
+        "persistence_mse": 0.0,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          5.136122408768405
+        ],
+        "minimum_lead_ms": 3.8545349962078035,
+        "sampled_peak_rss_mib": 1836.94921875,
+        "sampled_peak_decoder_rss_mib": 61.2421875,
+        "rss_first_last_mib": [
+          1836.88671875,
+          1836.94921875
+        ],
+        "peak_pytorch_vram_mib": 77.7314453125,
+        "maximum_pending_bound": 5
+      },
+      "training": {
+        "training": true,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 600,
+        "counts": {
+          "predictions": 600,
+          "scores": 595,
+          "updates": 595,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 4.09948149700358,
+        "delivery_fps": 152.41925973823928,
+        "mse": 0.0001776064218817434,
+        "persistence_mse": 0.0,
+        "mean_media_wall_horizon_ms": [
+          166.6672268907563,
+          32.901053949593795
+        ],
+        "minimum_lead_ms": 3.4565579990157858,
+        "sampled_peak_rss_mib": 1997.3984375,
+        "sampled_peak_decoder_rss_mib": 61.3125,
+        "rss_first_last_mib": [
+          1997.15234375,
+          1997.3984375
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      },
+      "frozen": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.28981787999509834,
+        "delivery_fps": 968.6109966981269,
+        "mse": 0.0012717153768829557,
+        "persistence_mse": 0.0,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          5.166104478184539
+        ],
+        "minimum_lead_ms": 3.604261000873521,
+        "sampled_peak_rss_mib": 1997.41796875,
+        "sampled_peak_decoder_rss_mib": 61.1015625,
+        "rss_first_last_mib": [
+          1997.41796875,
+          1997.41796875
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      }
+    },
+    "moving": {
+      "initial": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.2732096460094908,
+        "delivery_fps": 1011.294889101008,
+        "mse": 0.03226732083636782,
+        "persistence_mse": 0.011224112918843393,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          4.9156275043851165
+        ],
+        "minimum_lead_ms": 3.5124900023220107,
+        "sampled_peak_rss_mib": 2015.453125,
+        "sampled_peak_decoder_rss_mib": 61.46484375,
+        "rss_first_last_mib": [
+          2015.453125,
+          2015.453125
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      },
+      "training": {
+        "training": true,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 600,
+        "counts": {
+          "predictions": 600,
+          "scores": 595,
+          "updates": 595,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 4.027252462998149,
+        "delivery_fps": 155.32124342479415,
+        "mse": 0.007745353719219566,
+        "persistence_mse": 0.011346310935914516,
+        "mean_media_wall_horizon_ms": [
+          166.6672268907563,
+          32.27723334791695
+        ],
+        "minimum_lead_ms": 3.7565240054391325,
+        "sampled_peak_rss_mib": 2015.46875,
+        "sampled_peak_decoder_rss_mib": 61.3046875,
+        "rss_first_last_mib": [
+          2015.453125,
+          2015.46875
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      },
+      "frozen": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.28249010400031693,
+        "delivery_fps": 984.0851434723556,
+        "mse": 0.007813991039343502,
+        "persistence_mse": 0.011224112918843393,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          5.0745475304606575
+        ],
+        "minimum_lead_ms": 3.4949900000356138,
+        "sampled_peak_rss_mib": 2015.4921875,
+        "sampled_peak_decoder_rss_mib": 61.30078125,
+        "rss_first_last_mib": [
+          2015.4921875,
+          2015.4921875
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      }
+    },
+    "color": {
+      "initial": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.2807202529947972,
+        "delivery_fps": 994.6289783803983,
+        "mse": 0.015875955930222636,
+        "persistence_mse": 0.009164328686892986,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          5.021554452326635
+        ],
+        "minimum_lead_ms": 3.5726310015888885,
+        "sampled_peak_rss_mib": 2015.6171875,
+        "sampled_peak_decoder_rss_mib": 61.2890625,
+        "rss_first_last_mib": [
+          2015.6171875,
+          2015.6171875
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      },
+      "training": {
+        "training": true,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 600,
+        "counts": {
+          "predictions": 600,
+          "scores": 595,
+          "updates": 595,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 4.134288301007473,
+        "delivery_fps": 150.66686395286308,
+        "mse": 0.0011158752293946841,
+        "persistence_mse": 0.009164328686892986,
+        "mean_media_wall_horizon_ms": [
+          166.6672268907563,
+          33.2741946588513
+        ],
+        "minimum_lead_ms": 3.666443008114584,
+        "sampled_peak_rss_mib": 2015.62109375,
+        "sampled_peak_decoder_rss_mib": 61.1484375,
+        "rss_first_last_mib": [
+          2015.62109375,
+          2015.62109375
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      },
+      "frozen": {
+        "training": false,
+        "speed": 1.0,
+        "fastest": true,
+        "frames": 120,
+        "counts": {
+          "predictions": 120,
+          "scores": 115,
+          "updates": 0,
+          "missed_targets": 0,
+          "late_targets": 0,
+          "skipped_frames": 0,
+          "cleared_targets": 0
+        },
+        "elapsed_s": 0.28668943600496277,
+        "delivery_fps": 962.7763946418506,
+        "mse": 0.0016990285974157894,
+        "persistence_mse": 0.009164328686892986,
+        "mean_media_wall_horizon_ms": [
+          166.6695652173913,
+          5.207352843464595
+        ],
+        "minimum_lead_ms": 3.417348998482339,
+        "sampled_peak_rss_mib": 2015.625,
+        "sampled_peak_decoder_rss_mib": 61.31640625,
+        "rss_first_last_mib": [
+          2015.62109375,
+          2015.625
+        ],
+        "peak_pytorch_vram_mib": 171.55859375,
+        "maximum_pending_bound": 5
+      }
+    }
+  },
+  "cadence": {
+    "1.0": {
+      "training": true,
+      "speed": 1.0,
+      "fastest": false,
+      "frames": 30,
+      "counts": {
+        "predictions": 30,
+        "scores": 25,
+        "updates": 25,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 0
+      },
+      "elapsed_s": 1.1474400750012137,
+      "delivery_fps": 29.55196064594928,
+      "mse": 0.017559264823794364,
+      "persistence_mse": 0.010409459471702576,
+      "mean_media_wall_horizon_ms": [
+        166.68,
+        169.17772431916092
+      ],
+      "minimum_lead_ms": 160.10048399039079,
+      "sampled_peak_rss_mib": 2015.625,
+      "sampled_peak_decoder_rss_mib": 60.97265625,
+      "rss_first_last_mib": [
+        2015.625,
+        2015.625
+      ],
+      "peak_pytorch_vram_mib": 171.55859375,
+      "maximum_pending_bound": 5
+    },
+    "0.1": {
+      "training": true,
+      "speed": 0.1,
+      "fastest": false,
+      "frames": 30,
+      "counts": {
+        "predictions": 30,
+        "scores": 25,
+        "updates": 25,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 0
+      },
+      "elapsed_s": 9.855431420990499,
+      "delivery_fps": 2.994948193883932,
+      "mse": 0.017559264823794364,
+      "persistence_mse": 0.010409459471702576,
+      "mean_media_wall_horizon_ms": [
+        166.68,
+        1669.0981955995085
+      ],
+      "minimum_lead_ms": 1653.5897580033634,
+      "sampled_peak_rss_mib": 2015.6328125,
+      "sampled_peak_decoder_rss_mib": 61.2890625,
+      "rss_first_last_mib": [
+        2015.6328125,
+        2015.6328125
+      ],
+      "peak_pytorch_vram_mib": 171.55859375,
+      "maximum_pending_bound": 5
+    }
+  }
+}

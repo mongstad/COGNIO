@@ -36,6 +36,9 @@ class Frame:
     sequence: int
     timestamp: float
     values: np.ndarray
+    media_time: float | None = None
+    media_index: int | None = None
+    segment: int = 0
 
 
 def extract_y(raw, width, height, stride):
