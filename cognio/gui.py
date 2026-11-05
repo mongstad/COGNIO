@@ -174,6 +174,9 @@ class Window(QMainWindow):
             button.clicked.connect(action)
             buttons.addWidget(button)
         main.addLayout(buttons)
+        hidden_reset = QPushButton("Reset transient hidden state only…")
+        hidden_reset.clicked.connect(self.reset_hidden)
+        main.addWidget(hidden_reset)
         if runtime.video is not None:
             playback = QHBoxLayout()
             self.video_pause = QCheckBox("Pause video")
@@ -257,6 +260,14 @@ class Window(QMainWindow):
     def reset(self):
         if QMessageBox.question(self, "New random model", "Discard unsaved learning and initialize a new random model?") == QMessageBox.StandardButton.Yes:
             self.send("reset")
+
+    def reset_hidden(self):
+        if QMessageBox.question(self, "Reset transient state only",
+                "Clear recurrent hidden state and pending prediction/error history? "
+                "Learned weights, optimizer and training mode are retained. "
+                "This resets transient state, not learned knowledge, and does not repair learned weights. "
+                "Five new observations are needed for pairing.") == QMessageBox.StandardButton.Yes:
+            self.send("reset_hidden")
 
     def save(self):
         path, _ = QFileDialog.getSaveFileName(self, "Save model and optimizer (no images)", "cognio-state.pt", "COGNIO checkpoint (*.pt)")

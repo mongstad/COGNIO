@@ -157,6 +157,16 @@ Restoration freezes training unless CLI `--resume-training` explicitly enables
 it. A live restart has an unreproducible gap
 in observations; retained hidden state does not reconstruct it.
 
+The explicit `reset_hidden()` diagnostic clears only hidden recurrence and
+pending prediction/error histories. It retains learned weights, Adam, training
+and fault status, progress (apart from counting cleared targets), and all input
+sequence/media clocks. CLI `--reset-hidden` requires a checkpoint; the GUI has a
+separate confirmation. Ordinary restore retains the saved hidden state. Video
+pass reset uses the same operation plus its existing media-boundary handling.
+Opt-in scalar diagnostics live in `diagnostics.py` and `tools.investigate_grid`;
+they are not invoked by normal learning or rendering. See
+[GRID_DIAGNOSTICS.md](GRID_DIAGNOSTICS.md) for measurement definitions and limits.
+
 ## Display contract
 
 The primary canvas tiles at most 32 actual hidden channels per selected page

@@ -82,3 +82,11 @@ Pause video independently of Train online, repeat/restart with a fresh five-fram
 pairing warm-up, EOF with repeat off, and checkpoint transfer to a matching-mode
 camera/synthetic run. Review color metadata/fallback warnings. The exact protocol,
 backend limits and generated-fixture commands are in [VIDEO.md](VIDEO.md).
+
+For issue #11, retain good and affected checkpoints as separate originals. Use
+the [frozen A/B protocol](GRID_DIAGNOSTICS.md) to compare saved recurrence with
+zero recurrence using identical generated inputs. Reset transient hidden state
+only is separate from resetting learned weights; it is not a grid-repair claim.
+The diagnostic tool reads checkpoints, verifies their hashes before/after, and
+writes scalar reports to new paths only. Do not overwrite an original checkpoint
+with an experimental continuation.

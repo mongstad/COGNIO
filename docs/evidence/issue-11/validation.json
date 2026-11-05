@@ -1,0 +1,201 @@
+{
+  "date_local": "2026-11-05",
+  "timezone": "Europe/Oslo",
+  "accepted_base": "3f0fb26e7c8623a77b8adf2fec3b7ed14ad08194",
+  "branch": "11-investigate-persistent-prediction-grid-artifacts-after-extended-online-learning",
+  "tests": {
+    "baseline_cpu": {
+      "passed": 130,
+      "skipped": 11,
+      "seconds": 46.73
+    },
+    "cpu": {
+      "passed": 141,
+      "skipped": 13,
+      "seconds": 57.23
+    },
+    "cuda": {
+      "passed": 154,
+      "skipped": 0,
+      "seconds": 64.26
+    }
+  },
+  "trials": {
+    "synthetic-gui": {
+      "source": "color-moving",
+      "channels": 32,
+      "grid": 32,
+      "input_mode": "ycbcr",
+      "compute": "CPU selected",
+      "qt_platform": "offscreen",
+      "duration_s": 25.079719565997948,
+      "counts": {
+        "predictions": 692,
+        "scores": 667,
+        "updates": 502,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 20
+      },
+      "capture": {
+        "frames": 752,
+        "driver_drops": 0,
+        "drained_discards": 0,
+        "bad_frames": 0,
+        "timestamp_kind": "synthetic-monotonic"
+      },
+      "overwritten": 0,
+      "peak_rss_mib": 522.44921875,
+      "gui_refreshes": 799,
+      "window_exposed": true,
+      "actions": [
+        "view_6_Y",
+        "view_7_Cb",
+        "view_8_Cr",
+        "view_9_Combined Color (RGB preview)",
+        "freeze",
+        "freeze_snapshot",
+        "reset_hidden",
+        "view_12_Y",
+        "view_12.5_Cb",
+        "view_13_Cr",
+        "view_13.5_Combined Color (RGB preview)",
+        "verify_freeze_save",
+        "load",
+        "resume",
+        "screenshot"
+      ],
+      "failures": [],
+      "workers_stopped": true,
+      "tick_max_ms": 265.4502959921956,
+      "hidden_reset": {
+        "zero_hidden": true,
+        "pending_before": 5,
+        "pending_after": 0,
+        "clocks_preserved": true,
+        "training": false
+      },
+      "after_22s": {
+        "samples": 13,
+        "mean": {
+          "input_fps": 29.991967601328955,
+          "prediction_fps": 29.950523045441837,
+          "updates_per_s": 29.299445016568175,
+          "prediction_ms": 1.1620586144719989,
+          "update_ms": 5.856216537022892,
+          "step_ms": 9.893440307888131,
+          "display_ms": 2.8398864613756394,
+          "observer_ms": 0.007076999351668816,
+          "input_age_ms": 80.96978138536753
+        }
+      },
+      "peak_pytorch_vram_mib": 0
+    },
+    "c922": {
+      "source": "camera",
+      "channels": 1024,
+      "grid": 32,
+      "input_mode": "ycbcr",
+      "compute": "CUDA training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+      "qt_platform": "wayland",
+      "duration_s": 30.29337810499419,
+      "counts": {
+        "predictions": 823,
+        "scores": 796,
+        "updates": 639,
+        "missed_targets": 2,
+        "late_targets": 0,
+        "skipped_frames": 2,
+        "cleared_targets": 20
+      },
+      "capture": {
+        "frames": 893,
+        "driver_drops": 0,
+        "drained_discards": 0,
+        "bad_frames": 0,
+        "timestamp_kind": "driver-monotonic"
+      },
+      "overwritten": 15,
+      "peak_rss_mib": 2436.44140625,
+      "gui_refreshes": 960,
+      "window_exposed": true,
+      "actions": [
+        "view_6_Y",
+        "view_7_Cb",
+        "view_8_Cr",
+        "view_9_Combined Color (RGB preview)",
+        "freeze",
+        "freeze_snapshot",
+        "reset_hidden",
+        "view_12_Y",
+        "view_12.5_Cb",
+        "view_13_Cr",
+        "view_13.5_Combined Color (RGB preview)",
+        "verify_freeze_save",
+        "load",
+        "resume"
+      ],
+      "failures": [],
+      "workers_stopped": true,
+      "tick_max_ms": 256.27739999617916,
+      "hidden_reset": {
+        "zero_hidden": true,
+        "pending_before": 5,
+        "pending_after": 0,
+        "clocks_preserved": true,
+        "training": false
+      },
+      "after_22s": {
+        "samples": 33,
+        "mean": {
+          "input_fps": 30.003922508197196,
+          "prediction_fps": 29.98731476637821,
+          "updates_per_s": 29.609480083294386,
+          "prediction_ms": 3.245712334649976,
+          "update_ms": 19.183694393811464,
+          "step_ms": 23.499380544914555,
+          "display_ms": 3.4026610003572633,
+          "observer_ms": 0.10621199996394078,
+          "input_age_ms": 127.05341942483122
+        }
+      },
+      "peak_pytorch_vram_mib": 1340.94482421875,
+      "controls_restored": {
+        "exposure_auto": true,
+        "exposure_auto_priority": true,
+        "exposure_absolute": true,
+        "focus_auto": true,
+        "white_balance_auto": true,
+        "white_balance_temperature": true
+      },
+      "mode": {
+        "width": 640,
+        "height": 480,
+        "fourcc": "YUYV",
+        "fps": 30.0,
+        "stride": 1280,
+        "sizeimage": 614400,
+        "colorspace": 8,
+        "ycbcr_encoding": 1,
+        "quantization": 0,
+        "transfer": 1
+      }
+    }
+  },
+  "owner_checkpoint_sha256": "86dbf9871e4ac0d5580113d0da1441c076eff3ef38ba93a5c685560f4620252d",
+  "owner_checkpoint_unchanged": true,
+  "owner_known_good_checkpoint_available": false,
+  "synthetic_layout_visually_reviewed": true,
+  "images_committed": false,
+  "limitations": [
+    "One affected owner checkpoint, no known-good historical comparison or original scene sequence.",
+    "Fresh-model uniform collapse is distinct from the partial periodic owner artifact.",
+    "900 training frames plus 120 frozen per fresh case; no million-update or multi-day reproduction.",
+    "Lower experimental learning rate tested on one seed at 1024x32; no default or recovery recommendation.",
+    "CPU/CUDA suites and some diagnostic jobs overlapped; durations are not speed comparisons.",
+    "Live GUI uses a new random model and two CPU threads, not adaptation of the owner checkpoint.",
+    "Application RSS includes framework/validator copies; PyTorch allocations omit driver context.",
+    "Scalar reports only; no owner imagery, prediction images or checkpoint payload committed."
+  ]
+}

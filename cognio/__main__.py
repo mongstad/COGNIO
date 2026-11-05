@@ -24,6 +24,8 @@ def main():
     parser.add_argument("--learning-rate", type=float, default=.001)
     parser.add_argument("--threads", type=int, default=2, choices=range(1, 9))
     parser.add_argument("--checkpoint", help="explicitly restore this checkpoint; begins with training frozen")
+    parser.add_argument("--reset-hidden", action="store_true",
+                        help="with --checkpoint: clear transient recurrent state only; retain learned weights/Adam")
     parser.add_argument("--frozen", action="store_true")
     parser.add_argument("--resume-training", action="store_true", help="explicitly enable training after --checkpoint restore")
     parser.add_argument("--channels", type=int, help="new model channels (default 32); restore must match")
@@ -78,6 +80,8 @@ def main():
             raise ValueError("--seconds and --save-on-exit are headless options; use GUI checkpoint controls")
         if args.resume_training and (not args.checkpoint or args.frozen):
             raise ValueError("--resume-training requires --checkpoint and cannot be combined with --frozen")
+        if args.reset_hidden and not args.checkpoint:
+            raise ValueError("--reset-hidden requires --checkpoint; new models already start with zero hidden state")
         device, notice = select_device(args.compute)
         if args.checkpoint:
             engine = Engine.load(args.checkpoint, device, memory_budget_mib=args.memory_budget_mib)
@@ -95,6 +99,9 @@ def main():
             engine.set_training(True)
         elif args.frozen or args.checkpoint:
             engine.set_training(False)
+        if args.reset_hidden:
+            engine.reset_hidden()
+            engine.origin += " · transient hidden state explicitly reset; learned weights/Adam retained"
         runtime = Runtime(engine, args.source, args.device, notice, observer=args.gui, display_hz=args.display_hz,
                           video_path=args.video_file, video_speed=args.video_speed, video_loop=args.video_loop,
                           video_paused=args.video_paused, video_fastest=args.video_fastest)
