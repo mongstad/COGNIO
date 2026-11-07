@@ -22,7 +22,7 @@ from cognio.resources import check_budget
 from cognio.runtime import Runtime
 
 
-@pytest.mark.parametrize("grid", [8, 16, 32])
+@pytest.mark.parametrize("grid", [8, 16, 32, 64])
 def test_general_patch_order(grid):
     x = torch.arange(128**2, dtype=torch.float32).reshape(1, 1, 128, 128)
     patches = patchify(x, grid)
@@ -33,7 +33,7 @@ def test_general_patch_order(grid):
 
 
 @pytest.mark.parametrize("channels", [32, 128, 256, 512, 1024, 2048])
-@pytest.mark.parametrize("grid", [8, 16, 32])
+@pytest.mark.parametrize("grid", [8, 16, 32, 64])
 def test_all_requested_architectures_on_meta_device(channels, grid):
     config = Config(channels=channels, grid=grid)
     # Shape/parameter validation without allocating enormous untested CPU models.
@@ -118,6 +118,7 @@ def test_version1_migration_and_architecture_mismatch(tmp_path):
     old["schema"], old["architecture"] = 1, "patch16-spatial-rnn32-v1"
     old.pop("sensory")
     old["config"].pop("input_mode")
+    old["config"].pop("topology")
     old["config"].pop("channels")
     old["config"].pop("grid")
     old["counts"].pop("skipped_frames")
@@ -126,7 +127,7 @@ def test_version1_migration_and_architecture_mismatch(tmp_path):
     torch.save(old, path)
     restored = Engine.load(path)
     assert restored.config == Config()
-    assert restored.state()["schema"] == 3
+    assert restored.state()["schema"] == 4
     with pytest.raises(ValueError, match="architecture"):
         Engine.load(path, expected_config=Config(channels=128, grid=16))
 

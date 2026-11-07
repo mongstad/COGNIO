@@ -207,3 +207,14 @@ def test_reset_hidden_cli_opt_in_and_default_restore(tmp_path):
         assert state_digest(restored.optimizer.state_dict()) == state_digest(engine.optimizer.state_dict())
         assert torch.equal(restored.hidden,torch.zeros_like(engine.hidden) if reset else engine.hidden)
         assert not restored.training
+
+
+def test_grid64_nyquist_axis_energy_is_not_counted_twice():
+    y, x = np.mgrid[:128, :128]
+    for wave in ((-1.)**x, (-1.)**x + (-1.)**y):
+        stats = periodicity(wave, 64)
+        assert stats["lattice_energy_fraction"] == pytest.approx(1)
+        assert stats["fundamental_axis_energy_fraction"] == pytest.approx(1)
+    checker = periodicity((-1.)**(x+y), 64)
+    assert checker["lattice_energy_fraction"] == pytest.approx(1)
+    assert checker["fundamental_axis_energy_fraction"] == pytest.approx(0)

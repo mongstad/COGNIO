@@ -1,0 +1,86 @@
+{
+  "issue": 14,
+  "accepted_main": "950d350156af57d906747ad17aa8badb57c56dc0",
+  "branch": "14-add-pre-training-setup-screen-and-configurable-standardtoroidal-recurrent-topology",
+  "date": "2026-11-07",
+  "tests": [
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q",
+      "passed": 170,
+      "skipped": 18,
+      "seconds": 69.82
+    },
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv-cuda/bin/python -m pytest -q",
+      "passed": 188,
+      "skipped": 0,
+      "seconds": 79.92,
+      "access": "host GPU"
+    },
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q tests/test_setup.py",
+      "passed": 8,
+      "skipped": 0,
+      "seconds": 4.47,
+      "note": "after fixed-footer presentation adjustment"
+    },
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv-cuda/bin/python -m pytest -q tests/test_grid_diagnostics.py tests/test_setup.py",
+      "passed": 22,
+      "skipped": 0,
+      "seconds": 15.11,
+      "note": "final changed-path verification after footer layout and grid-64 Nyquist-bin correction"
+    }
+  ],
+  "default_setup": {
+    "channels": "1024",
+    "grid": "32",
+    "topology": "toroidal",
+    "input_mode": "ycbcr",
+    "source": "camera",
+    "compute": "cuda",
+    "capacity": "18,993,200 learned parameters \u00b7 1,048,576 recurrent values\nAdditional working allowance: 1,402 MiB CPU RAM and GPU VRAM\nApproximate total process RAM: 2,195 MiB (current RSS + allowance)\nCurrent safe budget: 3,346 MiB \u00b7 host available: 34,244 MiB \u00b7 GPU free: 5,576 MiB\nPreflight budget fits. Exact CUDA forward/backward/Adam check runs on Start. Estimates are conservative allowances, not peak-memory or speed guarantees.\nCannot start: No unique C922 available. Refresh/select a device or choose another source.",
+    "qt_platform": "wayland",
+    "model_calls": 0,
+    "start_calls": 0
+  },
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3070 Ti",
+    "camera_devices": [],
+    "camera_nodes_present": false,
+    "camera_test": "unavailable; host discovery and /dev/video* and /dev/v4l/by-id checks found no device"
+  },
+  "capacity": {
+    "cuda": {
+      "cases": 20,
+      "complete": 20
+    },
+    "cpu": {
+      "cases": 20,
+      "complete": 16,
+      "time_limit": 4,
+      "note": "1536x32 cases: 10 finite updates each; no final frozen phase"
+    }
+  },
+  "gui_trials": [
+    "setup-gui-cuda.json",
+    "setup-video-gui.json"
+  ],
+  "development_failures": [
+    "visible sandbox launch aborted before validation; host Wayland trials passed",
+    "new CLI test selected a checkpoint-save event instead of telemetry; assertion fixed and full suites passed"
+  ],
+  "limitations": [
+    "no physical C922 validation",
+    "single seed and short synthetic controls only; no general toroidal superiority",
+    "CPU large models fit memory but are slow",
+    "memory estimates are allowances, not exact peaks or OOM guarantees",
+    "no long-run stability, unplug/replug, or human mouse-interaction verification"
+  ],
+  "images_or_checkpoints_committed": false,
+  "final_checks": [
+    "git diff --check",
+    "python -m cognio --help",
+    "python -m py_compile cognio/*.py tools/validate_setup.py"
+  ]
+}

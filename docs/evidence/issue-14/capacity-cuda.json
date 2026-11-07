@@ -1,0 +1,2752 @@
+{
+  "torch": "2.14.1+cu130",
+  "cuda_runtime": "13.0",
+  "cudnn": 92400,
+  "device": "cuda",
+  "notice": "CUDA exact-size training probe passed \u00b7 NVIDIA GeForce RTX 3070 Ti \u00b7 32\u00d78 y standard \u00b7 torch 2.14.1+cu130 / runtime 13.0",
+  "threads": 2,
+  "precision": "float32, TF32 off",
+  "results": [
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 32,
+        "grid": 8,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 68992,
+      "hidden_values": 2048,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.0018362690025242046,
+      "allocation_guard": {
+        "estimated_working_mib": 516.1318359375,
+        "budget_mib": 3379.2374992370605,
+        "host_available_mib": 33932.3203125,
+        "host_budget_mib": 16966.16015625,
+        "gpu_free_mib": 5632.0625,
+        "gpu_budget_mib": 3379.2374999999997
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.051116741000441834,
+          "updates": 0,
+          "mse": 0.008355097525886127,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.023325879818626813,
+            "Cb": 0.0008155038513775383,
+            "Cr": 0.0009239080362021923
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.396051970004919,
+          "updates": 75,
+          "mse": 0.011632055112471184,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.031096735907097658,
+            "Cb": 0.0019730437073546153,
+            "Cr": 0.0018263849445308248
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.047859999001957476,
+          "updates": 0,
+          "mse": 0.010276369564235211,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.025436402910522054,
+            "Cb": 0.0025906607375613283,
+            "Cr": 0.0028020443793918405
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.49559162800142076,
+      "predictions_per_s": 322.84645454007006,
+      "updates_per_s": 151.33427556565783,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.47434280670131557,
+          "p95": 0.6633640499785542,
+          "maximum": 0.9157249951385893
+        },
+        "update_ms": {
+          "mean": 3.8797337464833013,
+          "p95": 4.199147297913441,
+          "maximum": 5.660349997924641
+        },
+        "step_ms": {
+          "mean": 2.769677079777466,
+          "p95": 5.000854952231748,
+          "maximum": 6.5454249997856095
+        },
+        "transfer_ms": {
+          "mean": 0.08577411300696743,
+          "p95": 0.14954299949749839,
+          "maximum": 0.2833739999914542
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 100.88951704377189,
+      "peak_rss_mib": 1789.34765625,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 1.7802734375,
+      "peak_vram_mib": 8.13916015625,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 845205,
+      "checkpoint_limit_bytes": 1098752
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 32,
+        "grid": 8,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 68992,
+      "hidden_values": 2048,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.0014383830057340674,
+      "allocation_guard": {
+        "estimated_working_mib": 516.1318359375,
+        "budget_mib": 3379.949999809265,
+        "host_available_mib": 33929.3671875,
+        "host_budget_mib": 16964.68359375,
+        "gpu_free_mib": 5633.25,
+        "gpu_budget_mib": 3379.95
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.0407400449985289,
+          "updates": 0,
+          "mse": 0.048892358477626525,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.1451636701822281,
+            "Cb": 0.0007138980452769569,
+            "Cr": 0.0007994998312954391
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.36509474299964495,
+          "updates": 75,
+          "mse": 0.0213387845021983,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.06091817499448856,
+            "Cb": 0.0013645665328173588,
+            "Cr": 0.0017336101222705717
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.040913117001764476,
+          "updates": 0,
+          "mse": 0.004988761339336634,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.014945552072354725,
+            "Cb": 8.89991169970017e-06,
+            "Cr": 1.1831652227556332e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.44724896200204967,
+      "predictions_per_s": 357.74258543559625,
+      "updates_per_s": 167.69183692293575,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.4649639604516172,
+          "p95": 0.6669855505606385,
+          "maximum": 0.7860020050429739
+        },
+        "update_ms": {
+          "mean": 3.7320454266349166,
+          "p95": 4.013013000803767,
+          "maximum": 4.2205280042253435
+        },
+        "step_ms": {
+          "mean": 2.683917853185752,
+          "p95": 4.821739498220268,
+          "maximum": 5.035329995735083
+        },
+        "transfer_ms": {
+          "mean": 0.08638665356556885,
+          "p95": 0.18150010146200557,
+          "maximum": 0.5105780001031235
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 100.61510215376138,
+      "peak_rss_mib": 1791.52734375,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 1.7802734375,
+      "peak_vram_mib": 8.13916015625,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 845205,
+      "checkpoint_limit_bytes": 1098752
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 32,
+        "grid": 8,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 68992,
+      "hidden_values": 2048,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.0014640329973190092,
+      "allocation_guard": {
+        "estimated_working_mib": 516.2325439453125,
+        "budget_mib": 3378.75,
+        "host_available_mib": 33919.46875,
+        "host_budget_mib": 16959.734375,
+        "gpu_free_mib": 5631.25,
+        "gpu_budget_mib": 3378.75
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.054470564995426685,
+          "updates": 0,
+          "mse": 0.008440867917878287,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.02342461086809635,
+            "Cb": 0.0008852541479947312,
+            "Cr": 0.0010127376532182097
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.4495536890026415,
+          "updates": 75,
+          "mse": 0.010424365103244782,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.027067329213023187,
+            "Cb": 0.0020212317258119583,
+            "Cr": 0.0021845333580859006
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.050525681996077765,
+          "updates": 0,
+          "mse": 0.00909815084721361,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022652827948331834,
+            "Cb": 0.0021265553310513496,
+            "Cr": 0.00251506825110742
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.5550515229988378,
+      "predictions_per_s": 288.26152775070403,
+      "updates_per_s": 135.12259113314252,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.5405997931666207,
+          "p95": 0.7841290494980055,
+          "maximum": 1.1499289976200089
+        },
+        "update_ms": {
+          "mean": 4.516323053103406,
+          "p95": 5.347496497415704,
+          "maximum": 6.378732003213372
+        },
+        "step_ms": {
+          "mean": 3.19281988646253,
+          "p95": 6.09504804779135,
+          "maximum": 7.286147003469523
+        },
+        "transfer_ms": {
+          "mean": 0.11248056660406291,
+          "p95": 0.4051979954965639,
+          "maximum": 0.6712110043736175
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 97.28826561586246,
+      "peak_rss_mib": 1791.9609375,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 1.7802734375,
+      "peak_vram_mib": 8.1484375,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 845205,
+      "checkpoint_limit_bytes": 1098752
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 32,
+        "grid": 8,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 68992,
+      "hidden_values": 2048,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.001419002001057379,
+      "allocation_guard": {
+        "estimated_working_mib": 516.2325439453125,
+        "budget_mib": 3380.0625,
+        "host_available_mib": 33909.3359375,
+        "host_budget_mib": 16954.66796875,
+        "gpu_free_mib": 5633.4375,
+        "gpu_budget_mib": 3380.0625
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.04385615399951348,
+          "updates": 0,
+          "mse": 0.04896270249571119,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14532439495835986,
+            "Cb": 0.0007366870147442179,
+            "Cr": 0.0008270212565548718
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.4352534889985691,
+          "updates": 75,
+          "mse": 0.02127589556698998,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.06055362328886986,
+            "Cb": 0.0014026052870273512,
+            "Cr": 0.001871457139471507
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.045699722999415826,
+          "updates": 0,
+          "mse": 0.004972137790173292,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.014892133511602878,
+            "Cb": 9.539643464709765e-06,
+            "Cr": 1.4739658113934899e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.5253141259963741,
+      "predictions_per_s": 304.57966401821903,
+      "updates_per_s": 142.77171750854018,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.5382431395507107,
+          "p95": 0.8110105478408509,
+          "maximum": 1.0917269974015653
+        },
+        "update_ms": {
+          "mean": 4.47280457301531,
+          "p95": 4.932644001382869,
+          "maximum": 5.752342003688682
+        },
+        "step_ms": {
+          "mean": 3.174311920253482,
+          "p95": 5.852814050376764,
+          "maximum": 7.020263001322746
+        },
+        "transfer_ms": {
+          "mean": 0.09474733305978589,
+          "p95": 0.17020595259964455,
+          "maximum": 0.7534119940828532
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 100.89201370603527,
+      "peak_rss_mib": 1791.96875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 1.7802734375,
+      "peak_vram_mib": 8.1484375,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 845205,
+      "checkpoint_limit_bytes": 1098752
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 512,
+        "grid": 16,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 4925632,
+      "hidden_values": 131072,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.01934097999765072,
+      "allocation_guard": {
+        "estimated_working_mib": 717.14794921875,
+        "budget_mib": 3378.7124996185303,
+        "host_available_mib": 33907.03515625,
+        "host_budget_mib": 16953.517578125,
+        "gpu_free_mib": 5631.1875,
+        "gpu_budget_mib": 3378.7125
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.05999457400321262,
+          "updates": 0,
+          "mse": 0.007689542709184544,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022708134619253022,
+            "Cb": 0.00016328327058415327,
+            "Cr": 0.00019720938206384224
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.6067299130008905,
+          "updates": 75,
+          "mse": 0.010699259755201638,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.029045025010903676,
+            "Cb": 0.0014499833844214057,
+            "Cr": 0.0016027699199427541
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.05524020700249821,
+          "updates": 0,
+          "mse": 0.002272218289518995,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.004821980092674494,
+            "Cb": 0.0010894427641427943,
+            "Cr": 0.0009052318038551935
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.7224866320029832,
+      "predictions_per_s": 221.45738469433624,
+      "updates_per_s": 103.80814907547011,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.6391857007596021,
+          "p95": 1.1588590023166034,
+          "maximum": 1.5218440021271817
+        },
+        "update_ms": {
+          "mean": 6.247728026355617,
+          "p95": 6.81178730155807,
+          "maximum": 10.432516995933838
+        },
+        "step_ms": {
+          "mean": 4.24648117327403,
+          "p95": 7.875276554841547,
+          "maximum": 11.895640993316192
+        },
+        "transfer_ms": {
+          "mean": 0.13735887997124033,
+          "p95": 0.4098960511328181,
+          "maximum": 0.7348020008066669
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 96.887605803772,
+      "peak_rss_mib": 1812.81640625,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 60.310546875,
+      "peak_vram_mib": 171.5595703125,
+      "beats_persistence_frozen": true,
+      "checkpoint_bytes": 59642581,
+      "checkpoint_limit_bytes": 59896064
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 512,
+        "grid": 16,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 4925632,
+      "hidden_values": 131072,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.018934334002551623,
+      "allocation_guard": {
+        "estimated_working_mib": 717.14794921875,
+        "budget_mib": 3378.8624992370605,
+        "host_available_mib": 33750.203125,
+        "host_budget_mib": 16875.1015625,
+        "gpu_free_mib": 5631.4375,
+        "gpu_budget_mib": 3378.8624999999997
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.050065244002325926,
+          "updates": 0,
+          "mse": 0.04866383107645171,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14583399082933154,
+            "Cb": 7.240082018792497e-05,
+            "Cr": 8.509684058870854e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.5542413599978318,
+          "updates": 75,
+          "mse": 0.010642886875818174,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.03145121096322934,
+            "Cb": 0.0002563407852994715,
+            "Cr": 0.00022110806114142178
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.04657518800377147,
+          "updates": 0,
+          "mse": 0.004652522344674383,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.01381849931286914,
+            "Cb": 7.009139101553177e-05,
+            "Cr": 6.897583776403086e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.6514260510011809,
+      "predictions_per_s": 245.61498539104318,
+      "updates_per_s": 115.1320244020515,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.6038824268034659,
+          "p95": 1.004572497549816,
+          "maximum": 3.324053999676835
+        },
+        "update_ms": {
+          "mean": 5.869131346213787,
+          "p95": 6.418603000929579,
+          "maximum": 6.6381259966874495
+        },
+        "step_ms": {
+          "mean": 3.991860279929824,
+          "p95": 7.360494498789194,
+          "maximum": 8.376154997677077
+        },
+        "transfer_ms": {
+          "mean": 0.13722387341355594,
+          "p95": 0.4665595533879235,
+          "maximum": 0.8447939981124364
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 98.24599415641723,
+      "peak_rss_mib": 1873.8046875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 60.310546875,
+      "peak_vram_mib": 171.5595703125,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 59642581,
+      "checkpoint_limit_bytes": 59896064
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 512,
+        "grid": 16,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 4925632,
+      "hidden_values": 131072,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.01590048499929253,
+      "allocation_guard": {
+        "estimated_working_mib": 722.2203369140625,
+        "budget_mib": 3379.3125,
+        "host_available_mib": 33713.7734375,
+        "host_budget_mib": 16856.88671875,
+        "gpu_free_mib": 5632.1875,
+        "gpu_budget_mib": 3379.3125
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.05749150300107431,
+          "updates": 0,
+          "mse": 0.007701646776071616,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022718223290784018,
+            "Cb": 0.00017477673931612765,
+            "Cr": 0.00021194015654535698
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.5657299039958161,
+          "updates": 75,
+          "mse": 0.01259052420190225,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.034226696155965325,
+            "Cb": 0.001730099065656153,
+            "Cr": 0.001814776209842724
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.05241935099911643,
+          "updates": 0,
+          "mse": 0.0017785025960100548,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.0037750451359897853,
+            "Cb": 0.0006686395167240075,
+            "Cr": 0.0008918229473887809
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.676154177999706,
+      "predictions_per_s": 236.63242083829817,
+      "updates_per_s": 110.92144726795226,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.6290997469235057,
+          "p95": 0.80076849735633,
+          "maximum": 3.696830004628282
+        },
+        "update_ms": {
+          "mean": 5.9616744266046835,
+          "p95": 6.42753629872459,
+          "maximum": 7.264596999448258
+        },
+        "step_ms": {
+          "mean": 3.98703965950214,
+          "p95": 7.388324098064912,
+          "maximum": 8.37368499924196
+        },
+        "transfer_ms": {
+          "mean": 0.09236231984687038,
+          "p95": 0.150638000559411,
+          "maximum": 0.3173750010319054
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.08982622603749,
+      "peak_rss_mib": 1857.1015625,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 60.310546875,
+      "peak_vram_mib": 173.5244140625,
+      "beats_persistence_frozen": true,
+      "checkpoint_bytes": 59642581,
+      "checkpoint_limit_bytes": 59896064
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 512,
+        "grid": 16,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 4925632,
+      "hidden_values": 131072,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.01859677799802739,
+      "allocation_guard": {
+        "estimated_working_mib": 722.2203369140625,
+        "budget_mib": 3371.7749996185303,
+        "host_available_mib": 33594.7265625,
+        "host_budget_mib": 16797.36328125,
+        "gpu_free_mib": 5619.625,
+        "gpu_budget_mib": 3371.775
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.046925353999540675,
+          "updates": 0,
+          "mse": 0.04867769224303109,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.145871279495103,
+            "Cb": 7.466710792089413e-05,
+            "Cr": 8.712284408310162e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.535469087997626,
+          "updates": 75,
+          "mse": 0.010450551186998685,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.030834297413627306,
+            "Cb": 0.00026288046357573575,
+            "Cr": 0.0002544744485779423
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.04843689800327411,
+          "updates": 0,
+          "mse": 0.004590525278555495,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.013768152599888188,
+            "Cb": 1.5039508038431189e-06,
+            "Cr": 1.918846445343141e-06
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.6314068389983731,
+      "predictions_per_s": 253.40238673026514,
+      "updates_per_s": 118.78236877981178,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.6199457735056058,
+          "p95": 0.7298815038666361,
+          "maximum": 3.386874006537255
+        },
+        "update_ms": {
+          "mean": 5.7717822935471,
+          "p95": 6.031009304570034,
+          "maximum": 6.375463002768811
+        },
+        "step_ms": {
+          "mean": 3.880363373706738,
+          "p95": 6.974396001169225,
+          "maximum": 7.572141999844462
+        },
+        "transfer_ms": {
+          "mean": 0.09174989337528434,
+          "p95": 0.14626649899582844,
+          "maximum": 0.36959499993827194
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.77718977504173,
+      "peak_rss_mib": 1874.5,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 60.310546875,
+      "peak_vram_mib": 173.5244140625,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 59642581,
+      "checkpoint_limit_bytes": 59896064
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1024,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 18993200,
+      "hidden_values": 1048576,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.07478600100148469,
+      "allocation_guard": {
+        "estimated_working_mib": 1365.7830810546875,
+        "budget_mib": 3369.7124996185303,
+        "host_available_mib": 33580.05078125,
+        "host_budget_mib": 16790.025390625,
+        "gpu_free_mib": 5616.1875,
+        "gpu_budget_mib": 3369.7125
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.15969101399969077,
+          "updates": 0,
+          "mse": 0.007607862779072353,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.02254352644085884,
+            "Cb": 0.00016265490287748564,
+            "Cr": 0.0001174068294598588
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 1.7360962180027855,
+          "updates": 75,
+          "mse": 0.00870341513150682,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.01777251855780681,
+            "Cb": 0.003921406709511454,
+            "Cr": 0.004416319550558304
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.14519045100314543,
+          "updates": 0,
+          "mse": 0.007497140246310405,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.021199151341404234,
+            "Cb": 0.0004479911003727466,
+            "Cr": 0.0008442778107044952
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 2.0415703920007218,
+      "predictions_per_s": 78.37104252045962,
+      "updates_per_s": 36.736426181465454,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 3.01758906658506,
+          "p95": 3.5176014989701794,
+          "maximum": 4.11359599820571
+        },
+        "update_ms": {
+          "mean": 18.706941226458486,
+          "p95": 20.27613329992164,
+          "maximum": 20.551169996906538
+        },
+        "step_ms": {
+          "mean": 12.834746240550885,
+          "p95": 23.813903501286404,
+          "maximum": 24.866189996828325
+        },
+        "transfer_ms": {
+          "mean": 0.12708654006322226,
+          "p95": 0.24458909974782642,
+          "maximum": 0.7202620035968721
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 97.96380315057453,
+      "peak_rss_mib": 1857.3515625,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 242.306640625,
+      "peak_vram_mib": 877.2705078125,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 232129557,
+      "checkpoint_limit_bytes": 232383040
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1024,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 18993200,
+      "hidden_values": 1048576,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.07289440000022296,
+      "allocation_guard": {
+        "estimated_working_mib": 1365.7830810546875,
+        "budget_mib": 3378.824999809265,
+        "host_available_mib": 33336.40234375,
+        "host_budget_mib": 16668.201171875,
+        "gpu_free_mib": 5631.375,
+        "gpu_budget_mib": 3378.825
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.1446218420023797,
+          "updates": 0,
+          "mse": 0.04816498149718557,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14438810305935995,
+            "Cb": 7.043800266858723e-05,
+            "Cr": 3.640136580673113e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 1.6866358240004047,
+          "updates": 75,
+          "mse": 0.008646838143467903,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.024289280970891315,
+            "Cb": 0.0009611276784805038,
+            "Cr": 0.0006901049265798065
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.1469721000030404,
+          "updates": 0,
+          "mse": 0.0045680534892848556,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.013663601981742041,
+            "Cb": 1.9273195253585334e-05,
+            "Cr": 2.1285154486707014e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 1.9788749159997678,
+      "predictions_per_s": 80.85402402463865,
+      "updates_per_s": 37.900323761549366,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 3.0232841799928187,
+          "p95": 3.517100501630921,
+          "maximum": 3.7177299964241683
+        },
+        "update_ms": {
+          "mean": 18.290566719855025,
+          "p95": 19.21541860283469,
+          "maximum": 19.73128800455015
+        },
+        "step_ms": {
+          "mean": 12.630087746899031,
+          "p95": 22.863978602254065,
+          "maximum": 23.713161004707217
+        },
+        "transfer_ms": {
+          "mean": 0.12206847342895344,
+          "p95": 0.24357250113098383,
+          "maximum": 0.3926659992430359
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.55151708033627,
+      "peak_rss_mib": 1807.84765625,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 242.306640625,
+      "peak_vram_mib": 877.2705078125,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 232129557,
+      "checkpoint_limit_bytes": 232383040
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1024,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 18993200,
+      "hidden_values": 1048576,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.07184735300688772,
+      "allocation_guard": {
+        "estimated_working_mib": 1401.943359375,
+        "budget_mib": 3374.0625,
+        "host_available_mib": 33090.41015625,
+        "host_budget_mib": 16545.205078125,
+        "gpu_free_mib": 5623.4375,
+        "gpu_budget_mib": 3374.0625
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.15748286899906816,
+          "updates": 0,
+          "mse": 0.007612132547157151,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022545952137027467,
+            "Cb": 0.00016791180075545397,
+            "Cr": 0.00012253346877904342
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 1.9391618879963062,
+          "updates": 75,
+          "mse": 0.008944811203206579,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.01804210923612118,
+            "Cb": 0.004211410781523834,
+            "Cr": 0.004580912699845309
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.15363296699797502,
+          "updates": 0,
+          "mse": 0.004631750751286745,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.012047977479440825,
+            "Cb": 0.0008435564099012741,
+            "Cr": 0.0010037177441907781
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 2.250863463996211,
+      "predictions_per_s": 71.08383185354744,
+      "updates_per_s": 33.320546181350366,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 3.131126726511866,
+          "p95": 3.617769498305279,
+          "maximum": 3.700269997352734
+        },
+        "update_ms": {
+          "mean": 21.371113546774723,
+          "p95": 22.171194301336072,
+          "maximum": 22.91420799883781
+        },
+        "step_ms": {
+          "mean": 14.267337412942046,
+          "p95": 25.78768349994789,
+          "maximum": 26.816051002242602
+        },
+        "transfer_ms": {
+          "mean": 0.12733625349937938,
+          "p95": 0.26393100088171195,
+          "maximum": 0.6088999944040552
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 98.18454274771251,
+      "peak_rss_mib": 1807.85546875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 242.306640625,
+      "peak_vram_mib": 879.3359375,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 232129557,
+      "checkpoint_limit_bytes": 232383040
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1024,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 18993200,
+      "hidden_values": 1048576,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.07624627400218742,
+      "allocation_guard": {
+        "estimated_working_mib": 1401.943359375,
+        "budget_mib": 3367.6875,
+        "host_available_mib": 33694.6484375,
+        "host_budget_mib": 16847.32421875,
+        "gpu_free_mib": 5612.8125,
+        "gpu_budget_mib": 3367.6875
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.15115461800451158,
+          "updates": 0,
+          "mse": 0.04818205769572939,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14443742973463877,
+            "Cb": 7.126700563406172e-05,
+            "Cr": 3.747331876573818e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 1.9484211559974938,
+          "updates": 75,
+          "mse": 0.008603620566427708,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.024139489519099395,
+            "Cb": 0.0009392806103763481,
+            "Cr": 0.0007320906249272715
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.1447491240032832,
+          "updates": 0,
+          "mse": 0.004592936738793339,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.013668737321027687,
+            "Cb": 3.1351339982523185e-05,
+            "Cr": 7.872119354682842e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 2.2449266080002417,
+      "predictions_per_s": 71.27181771992377,
+      "updates_per_s": 33.40866455621427,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 3.1614589132368565,
+          "p95": 3.67133845029457,
+          "maximum": 3.8531919999513775
+        },
+        "update_ms": {
+          "mean": 21.616503933716256,
+          "p95": 22.5934640984633,
+          "maximum": 23.214972999994643
+        },
+        "step_ms": {
+          "mean": 14.421523066557711,
+          "p95": 26.321303550503217,
+          "maximum": 27.156826996360905
+        },
+        "transfer_ms": {
+          "mean": 0.11385295991203748,
+          "p95": 0.20489150301727888,
+          "maximum": 0.32480500522069633
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.78054480789321,
+      "peak_rss_mib": 1807.85546875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 242.306640625,
+      "peak_vram_mib": 879.3359375,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 232129557,
+      "checkpoint_limit_bytes": 232383040
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1536,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 42645552,
+      "hidden_values": 1572864,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.16545751699595712,
+      "allocation_guard": {
+        "estimated_working_mib": 2332.0487060546875,
+        "budget_mib": 3396.6749992370605,
+        "host_available_mib": 33802.39453125,
+        "host_budget_mib": 16901.197265625,
+        "gpu_free_mib": 5661.125,
+        "gpu_budget_mib": 3396.6749999999997
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.29529539199575083,
+          "updates": 0,
+          "mse": 0.007727273952748095,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022833385265299252,
+            "Cb": 0.00024304995604325087,
+            "Cr": 0.00010538624763804754
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 3.469077305002429,
+          "updates": 75,
+          "mse": 0.012514801664898793,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.02549469539274772,
+            "Cb": 0.007497432208620012,
+            "Cr": 0.004552275930764154
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.30078358000173466,
+          "updates": 0,
+          "mse": 0.004208302803869759,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.011989912656801088,
+            "Cb": 0.00033142576991979566,
+            "Cr": 0.0003035693155002913
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 4.0657865070024855,
+      "predictions_per_s": 39.352779523576245,
+      "updates_per_s": 18.446615401676365,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 6.626585399790201,
+          "p95": 7.391630048732621,
+          "maximum": 8.085749999736436
+        },
+        "update_ms": {
+          "mean": 37.934715493271746,
+          "p95": 39.55193899964797,
+          "maximum": 41.3669449990266
+        },
+        "step_ms": {
+          "mean": 26.09374682685787,
+          "p95": 46.7215737025981,
+          "maximum": 49.285691005934495
+        },
+        "transfer_ms": {
+          "mean": 0.15249181994780278,
+          "p95": 0.24457850049657281,
+          "maximum": 0.521617999766022
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 98.62790368096292,
+      "peak_rss_mib": 1808.16796875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 524.986328125,
+      "peak_vram_mib": 1907.6904296875,
+      "beats_persistence_frozen": true,
+      "checkpoint_bytes": 518054933,
+      "checkpoint_limit_bytes": 518308416
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1536,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 42645552,
+      "hidden_values": 1572864,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.1615453750055167,
+      "allocation_guard": {
+        "estimated_working_mib": 2332.0487060546875,
+        "budget_mib": 3387.75,
+        "host_available_mib": 33706.21484375,
+        "host_budget_mib": 16853.107421875,
+        "gpu_free_mib": 5646.25,
+        "gpu_budget_mib": 3387.75
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.28832393899938324,
+          "updates": 0,
+          "mse": 0.0482317712690149,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14458190373011998,
+            "Cb": 6.906970156705938e-05,
+            "Cr": 4.433380402458299e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 3.5191420890041627,
+          "updates": 75,
+          "mse": 0.009053776965787014,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.02388864511003097,
+            "Cb": 0.0016144060232909396,
+            "Cr": 0.0016582789197370099
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.30706492099852767,
+          "updates": 0,
+          "mse": 0.0046620745877070085,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.013605464515941483,
+            "Cb": 0.00013603274419438094,
+            "Cr": 0.0002447262352299211
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 4.115193149998959,
+      "predictions_per_s": 38.8803135522425,
+      "updates_per_s": 18.22514697761367,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 6.671013693655065,
+          "p95": 7.473857050354126,
+          "maximum": 8.41580599808367
+        },
+        "update_ms": {
+          "mean": 38.7118085466985,
+          "p95": 40.09501850086963,
+          "maximum": 41.194231002009474
+        },
+        "step_ms": {
+          "mean": 26.605408453178825,
+          "p95": 47.655289999966044,
+          "maximum": 48.50870899826987
+        },
+        "transfer_ms": {
+          "mean": 0.19964373932452872,
+          "p95": 0.40593750018160757,
+          "maximum": 0.9242449959856458
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.14479955821832,
+      "peak_rss_mib": 1810.63671875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 524.986328125,
+      "peak_vram_mib": 1907.6904296875,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 518054933,
+      "checkpoint_limit_bytes": 518308416
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1536,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 42645552,
+      "hidden_values": 1572864,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.16784997500508325,
+      "allocation_guard": {
+        "estimated_working_mib": 2386.271484375,
+        "budget_mib": 3291.5249996185303,
+        "host_available_mib": 33856.5390625,
+        "host_budget_mib": 16928.26953125,
+        "gpu_free_mib": 5485.875,
+        "gpu_budget_mib": 3291.525
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.33161638499586843,
+          "updates": 0,
+          "mse": 0.0077398094880793775,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022851940084780965,
+            "Cb": 0.00025907034827728887,
+            "Cr": 0.00010841756073724745
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 4.2662110649980605,
+          "updates": 75,
+          "mse": 0.01274320675060153,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.026357828080654143,
+            "Cb": 0.007423569574311842,
+            "Cr": 0.004448221473139711
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.3217154259982635,
+          "updates": 0,
+          "mse": 0.004455091591392245,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.012964455331010477,
+            "Cb": 0.00019402445925931845,
+            "Cr": 0.00020679437563688095
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 4.920147245997214,
+      "predictions_per_s": 32.519351962518606,
+      "updates_per_s": 15.243446232430596,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 7.38587995331424,
+          "p95": 8.362444999875152,
+          "maximum": 10.673721997591201
+        },
+        "update_ms": {
+          "mean": 47.51434146659449,
+          "p95": 53.77137970499461,
+          "maximum": 57.782707997830585
+        },
+        "step_ms": {
+          "mean": 31.72752295358805,
+          "p95": 61.9932052992226,
+          "maximum": 65.62666399986483
+        },
+        "transfer_ms": {
+          "mean": 0.1733668864471838,
+          "p95": 0.4450629952771123,
+          "maximum": 0.7743120004306547
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 98.98077753591596,
+      "peak_rss_mib": 1810.64453125,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 524.986328125,
+      "peak_vram_mib": 1911.6748046875,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 518054933,
+      "checkpoint_limit_bytes": 518308416
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 1536,
+        "grid": 32,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 42645552,
+      "hidden_values": 1572864,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.16731060600432102,
+      "allocation_guard": {
+        "estimated_working_mib": 2386.271484375,
+        "budget_mib": 3378.1499996185303,
+        "host_available_mib": 33746.13671875,
+        "host_budget_mib": 16873.068359375,
+        "gpu_free_mib": 5630.25,
+        "gpu_budget_mib": 3378.15
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.319132635006099,
+          "updates": 0,
+          "mse": 0.04819334074854851,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14446426246847424,
+            "Cb": 7.144534850210351e-05,
+            "Cr": 4.4310713980978887e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 3.8441630880042794,
+          "updates": 75,
+          "mse": 0.009060506969690322,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.023869309363265832,
+            "Cb": 0.0015567414055112749,
+            "Cr": 0.0017554694349625304
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.2885243230048218,
+          "updates": 0,
+          "mse": 0.004594802550439324,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.013666637348277229,
+            "Cb": 7.775262513730143e-05,
+            "Cr": 4.0017077325111524e-05
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 4.452453625999624,
+      "predictions_per_s": 35.93524232699409,
+      "updates_per_s": 16.84464484077848,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 6.92127671999818,
+          "p95": 7.861018549738218,
+          "maximum": 8.79780099785421
+        },
+        "update_ms": {
+          "mean": 42.98284301379075,
+          "p95": 45.12690550109255,
+          "maximum": 49.27372100064531
+        },
+        "step_ms": {
+          "mean": 28.884966400122114,
+          "p95": 52.35189829982118,
+          "maximum": 57.870730001013726
+        },
+        "transfer_ms": {
+          "mean": 0.12640997345442884,
+          "p95": 0.23957905068527857,
+          "maximum": 0.5869290034752339
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.27110692832122,
+      "peak_rss_mib": 1811.0234375,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 524.986328125,
+      "peak_vram_mib": 1911.6748046875,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 518054933,
+      "checkpoint_limit_bytes": 518308416
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 128,
+        "grid": 64,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 300556,
+      "hidden_values": 524288,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.004283048998331651,
+      "allocation_guard": {
+        "estimated_working_mib": 588.7153015136719,
+        "budget_mib": 3449.9624996185303,
+        "host_available_mib": 33987.70703125,
+        "host_budget_mib": 16993.853515625,
+        "gpu_free_mib": 5749.9375,
+        "gpu_budget_mib": 3449.9625
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.06759099599730689,
+          "updates": 0,
+          "mse": 0.007964975905737706,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.02244636459009988,
+            "Cb": 0.00054114040935279,
+            "Cr": 0.0009074215111987931
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.42518748799921013,
+          "updates": 75,
+          "mse": 0.011770130821193258,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.031256701511641345,
+            "Cb": 0.0025726570608094333,
+            "Cr": 0.0014810329865819463
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.0462817739971797,
+          "updates": 0,
+          "mse": 0.006583441487912621,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.016826897008078438,
+            "Cb": 0.0017639768542721868,
+            "Cr": 0.00115944977982768
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.5395604539953638,
+      "predictions_per_s": 296.53767027443195,
+      "updates_per_s": 139.00203294114,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.4709368266533905,
+          "p95": 0.6499099996290167,
+          "maximum": 0.717490998795256
+        },
+        "update_ms": {
+          "mean": 4.332957053557038,
+          "p95": 4.6787693005171604,
+          "maximum": 6.716567004332319
+        },
+        "step_ms": {
+          "mean": 2.996940180164529,
+          "p95": 5.466941949634929,
+          "maximum": 7.566412001324352
+        },
+        "transfer_ms": {
+          "mean": 0.08907023332236956,
+          "p95": 0.1424315032636514,
+          "maximum": 1.1062480043619871
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 100.08146371762062,
+      "peak_rss_mib": 1812.203125,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 17.2763671875,
+      "peak_vram_mib": 42.65087890625,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 5745109,
+      "checkpoint_limit_bytes": 5998736
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 128,
+        "grid": 64,
+        "input_mode": "ycbcr",
+        "topology": "standard"
+      },
+      "parameters": 300556,
+      "hidden_values": 524288,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.00215373399987584,
+      "allocation_guard": {
+        "estimated_working_mib": 588.7153015136719,
+        "budget_mib": 3449.9624996185303,
+        "host_available_mib": 33991.18359375,
+        "host_budget_mib": 16995.591796875,
+        "gpu_free_mib": 5749.9375,
+        "gpu_budget_mib": 3449.9625
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.03872086200135527,
+          "updates": 0,
+          "mse": 0.048721994991813386,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14521041895662035,
+            "Cb": 0.0003826200088951737,
+            "Cr": 0.00057294503702516
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.41650396800105227,
+          "updates": 75,
+          "mse": 0.008796771919975677,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.0255205903823177,
+            "Cb": 0.000592701451096218,
+            "Cr": 0.0002770228778050902
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.0410811499968986,
+          "updates": 0,
+          "mse": 0.003976213433114546,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.011595644003578594,
+            "Cb": 0.00020575987125214722,
+            "Cr": 0.0001272359158195156
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.4967814279953018,
+      "predictions_per_s": 322.0732317745042,
+      "updates_per_s": 150.97182739429886,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.469527533374882,
+          "p95": 0.6925714995304588,
+          "maximum": 0.953435999690555
+        },
+        "update_ms": {
+          "mean": 4.37859004023873,
+          "p95": 4.9038596989703365,
+          "maximum": 5.070931998488959
+        },
+        "step_ms": {
+          "mean": 3.0047037802190366,
+          "p95": 5.715449000854278,
+          "maximum": 6.116488999396097
+        },
+        "transfer_ms": {
+          "mean": 0.08389909358811565,
+          "p95": 0.14720650033268598,
+          "maximum": 0.28887399821542203
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 100.64788492953257,
+      "peak_rss_mib": 1816.79296875,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 17.2763671875,
+      "peak_vram_mib": 42.65087890625,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 5745109,
+      "checkpoint_limit_bytes": 5998736
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 128,
+        "grid": 64,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 300556,
+      "hidden_values": 524288,
+      "device": "cuda",
+      "stimulus": "moving",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.002176904999942053,
+      "allocation_guard": {
+        "estimated_working_mib": 605.8638610839844,
+        "budget_mib": 3452.8125,
+        "host_available_mib": 34012.00390625,
+        "host_budget_mib": 17006.001953125,
+        "gpu_free_mib": 5754.6875,
+        "gpu_budget_mib": 3452.8125
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.04949707400373882,
+          "updates": 0,
+          "mse": 0.007968514252986227,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.022439266741275787,
+            "Cb": 0.0005382267392373511,
+            "Cr": 0.0009280479887300836
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.47879985900362954,
+          "updates": 75,
+          "mse": 0.011218156727651755,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.02936319138854742,
+            "Cb": 0.002661794424057007,
+            "Cr": 0.0016294832393759862
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.051610089001769666,
+          "updates": 0,
+          "mse": 0.006563240835177047,
+          "persistence_mse": 0.00439339829608798,
+          "component_mse": {
+            "Y": 0.016571837184684617,
+            "Cb": 0.0020000016183725424,
+            "Cr": 0.0011178834164249046
+          },
+          "component_persistence_mse": {
+            "Y": 0.013180194422602654,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.5804037190027884,
+      "predictions_per_s": 275.67018397969866,
+      "updates_per_s": 129.22039874048374,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.531837439436155,
+          "p95": 0.7279939971340352,
+          "maximum": 1.0208259991486557
+        },
+        "update_ms": {
+          "mean": 4.980968853245334,
+          "p95": 5.509536302997731,
+          "maximum": 5.910885003686417
+        },
+        "step_ms": {
+          "mean": 3.3732968131759358,
+          "p95": 6.303675000526709,
+          "maximum": 6.7774780036415905
+        },
+        "transfer_ms": {
+          "mean": 0.08457025357832511,
+          "p95": 0.17358599943690933,
+          "maximum": 0.24750400189077482
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 99.93044169264047,
+      "peak_rss_mib": 1816.8359375,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 16.41015625,
+      "peak_vram_mib": 42.6875,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 5745109,
+      "checkpoint_limit_bytes": 5998736
+    },
+    {
+      "config": {
+        "seed": 7,
+        "learning_rate": 0.001,
+        "horizon": 5,
+        "channels": 128,
+        "grid": 64,
+        "input_mode": "ycbcr",
+        "topology": "toroidal"
+      },
+      "parameters": 300556,
+      "hidden_values": 524288,
+      "device": "cuda",
+      "stimulus": "shape",
+      "observer": false,
+      "clock": "unpaced, virtual 30 Hz",
+      "requested_train_frames": 80,
+      "requested_evaluation_frames": 40,
+      "initialization_s": 0.0024621599950478412,
+      "allocation_guard": {
+        "estimated_working_mib": 605.8638610839844,
+        "budget_mib": 3449.9249992370605,
+        "host_available_mib": 34061.69921875,
+        "host_budget_mib": 17030.849609375,
+        "gpu_free_mib": 5749.875,
+        "gpu_budget_mib": 3449.9249999999997
+      },
+      "status": "complete",
+      "phases": [
+        {
+          "phase": "initial_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.04329148500255542,
+          "updates": 0,
+          "mse": 0.04878206391419683,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.14538504140717642,
+            "Cb": 0.00037933637338158273,
+            "Cr": 0.0005818094692326017
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "training",
+          "frames": 80,
+          "pairs": 75,
+          "wall_s": 0.46190086700516986,
+          "updates": 75,
+          "mse": 0.008684333687027295,
+          "persistence_mse": 0.0038842418359126894,
+          "component_mse": {
+            "Y": 0.025155951790511607,
+            "Cb": 0.0006249177910891983,
+            "Cr": 0.0002721305536397267
+          },
+          "component_persistence_mse": {
+            "Y": 0.011652725406456739,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        },
+        {
+          "phase": "final_frozen",
+          "frames": 40,
+          "pairs": 35,
+          "wall_s": 0.042362080996099394,
+          "updates": 0,
+          "mse": 0.0037752625133310046,
+          "persistence_mse": 0.003670287784604755,
+          "component_mse": {
+            "Y": 0.010921694544543113,
+            "Cb": 0.00019940537562693601,
+            "Cr": 0.00020468723918643913
+          },
+          "component_persistence_mse": {
+            "Y": 0.011010863278560074,
+            "Cb": 0.0,
+            "Cr": 0.0
+          }
+        }
+      ],
+      "wall_s": 0.5480497600001399,
+      "predictions_per_s": 291.9442935253893,
+      "updates_per_s": 136.8488875900262,
+      "counts": {
+        "predictions": 160,
+        "scores": 145,
+        "updates": 75,
+        "missed_targets": 0,
+        "late_targets": 0,
+        "skipped_frames": 0,
+        "cleared_targets": 10
+      },
+      "timings": {
+        "prediction_ms": {
+          "mean": 0.5174427263167066,
+          "p95": 0.6621349966735578,
+          "maximum": 0.7465320013579912
+        },
+        "update_ms": {
+          "mean": 4.93022972009688,
+          "p95": 5.29771130240988,
+          "maximum": 5.808902998978738
+        },
+        "step_ms": {
+          "mean": 3.3330481594020966,
+          "p95": 6.186713049100945,
+          "maximum": 6.758709001587704
+        },
+        "transfer_ms": {
+          "mean": 0.08104916036245413,
+          "p95": 0.14038045046618206,
+          "maximum": 0.36826599534833804
+        },
+        "observer_ms": {
+          "mean": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        }
+      },
+      "cpu_percent": 98.53119906481872,
+      "peak_rss_mib": 1816.84375,
+      "decoder_bias_changed": true,
+      "pending": 5,
+      "history": 35,
+      "vram_mib": 16.41015625,
+      "peak_vram_mib": 42.6875,
+      "beats_persistence_frozen": false,
+      "checkpoint_bytes": 5745109,
+      "checkpoint_limit_bytes": 5998736
+    }
+  ],
+  "microbench": []
+}

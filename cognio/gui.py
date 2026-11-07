@@ -123,7 +123,7 @@ class ErrorPlot(QWidget):
 
 
 class Window(QMainWindow):
-    def __init__(self, runtime):
+    def __init__(self, runtime, new_session=None):
         super().__init__()
         self.runtime = runtime
         self.setWindowTitle("COGNIO · online predictive learning · Prototype 1")
@@ -173,6 +173,10 @@ class Window(QMainWindow):
             button = QPushButton(label)
             button.clicked.connect(action)
             buttons.addWidget(button)
+        if new_session is not None:
+            button = QPushButton("Stop / New Session…")
+            button.clicked.connect(new_session)
+            buttons.addWidget(button)
         main.addLayout(buttons)
         hidden_reset = QPushButton("Reset transient hidden state only…")
         hidden_reset.clicked.connect(self.reset_hidden)
@@ -215,7 +219,7 @@ class Window(QMainWindow):
         self.status.setWordWrap(True)
         self.status.setStyleSheet("color: #f3b665;")
         main.addWidget(self.status)
-        privacy = QLabel("Local only · camera activated only with --source camera · no image recording\n"
+        privacy = QLabel("Local only · camera active only in camera sessions · no image recording\n"
                          "Patterns and lower prediction error do not establish recognition or consciousness.")
         privacy.setWordWrap(True)
         main.addWidget(privacy)
@@ -288,7 +292,7 @@ class Window(QMainWindow):
         self.training.blockSignals(True)
         self.training.setChecked(snap["training"])
         self.training.blockSignals(False)
-        self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']} · input: {snap['config'].input_mode}")
+        self.origin.setText(f"{snap['origin']}\n{snap['compute']} · source: {snap['source']} · input: {snap['config'].input_mode} · topology: {snap['config'].topology}")
         video = snap.get("video")
         if video:
             for control, value in ((self.video_pause, video["paused"]), (self.video_loop, video["loop"]), (self.video_speed, video["speed"])):

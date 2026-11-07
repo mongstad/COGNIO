@@ -7,6 +7,10 @@ from torch import nn
 from .inputs import CHROMA_OFFSET, components, sensory_contract
 
 
+GRIDS = (8, 16, 32, 64)
+TOPOLOGIES = ("standard", "toroidal")
+
+
 @dataclass(frozen=True)
 class Config:
     seed: int = 7
@@ -15,9 +19,12 @@ class Config:
     channels: int = 32
     grid: int = 8
     input_mode: str = "y"
+    topology: str = "standard"
 
     def __post_init__(self):
         components(self.input_mode)
+        if self.topology not in TOPOLOGIES:
+            raise ValueError("topology must be standard or toroidal")
         if type(self.seed) is not int or not 0 <= self.seed < 2**32:
             raise ValueError("seed must be a uint32")
         if not math.isfinite(self.learning_rate) or not 1e-6 <= self.learning_rate <= .01:
@@ -26,8 +33,8 @@ class Config:
             raise ValueError("Prototype 1 requires a five-frame horizon")
         if type(self.channels) is not int or self.channels < 1:
             raise ValueError("channels must be a positive integer; allocation is resource-checked")
-        if type(self.grid) is not int or self.grid not in (8, 16, 32):
-            raise ValueError("grid must be 8, 16 or 32 (divisors of the 128-pixel input)")
+        if type(self.grid) is not int or self.grid not in GRIDS:
+            raise ValueError("grid must be 8, 16, 32 or 64 (divisors of the 128-pixel input)")
 
     @property
     def patch(self):
@@ -68,7 +75,8 @@ class Config:
         # Weights/gradients/Adam, rollback, candidate/serialization transients,
         # five detached contexts, activation gradients and conservative work space.
         return (40*self.parameters + 128*self.hidden_values + 512*1024**2
-                + 5*(self.input_channels-1)*2*128**2*4)
+                + 5*(self.input_channels-1)*2*128**2*4
+                + (16*(2*self.channels+2)*(self.grid+2)**2 if self.topology == "toroidal" else 0))
 
 
 def patchify(x, grid=8):
@@ -92,7 +100,8 @@ class Predictor(nn.Module):
         self.config = config
         c, p, g = config.channels, config.input_channels*config.patch**2, config.grid
         self.encoder = nn.Conv2d(p, c, 1)
-        self.recurrent = nn.Conv2d(2*c + 2, c, 3, padding=1)
+        self.recurrent = nn.Conv2d(2*c + 2, c, 3, padding=1,
+                                   padding_mode="circular" if config.topology == "toroidal" else "zeros")
         self.decoder = nn.Conv2d(c, p, 1)
         y, x = torch.meshgrid(torch.linspace(-1, 1, g), torch.linspace(-1, 1, g), indexing="ij")
         self.register_buffer("positions", torch.stack((x, y))[None])

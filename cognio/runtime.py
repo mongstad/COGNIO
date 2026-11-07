@@ -2,6 +2,7 @@
 
 from collections import deque
 from dataclasses import replace
+import gc
 import queue
 import secrets
 import threading
@@ -13,33 +14,42 @@ import torch
 from .camera import V4L2Camera
 from .engine import Engine
 from .inputs import Frame, component_statistics, normalize, normalize_ycbcr, synthetic
-from .model import Config, Predictor
+from .model import Config
 
 
-def select_device(requested):
+def select_device(requested, config=Config(), memory_budget_mib=None):
     if requested == "cpu":
         return "cpu", "CPU selected"
+    probe = before = None
     try:
         if not torch.cuda.is_available():
             raise RuntimeError("CUDA unavailable in this PyTorch installation")
-        # Detection alone is insufficient: exercise convolution, backward and Adam.
-        with torch.random.fork_rng(devices=[]):
-            torch.default_generator.manual_seed(0)
-            model = Predictor().to("cuda")
-        optimizer = torch.optim.Adam(model.parameters())
-        before = model.decoder.bias.detach().clone()
-        prediction, _ = model(torch.zeros(1, 1, 128, 128, device="cuda"),
-                              torch.zeros(Config().hidden_shape, device="cuda"))
-        prediction.square().mean().backward()
-        optimizer.step()
+        # Exact requested architecture, including pairing contexts, guarded rollback,
+        # backward and Adam. This probe is only called after GUI Start.
+        logical = [0.]
+        probe = Engine(config, "cuda", clock=lambda: logical[0]+.001,
+                       memory_budget_mib=memory_budget_mib)
+        before = probe.model.decoder.bias.detach().clone()
+        for sequence in range(7):
+            logical[0] = sequence/30
+            probe.step(Frame(sequence, logical[0], synthetic(sequence, "moving", config.input_mode)), observe=False)
+            if probe.fault:
+                raise RuntimeError(probe.fault)
         torch.cuda.synchronize()
-        if torch.equal(before, model.decoder.bias) or not torch.isfinite(model.decoder.bias).all():
+        if probe.counts["updates"] != 2 or torch.equal(before, probe.model.decoder.bias):
             raise RuntimeError("CUDA optimizer probe did not produce a finite parameter update")
-        return "cuda", f"CUDA training probe passed · {torch.cuda.get_device_name(0)} · torch {torch.__version__} / runtime {torch.version.cuda}"
+        return "cuda", (f"CUDA exact-size training probe passed · {torch.cuda.get_device_name(0)} · "
+                        f"{config.channels}×{config.grid} {config.input_mode} {config.topology} · "
+                        f"torch {torch.__version__} / runtime {torch.version.cuda}")
     except Exception as exc:
         if requested == "cuda":
             raise ValueError(f"CUDA startup failed: {exc}. Run with --compute cpu.") from exc
         return "cpu", f"CPU fallback · {exc}"
+    finally:
+        del probe, before
+        gc.collect()
+        if torch.cuda.is_initialized():
+            torch.cuda.empty_cache()
 
 
 class Runtime:

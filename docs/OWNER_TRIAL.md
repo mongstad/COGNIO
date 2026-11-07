@@ -1,3 +1,9 @@
+GUI launches now open configuration first. The initial GUI choices are Toroidal,
+1,024×32×32 and YCbCr; for the original baseline below explicitly choose Standard,
+32 channels, grid 8 and Y, then press **Start**. CUDA is probed only after Start.
+See [the setup/topology owner trial](SETUP_TOPOLOGY.md) for new-session and checkpoint
+architecture checks.
+
 # Owner trial
 
 Run from the repository with `.venv` activated, close SENTIO or other camera

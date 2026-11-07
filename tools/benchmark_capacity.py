@@ -20,7 +20,7 @@ import torch
 
 from cognio.engine import Engine
 from cognio.inputs import INPUT_MODES, Frame, components, synthetic
-from cognio.model import Config, Predictor
+from cognio.model import Config, Predictor, TOPOLOGIES
 from cognio.resources import check_budget
 from cognio.runtime import select_device
 
@@ -163,6 +163,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--compute", choices=("cpu", "cuda"), required=True)
     parser.add_argument("--configs", nargs="+", default=["32x8", "128x16", "256x16", "512x16", "1024x8"])
+    parser.add_argument("--topologies", nargs="+", choices=TOPOLOGIES, default=["standard"])
     parser.add_argument("--input-mode", choices=INPUT_MODES, default="y")
     parser.add_argument("--stimuli", nargs="+", choices=("static", "moving", "shape", "temporal",
                                                         "color-static", "color-moving", "color-temporal"), default=["moving"])
@@ -188,12 +189,14 @@ def main():
                   threads=args.threads, precision="float32, TF32 off", results=[], microbench=[])
     for text in args.configs:
         channels, grid = map(int, text.split("x"))
-        config = Config(seed=args.seed, channels=channels, grid=grid, input_mode=args.input_mode)
-        for mode in args.stimuli:
-            row = case(config, device, mode, args.train_frames, args.evaluation_frames, args.max_seconds, args.observer)
-            report["results"].append(row)
-            args.output.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
-            print(json.dumps({"config": text, "stimulus": mode, "status": row["status"], "error": row.get("error")}), flush=True)
+        for topology in args.topologies:
+            config = Config(seed=args.seed, channels=channels, grid=grid, input_mode=args.input_mode, topology=topology)
+            for mode in args.stimuli:
+                row = case(config, device, mode, args.train_frames, args.evaluation_frames, args.max_seconds, args.observer)
+                report["results"].append(row)
+                args.output.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
+                print(json.dumps({"config": text, "topology": topology, "stimulus": mode,
+                                  "status": row["status"], "error": row.get("error")}), flush=True)
     if args.microbench:
         for config in (Config(input_mode=args.input_mode), Config(channels=512, grid=16, input_mode=args.input_mode)):
             for batch in (1, 4):

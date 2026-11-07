@@ -1,6 +1,8 @@
 # Issue #4: configurable capacity, headless execution and CUDA
 
-The accepted 32-channel, 8×8 model remains the default and numerical reference.
+The accepted 32-channel, 8×8 model remains the headless default and numerical reference.
+Issue #14 adds an explicit [GUI setup workflow and topology choice](SETUP_TOPOLOGY.md),
+with different initial GUI selections and support for grid 64.
 The objective, 128² luminance input, five-camera-frame horizon, MSE/Adam update,
 one-step detached recurrence, persistence comparison and privacy contract remain
 unchanged. Increasing capacity is an experiment, not evidence of better learning.
@@ -29,8 +31,9 @@ checkpoint format also loaded under the CUDA-build environment. The runtime
 does no downloads or network transmission. Qt is an optional package extra;
 headless mode neither imports it nor creates activation images.
 
-Before selecting CUDA, the application runs a small convolutional forward,
-backward and Adam step and checks a finite parameter change. Explicit CUDA
+Before selecting CUDA, the application checks the exact requested configuration and
+runs two guarded causal updates, including backward and Adam, then discards the
+probe weights. This occurs only after Start for GUI launches. Explicit CUDA
 failure produces an error with a CPU launch instruction; only `auto` can fall
 back. The chosen device/build/runtime appears in telemetry. Real full-model
 CUDA training is separately covered by tests and measurements.
@@ -56,13 +59,14 @@ For channels `C`, grid width `G`, patch width `P=128/G`:
 | 512 × 32×32 | 4×4 | 4,745,232 | 524,288 |
 
 Channels are positive integers, not restricted to these benchmark choices.
-Grids 8, 16 and 32 divide the fixed input exactly. Configuration changes are
+Grids 8, 16, 32 and 64 divide the fixed input exactly. Configuration changes are
 launch-time choices, not silent resizing of a running or restored learned model.
 GUI Reset changes the seed and clears learning at the same dimensions.
 
 Before constructing a model, estimate working bytes as **40N + 128H + 512 MiB**.
 Color adds 1.25 MiB for the extra two components in five pending input/prediction
-contexts, and uses its own increased parameter count `N`.
+contexts, and uses its own increased parameter count `N`. Toroidal adds
+`16*(2C+2)*(G+2)²` bytes for padded joint/gradient transients (issue #14).
 This includes weights, gradients, Adam moments, rollback copies, candidate/
 serialization transients, detached contexts, activations and a workspace reserve.
 Require that estimate to fit half of currently available host memory and, on

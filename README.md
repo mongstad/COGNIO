@@ -12,6 +12,24 @@ squared prediction error. It is a small learning experiment, not an object
 recognizer or evidence of consciousness or biological equivalence. It contains
 no physical field solver and is separate from SENTIO.
 
+## Experiment setup
+
+`--gui` opens **Configure experiment** and waits for **Start** before constructing
+any model or starting acquisition/training. Initial selections are editable:
+Toroidal topology, 1,024 channels, 32×32 grid, YCbCr, live camera, and CUDA when
+available (otherwise CPU). Live estimates and conservative memory guards check
+capacity; they do not promise capture-rate training. CLI arguments prefill the
+screen. **Restore Checkpoint…** presents immutable saved architecture before
+**Restore & Start**; **Stop / New Session…** confirms discarding in-memory learning
+and fully stops workers before returning to setup.
+
+Headless defaults remain Standard topology, 32×8, Y and synthetic static input.
+`--topology standard|toroidal` selects zero versus circular recurrent padding.
+Grid 64 is now supported with shape/update tests; channel counts remain editable
+without a fixed capacity ceiling. [Setup, topology and owner trial](docs/SETUP_TOPOLOGY.md)
+describe the architecture, memory checks, compatibility and measured limitations.
+Camera images are not periodic: Toroidal may connect unrelated image edges.
+
 ## Setup and run on Fedora 44
 
 Python 3.11+ is required. The reference CPU environment uses Python 3.14.10.
@@ -29,7 +47,8 @@ python -m cognio --gui --source moving --compute cpu
 Installation downloads libraries; the running application has no network or
 upload path. Default launch is **headless**, uses a synthetic static scene, and
 enables training. Pass `--gui` explicitly to open the observer window.
-No camera is activated unless `--source camera` is passed. Close any other
+Headless camera use requires `--source camera`. In the GUI, camera acquisition
+starts only after selecting camera and pressing Start. Close any other
 application using the camera, then run as the desktop user:
 
 ```bash
@@ -49,8 +68,8 @@ CPU fallback when unavailable. `--compute cuda`
 fails with a CPU launch instruction if unavailable. No CUDA toolkit or GPU is
 needed for the documented CPU installation. Defaults are two PyTorch CPU
 threads, seed 7, Adam learning rate 0.001, and float32. Use `--help` for launch
-options; `--seed` and `--learning-rate` affect new models only. Baseline dimensions
-remain 32 channels and an 8×8 grid. Scaling measurements and CPU/CUDA installation
+options; `--seed` and `--learning-rate` affect new models only. Headless baseline dimensions
+remain 32 channels and an 8×8 grid; GUI defaults are described above. Scaling measurements and CPU/CUDA installation
 details are in [the capacity guide](docs/CAPACITY.md).
 
 ## Larger networks and headless runs
@@ -66,7 +85,7 @@ python -m cognio --headless --source camera --compute cpu --checkpoint /tmp/cogn
   --seconds 30
 ```
 
-Supported grids are 8, 16 and 32; channel counts are positive integers checked
+Supported grids are 8, 16, 32 and 64; channel counts are positive integers checked
 against available-memory estimates before allocation. `--memory-budget-mib`
 can impose a smaller working allowance. Larger dimensions mean different
 learned architectures; restoring mismatched dimensions is rejected. Original
@@ -113,10 +132,10 @@ explain the range assumption, clipping and lack of color calibration.
 The primary canvas still shows actual neural state. Headless telemetry
 includes per-component errors and input statistics with no image arrays.
 
-Schema-3 checkpoints record mode, tensor layout and normalization. Restoring
+Schema-4 checkpoints record topology, mode, tensor layout and normalization. Restoring
 uses the saved mode; explicitly conflicting `--input-mode` choices and GUI
-cross-mode restores fail. Old schema-1/2 checkpoints remain grayscale; no weight
-resizing or color conversion occurs. [Color contract and validation](docs/COLOR.md)
+cross-mode restores fail. Schemas 1/2 remain grayscale; schemas 1/2/3 restore as Standard. No weight
+resizing, topology migration or color conversion occurs. [Color contract and validation](docs/COLOR.md)
 contains geometry, loss weighting, evidence and owner steps.
 
 ## Controls and interpretation
