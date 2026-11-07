@@ -53,8 +53,8 @@ def periodicity(plane, grid):
     the decoder's lattice. A naturally periodic input can score highly too.
     """
     plane = np.asarray(plane, dtype=np.float64)
-    if plane.shape != (128, 128) or grid not in (8, 16, 32) or not np.isfinite(plane).all():
-        raise ValueError("periodicity requires finite 128x128 data and grid 8/16/32")
+    if plane.shape != (128, 128) or grid not in (8, 16, 32, 64) or not np.isfinite(plane).all():
+        raise ValueError("periodicity requires finite 128x128 data and grid 8/16/32/64")
     patch = 128//grid
     phase = plane.reshape(grid, patch, grid, patch).mean(axis=(0, 2))
     variance = float(plane.var())
@@ -64,7 +64,9 @@ def periodicity(plane, grid):
     edge = float((dx[:, boundary].mean()+dy[boundary].mean())/2)
     interior = float((dx[:, ~boundary].mean()+dy[~boundary].mean())/2)
     spectrum = np.abs(np.fft.fft2(plane-plane.mean()))**2
-    fundamental = float(spectrum[grid,0]+spectrum[-grid,0]+spectrum[0,grid]+spectrum[0,-grid])
+    # At grid 64 the positive/negative fundamental is the same Nyquist bin.
+    fundamental = float(spectrum[grid,0]+spectrum[0,grid]) if grid == 64 else float(
+        spectrum[grid,0]+spectrum[-grid,0]+spectrum[0,grid]+spectrum[0,-grid])
     total = float(spectrum.sum())
     return dict(patch_pixels=patch, phase_rms=phase_variance**.5,
                 lattice_energy_fraction=phase_variance/variance if variance > 1e-24 else 0.,

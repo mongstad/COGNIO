@@ -272,7 +272,7 @@ class Engine:
 
     def state(self):
         """No sensory inputs, targets, pending predictions or metric maps are serialized."""
-        return dict(schema=3, architecture="patch-spatial-rnn-v3", config=asdict(self.config),
+        return dict(schema=4, architecture="patch-spatial-rnn-v4", config=asdict(self.config),
                     sensory=self.config.sensory_contract,
                     model=cpu_copy(self.model.state_dict()),
                     optimizer=cpu_copy(self.optimizer.state_dict()),
@@ -300,7 +300,8 @@ class Engine:
         self.flush()  # Both running and restored streams restart the five-frame warm-up.
 
     @classmethod
-    def load(cls, path, device="cpu", clock=time.monotonic, expected_config=None, memory_budget_mib=None):
+    def _read_checkpoint(cls, path):
+        """Bounded, mmap metadata inspection; constructs no model or optimizer."""
         path = Path(path)
         # Bound the archive before unpickling metadata; mmap avoids eager storage copies.
         maximum = int(psutil.virtual_memory().available * .25)
@@ -318,7 +319,7 @@ class Engine:
         expected = {"schema", "architecture", "config", "model", "optimizer", "hidden", "counts", "training", "torch_version"}
         if not isinstance(data, dict):
             raise ValueError("unsupported checkpoint schema or architecture")
-        if set(data) != (expected | {"sensory"} if data.get("schema") == 3 else expected):
+        if set(data) != (expected | {"sensory"} if data.get("schema") in (3, 4) else expected):
             raise ValueError("unsupported checkpoint schema or architecture")
         legacy = data["schema"] == 1 and data["architecture"] == "patch16-spatial-rnn32-v1"
         config_fields = {"seed", "learning_rate", "horizon", "channels", "grid"}
@@ -332,13 +333,31 @@ class Engine:
         elif data["schema"] == 3 and data["architecture"] == "patch-spatial-rnn-v3":
             if set(data["config"]) != config_fields | {"input_mode"}:
                 raise ValueError("incomplete sensory architecture configuration")
+        elif data["schema"] == 4 and data["architecture"] == "patch-spatial-rnn-v4":
+            if set(data["config"]) != config_fields | {"input_mode", "topology"}:
+                raise ValueError("incomplete topology architecture configuration")
         else:
             raise ValueError("unsupported checkpoint schema or architecture")
+        # Schemas 1–3 had only zero-padded standard recurrence. Never infer topology from tensors.
         config = Config(**data["config"])
-        if data["schema"] == 3 and data["sensory"] != config.sensory_contract:
+        if data["schema"] in (3, 4) and data["sensory"] != config.sensory_contract:
             raise ValueError("checkpoint sensory shape/normalization contract differs")
         if path.stat().st_size > config.checkpoint_bytes:
             raise ValueError("checkpoint exceeds configuration-sized limit")
+        return data, config
+
+    @classmethod
+    def inspect_checkpoint(cls, path):
+        """Read architecture before Start; full tensor/state validation occurs on load."""
+        data, config = cls._read_checkpoint(path)
+        return dict(config=config, schema=data["schema"])
+
+    @classmethod
+    def load(cls, path, device="cpu", clock=time.monotonic, expected_config=None, memory_budget_mib=None):
+        data, config = cls._read_checkpoint(path)
+        path = Path(path)
+        if expected_config is not None and config.topology != expected_config.topology:
+            raise ValueError(f"checkpoint topology {config.topology} differs from selected {expected_config.topology}")
         if expected_config is not None and (config.channels, config.grid) != (expected_config.channels, expected_config.grid):
             raise ValueError(f"checkpoint architecture {config.channels}×{config.grid} differs from selected "
                              f"{expected_config.channels}×{expected_config.grid}; launch a matching model explicitly")

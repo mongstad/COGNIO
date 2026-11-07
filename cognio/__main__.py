@@ -7,10 +7,10 @@ import sys
 from .inputs import INPUT_MODES, MODES
 
 
-def main():
+def make_parser():
     parser = argparse.ArgumentParser(description="COGNIO: local, randomly initialized online predictive learning")
-    parser.add_argument("--source", choices=("camera", "video", *MODES), default="static",
-                        help="default static synthetic control; camera is explicit")
+    parser.add_argument("--source", choices=("camera", "video", *MODES), default=None,
+                        help="headless default: static; GUI default selection: camera (starts only on Start)")
     parser.add_argument("--device", help="V4L2 path, preferably /dev/v4l/by-id/...")
     parser.add_argument("--list-devices", action="store_true")
     parser.add_argument("--video-file", help="local video path (requires ffmpeg/ffprobe)")
@@ -28,9 +28,11 @@ def main():
                         help="with --checkpoint: clear transient recurrent state only; retain learned weights/Adam")
     parser.add_argument("--frozen", action="store_true")
     parser.add_argument("--resume-training", action="store_true", help="explicitly enable training after --checkpoint restore")
-    parser.add_argument("--channels", type=int, help="new model channels (default 32); restore must match")
-    parser.add_argument("--grid", type=int, choices=(8, 16, 32), help="spatial state grid (default 8)")
-    parser.add_argument("--input-mode", choices=INPUT_MODES, help="new model sensory mode (default y); restore must match")
+    parser.add_argument("--channels", type=int, help="new model channels (headless 32; GUI 1024); restore must match")
+    parser.add_argument("--grid", type=int, choices=(8, 16, 32, 64), help="spatial state grid (headless 8; GUI 32)")
+    parser.add_argument("--input-mode", choices=INPUT_MODES, help="sensory mode (headless y; GUI ycbcr); restore must match")
+    parser.add_argument("--topology", choices=("standard", "toroidal"),
+                        help="headless default: standard; GUI initial selection: toroidal")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--gui", action="store_true", help="open the optional four-view observer")
     mode.add_argument("--headless", action="store_true", help="scalar telemetry only (default)")
@@ -39,16 +41,19 @@ def main():
     parser.add_argument("--save-on-exit", help="explicit headless checkpoint destination (atomic replacement)")
     parser.add_argument("--display-hz", type=float, default=15.)
     parser.add_argument("--memory-budget-mib", type=float, help="optional lower working-memory allowance")
+    return parser
+
+
+def main():
+    parser = make_parser()
     args = parser.parse_args()
+    args.source = args.source or ("camera" if args.gui else "static")
     if args.list_devices:
         from .camera import devices
         print(json.dumps(devices(), indent=2))
         return 0
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
     import torch
-    from .engine import Engine
-    from .model import Config
-    from .runtime import Runtime, select_device
     torch.set_num_threads(args.threads)
     torch.use_deterministic_algorithms(True)
     torch.backends.cudnn.benchmark = False
@@ -61,13 +66,7 @@ def main():
             raise ValueError("--video-controls is headless only; use the GUI playback controls")
         if args.video_paused and not args.gui and not args.video_controls:
             raise ValueError("--video-paused in headless mode requires --video-controls to resume")
-        if args.source == "video" and args.gui and not args.video_file:
-            from PySide6.QtWidgets import QApplication, QFileDialog
-            app = QApplication.instance() or QApplication(sys.argv[:1])
-            args.video_file, _ = QFileDialog.getOpenFileName(None, "Choose local visual video (audio ignored)")
-            if not args.video_file:
-                return 0
-        if args.source == "video" and not args.video_file:
+        if args.source == "video" and not args.gui and not args.video_file:
             raise ValueError("--source video requires --video-file PATH")
         if args.source == "video":
             from .video import VideoPlayback
@@ -82,29 +81,9 @@ def main():
             raise ValueError("--resume-training requires --checkpoint and cannot be combined with --frozen")
         if args.reset_hidden and not args.checkpoint:
             raise ValueError("--reset-hidden requires --checkpoint; new models already start with zero hidden state")
-        device, notice = select_device(args.compute)
-        if args.checkpoint:
-            engine = Engine.load(args.checkpoint, device, memory_budget_mib=args.memory_budget_mib)
-            if args.input_mode is not None and args.input_mode != engine.config.input_mode:
-                raise ValueError("checkpoint input mode differs from the explicitly requested --input-mode")
-            if ((args.channels is not None and args.channels != engine.config.channels) or
-                    (args.grid is not None and args.grid != engine.config.grid)):
-                raise ValueError("checkpoint dimensions differ from the explicitly requested architecture")
-        else:
-            engine = Engine(Config(args.seed, args.learning_rate, channels=args.channels if args.channels is not None else 32,
-                                   grid=args.grid if args.grid is not None else 8,
-                                   input_mode=args.input_mode or "y"), device,
-                            memory_budget_mib=args.memory_budget_mib)
-        if args.resume_training:
-            engine.set_training(True)
-        elif args.frozen or args.checkpoint:
-            engine.set_training(False)
-        if args.reset_hidden:
-            engine.reset_hidden()
-            engine.origin += " · transient hidden state explicitly reset; learned weights/Adam retained"
-        runtime = Runtime(engine, args.source, args.device, notice, observer=args.gui, display_hz=args.display_hz,
-                          video_path=args.video_file, video_speed=args.video_speed, video_loop=args.video_loop,
-                          video_paused=args.video_paused, video_fastest=args.video_fastest)
+        if not args.gui:
+            from .session import build_runtime
+            runtime = build_runtime(args)
     except Exception as exc:
         parser.error(str(exc))
     if not args.gui:
@@ -112,15 +91,11 @@ def main():
         return run(runtime, args.seconds, args.telemetry_interval, args.save_on_exit,
                    control_input=sys.stdin if args.video_controls else None)
     from PySide6.QtWidgets import QApplication
-    from .gui import Window
+    from .setup import SessionWindow
     app = QApplication.instance() or QApplication(sys.argv[:1])
-    window = Window(runtime)
+    window = SessionWindow(args)
     window.show()
-    runtime.start()
-    try:
-        return app.exec()
-    finally:
-        runtime.stop()
+    return app.exec()
 
 
 if __name__ == "__main__":

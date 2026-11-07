@@ -85,7 +85,7 @@ def test_native_color_capture_preserves_pairing_time_sequence_and_requeue():
     assert normalize_ycbcr(planes).shape == (3, 128, 128)
 
 
-@pytest.mark.parametrize("grid", [8, 16, 32])
+@pytest.mark.parametrize("grid", [8, 16, 32, 64])
 def test_component_patch_order_dimensions_and_output_range(grid):
     x = torch.arange(3*128**2, dtype=torch.float32).reshape(1, 3, 128, 128)
     packed = patchify(x, grid)
@@ -213,7 +213,7 @@ def test_scaled_schema2_grayscale_migration(tmp_path):
     e = Engine(Config(channels=128, grid=16))
     old = e.state()
     old["schema"], old["architecture"] = 2, "patch-spatial-rnn-v2"
-    old.pop("sensory"); old["config"].pop("input_mode")
+    old.pop("sensory"); old["config"].pop("input_mode"); old["config"].pop("topology")
     path = tmp_path/"v2.pt"; torch.save(old,path)
     loaded = Engine.load(path)
     assert loaded.config == e.config

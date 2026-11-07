@@ -5,7 +5,10 @@
 `camera.py` owns V4L2 acquisition/cleanup; `inputs.py` owns normalization and
 synthetic streams; `model.py` is the neural network; `engine.py` owns pairing,
 learning and checkpoints; `runtime.py` separates capture/learning threads;
-`gui.py` only presents snapshots and sends explicit commands.
+`gui.py` only presents snapshots and sends explicit commands. `setup.py` owns
+configuration/session lifecycle; `session.py` constructs a run only after explicit
+GUI Start (or a headless launch). [Setup/topology contract](SETUP_TOPOLOGY.md)
+defines the new GUI defaults and measured capacity limits.
 
 `video.py` owns optional local FFmpeg decoding, source color conversion and
 sequential playback. It supplies real monotonic delivery timestamps plus separate
@@ -50,7 +53,7 @@ Reconnect requires relaunch. Normal exit closes handles and MMAP buffers.
 
 The following dimensions describe the accepted 32×8 reference. Issue #4
 generalizes the same operations to configurable channels `C` and grid `G`
-(8, 16 or 32), with patch width `P=128/G`. Encoder/decoder channels are `P²`;
+(8, 16, 32 or 64), with patch width `P=128/G`. Encoder/decoder channels are `P²`;
 the recurrent convolution has `2C+2` inputs and `C` outputs. Learned parameters
 are `18C² + (2P²+20)C + P²`; hidden values are `CG²`. Initialization order and
 the default architecture are unchanged. No learning objective or recurrent
@@ -77,7 +80,10 @@ coordinates are not learned parameters.
 
 This is a small leaky spatial RNN, not a ConvGRU or full backpropagation through
 time. Hidden state starts at zero and stays in [-1,1] for valid inputs. Zero
-padding distinguishes boundaries; coordinates retain absolute position. Patch
+padding distinguishes boundaries in Standard; coordinates retain absolute position.
+Opt-in Toroidal circularly pads only the recurrent 3×3 convolution, with the same
+parameter shapes/counts and fixed coordinates. Topology is immutable and distinct
+in checkpoint identity; camera images themselves are not periodic. Patch
 boundaries do not define objects. Missing frames receive no fabricated updates.
 
 For source sequence `s`, store the prediction for **exactly s+5**. Complete
@@ -133,18 +139,19 @@ failed update restores pre-update weights and Adam state. Capture continues.
 Reset/load recovers; explicit save can preserve the last valid weights. No
 automatic disk write occurs on fault.
 
-Schema 3 checkpoints store complete dimensions/config, weights, Adam, hidden state,
+Schema 4 checkpoints store complete dimensions/config, weights, Adam, hidden state,
 counters, training flag and framework version. Initialization is the only
 random operation, so seed plus complete weights suffices without advancing
 random-generator state. Load uses `weights_only=True`, limits file size to
 an available-host-memory archive limit plus a configuration-sized storage limit,
 and validates shapes/dtypes/finiteness, fixed coordinates, Adam
 configuration/moments and counters in a candidate engine. Swap only on success.
-Supported files are checkpoints produced by this application. Schema 3 also
+Supported files are checkpoints produced by this application. Schema 4 also
 stores and validates the exact sensory mode, component order, input/target
 shape, native geometry, normalization, resampling and loss contract. Original
 schema 1 checkpoints migrate explicitly at grayscale 32×8; schema 2 retains its
-saved grayscale dimensions. GUI restore requires the current mode/dimensions;
+saved grayscale dimensions. Schemas 1–3 explicitly restore as Standard. Schema 4
+requires topology; cross-topology restores are rejected without mutation. GUI restore requires the current mode/dimensions;
 CLI restore uses saved choices unless conflicting ones were explicitly requested.
 Serialized tensors are on CPU, regardless of the
 execution device. Limits and archive validation are detailed in CAPACITY.md.
